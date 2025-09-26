@@ -8,6 +8,10 @@ continuation on [formalizing Principia Mathematica](https://github.com/LogicalAt
 - Formalizing PM doesn't need hard skills so far(?)
 - Formalizing PM feels like climbing a mountain
 
+## Features
+- Forward style reasoning, pertaining the most flavor of original proof
+- Nice proof architecture and clean proof window
+
 ## Running the code
 
 Coq version: 8.20.0, installed with the `opam` environment:
