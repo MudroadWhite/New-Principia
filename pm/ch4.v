@@ -9,7 +9,7 @@ Import ClassicalFacts.
 Import PropExtensionality.
 
 Theorem Equiv4_01 : ∀ P Q : Prop, 
-(P ↔ Q) = ((P → Q) ∧ (Q → P)). 
+  (P ↔ Q) = ((P → Q) ∧ (Q → P)). 
 Proof. intros. reflexivity. Qed.
 
 (* Theorem Equiv4_01 : ∀ P Q : Prop, 
@@ -39,55 +39,55 @@ end.
 Theorem Transp4_1 : ∀ P Q : Prop,
 (P → Q) ↔ (¬Q → ¬P).
 Proof. intros P Q.
-specialize Transp2_16 with P Q. 
-intros Transp2_16a.
-specialize Transp2_17 with P Q. 
-intros Transp2_17a.
-Conj Transp2_16a Transp2_17a C.
-Equiv C. 
-exact C.
+  specialize Transp2_16 with P Q. 
+  intros Transp2_16a.
+  specialize Transp2_17 with P Q. 
+  intros Transp2_17a.
+  Conj Transp2_16a Transp2_17a C.
+  Equiv C. 
+  exact C.
 Qed.
 
 Theorem Transp4_11 : ∀ P Q : Prop,
 (P ↔ Q) ↔ (¬P ↔ ¬Q).
 Proof. intros P Q.
-specialize Transp2_16 with P Q. 
-intros Transp2_16a.
-specialize Transp2_16 with Q P. 
-intros Transp2_16b.
-Conj Transp2_16a Transp2_16b Ca.
-specialize n3_47 with (P→Q) (Q→P) (¬Q→¬P) (¬P→¬Q). 
-intros n3_47a.
-MP n3_47 Ca.
-specialize n3_22 with (¬Q → ¬P) (¬P → ¬Q). 
-intros n3_22a.
-Syll n3_47a n3_22a Sa.
-replace ((P → Q) ∧ (Q → P)) with (P↔Q) in Sa
-  by now rewrite Equiv4_01.
-replace ((¬P → ¬Q) ∧ (¬Q → ¬P)) with (¬P↔¬Q) 
-  in Sa by now rewrite Equiv4_01.
-clear Transp2_16a. clear Ca. clear Transp2_16b. 
- clear n3_22a. clear n3_47a.
-specialize Transp2_17 with Q P. 
-intros Transp2_17a.
-specialize Transp2_17 with P Q. 
-intros Transp2_17b.
-Conj Transp2_17a Transp2_17b Cb.
-specialize n3_47 with (¬P→¬Q) (¬Q→¬P) (Q→P) (P→Q).
-intros n3_47a.
-MP n3_47a Cb.
-specialize n3_22 with (Q→P) (P→Q).
-intros n3_22a.
-Syll n3_47a n3_22a Sb.
-clear Transp2_17a. clear Transp2_17b. clear Cb. 
-    clear n3_47a. clear n3_22a.
-replace ((P → Q) ∧ (Q → P)) with (P↔Q) in Sb
-  by now rewrite Equiv4_01.
-replace ((¬P → ¬Q) ∧ (¬Q → ¬P)) with (¬P↔¬Q)
-  in Sb by now rewrite Equiv4_01.
-Conj Sa Sb Cc.
-Equiv Cc.
-exact Cc.
+  specialize Transp2_16 with P Q. 
+  intros Transp2_16a.
+  specialize Transp2_16 with Q P. 
+  intros Transp2_16b.
+  Conj Transp2_16a Transp2_16b Ca.
+  specialize n3_47 with (P→Q) (Q→P) (¬Q→¬P) (¬P→¬Q). 
+  intros n3_47a.
+  MP n3_47 Ca.
+  specialize n3_22 with (¬Q → ¬P) (¬P → ¬Q). 
+  intros n3_22a.
+  Syll n3_47a n3_22a Sa.
+  replace ((P → Q) ∧ (Q → P)) with (P↔Q) in Sa
+    by now rewrite Equiv4_01.
+  replace ((¬P → ¬Q) ∧ (¬Q → ¬P)) with (¬P↔¬Q) 
+    in Sa by now rewrite Equiv4_01.
+  clear Transp2_16a. clear Ca. clear Transp2_16b. 
+  clear n3_22a. clear n3_47a.
+  specialize Transp2_17 with Q P. 
+  intros Transp2_17a.
+  specialize Transp2_17 with P Q. 
+  intros Transp2_17b.
+  Conj Transp2_17a Transp2_17b Cb.
+  specialize n3_47 with (¬P→¬Q) (¬Q→¬P) (Q→P) (P→Q).
+  intros n3_47a.
+  MP n3_47a Cb.
+  specialize n3_22 with (Q→P) (P→Q).
+  intros n3_22a.
+  Syll n3_47a n3_22a Sb.
+  clear Transp2_17a. clear Transp2_17b. clear Cb. 
+      clear n3_47a. clear n3_22a.
+  replace ((P → Q) ∧ (Q → P)) with (P↔Q) in Sb
+    by now rewrite Equiv4_01.
+  replace ((¬P → ¬Q) ∧ (¬Q → ¬P)) with (¬P↔¬Q)
+    in Sb by now rewrite Equiv4_01.
+  Conj Sa Sb Cc.
+  Equiv Cc.
+  exact Cc.
 Qed.
 
 Theorem n4_12 : ∀ P Q : Prop,
@@ -121,197 +121,197 @@ Qed.
 Theorem n4_13 : ∀ P : Prop,
 P ↔ ¬¬P.
 Proof. intros P.
-specialize n2_12 with P. 
-intros n2_12a.
-specialize n2_14 with P. 
-intros n2_14a.
-Conj n2_12a n2_14a C.
-Equiv C. 
-exact C. 
+  specialize n2_12 with P. 
+  intros n2_12a.
+  specialize n2_14 with P. 
+  intros n2_14a.
+  Conj n2_12a n2_14a C.
+  Equiv C. 
+  exact C. 
 Qed.
 
 Theorem n4_14 : ∀ P Q R : Prop,
 ((P ∧ Q) → R) ↔ ((P ∧ ¬R) → ¬Q).
 Proof. intros P Q R.
-specialize Transp3_37 with P Q R. 
-intros Transp3_37a.
-specialize Transp3_37 with P (¬R) (¬Q).
-intros Transp3_37b.
-Conj Transp3_37a Transp3_37b C.
-specialize n4_13 with Q. 
-intros n4_13a.
-apply propositional_extensionality in n4_13a.
-specialize n4_13 with R. 
-intros n4_13b.
-apply propositional_extensionality in n4_13b.
-replace (¬¬Q) with Q in C
-by now apply n4_13a.
-replace (¬¬R) with R in C
-by now apply n4_13b.
-Equiv C. 
-exact C.
-Qed.
-
-Theorem n4_15 : ∀ P Q R : Prop,
-((P ∧ Q) → ¬R) ↔ ((Q ∧ R) → ¬P).
-Proof. intros P Q R.
-specialize n4_14 with Q P (¬R). 
-intros n4_14a.
-specialize n3_22 with Q P. 
-intros n3_22a.
-specialize Syll2_06 with (Q∧P) (P∧Q) (¬R). 
-intros Syll2_06a.
-MP Syll2_06a n3_22a.
-specialize n4_13 with R. 
-intros n4_13a.
-apply propositional_extensionality in n4_13a.
-replace (¬¬R) with R in n4_14a
+  specialize Transp3_37 with P Q R. 
+  intros Transp3_37a.
+  specialize Transp3_37 with P (¬R) (¬Q).
+  intros Transp3_37b.
+  Conj Transp3_37a Transp3_37b C.
+  specialize n4_13 with Q. 
+  intros n4_13a.
+  apply propositional_extensionality in n4_13a.
+  specialize n4_13 with R. 
+  intros n4_13b.
+  apply propositional_extensionality in n4_13b.
+  replace (¬¬Q) with Q in C
   by now apply n4_13a.
-rewrite Equiv4_01 in n4_14a.
-specialize Simp3_26 with ((Q ∧ P → ¬R) → Q ∧ R → ¬P) 
-    ((Q ∧ R → ¬P) → Q ∧ P → ¬R). 
-intros Simp3_26a.
-MP Simp3_26a n4_14a.
-Syll Syll2_06a Simp3_26a Sa.
-specialize Simp3_27 with ((Q ∧ P → ¬R) → Q ∧ R → ¬P) 
-    ((Q ∧ R → ¬P) → Q ∧ P → ¬R). 
-intros Simp3_27a.
-MP Simp3_27a n4_14a.
-specialize n3_22 with P Q. 
-intros n3_22b.
-specialize Syll2_06 with (P∧Q) (Q∧P) (¬R). 
-intros Syll2_06b.
-MP Syll2_06b n3_22b.
-Syll Syll2_06b Simp3_27a Sb.
-clear n4_14a. clear n3_22a. clear Syll2_06a. 
-    clear n4_13a. clear Simp3_26a. clear n3_22b.
-    clear Simp3_27a. clear Syll2_06b.
-Conj Sa Sb C.
-Equiv C.
-exact C.
+  replace (¬¬R) with R in C
+  by now apply n4_13b.
+  Equiv C. 
+  exact C.
+  Qed.
+
+  Theorem n4_15 : ∀ P Q R : Prop,
+  ((P ∧ Q) → ¬R) ↔ ((Q ∧ R) → ¬P).
+  Proof. intros P Q R.
+  specialize n4_14 with Q P (¬R). 
+  intros n4_14a.
+  specialize n3_22 with Q P. 
+  intros n3_22a.
+  specialize Syll2_06 with (Q∧P) (P∧Q) (¬R). 
+  intros Syll2_06a.
+  MP Syll2_06a n3_22a.
+  specialize n4_13 with R. 
+  intros n4_13a.
+  apply propositional_extensionality in n4_13a.
+  replace (¬¬R) with R in n4_14a
+    by now apply n4_13a.
+  rewrite Equiv4_01 in n4_14a.
+  specialize Simp3_26 with ((Q ∧ P → ¬R) → Q ∧ R → ¬P) 
+      ((Q ∧ R → ¬P) → Q ∧ P → ¬R). 
+  intros Simp3_26a.
+  MP Simp3_26a n4_14a.
+  Syll Syll2_06a Simp3_26a Sa.
+  specialize Simp3_27 with ((Q ∧ P → ¬R) → Q ∧ R → ¬P) 
+      ((Q ∧ R → ¬P) → Q ∧ P → ¬R). 
+  intros Simp3_27a.
+  MP Simp3_27a n4_14a.
+  specialize n3_22 with P Q. 
+  intros n3_22b.
+  specialize Syll2_06 with (P∧Q) (Q∧P) (¬R). 
+  intros Syll2_06b.
+  MP Syll2_06b n3_22b.
+  Syll Syll2_06b Simp3_27a Sb.
+  clear n4_14a. clear n3_22a. clear Syll2_06a. 
+      clear n4_13a. clear Simp3_26a. clear n3_22b.
+      clear Simp3_27a. clear Syll2_06b.
+  Conj Sa Sb C.
+  Equiv C.
+  exact C.
 Qed.
 
 Theorem n4_2 : ∀ P : Prop,
 P ↔ P.
 Proof. intros P.
-specialize n3_2 with (P→P) (P→P). 
-intros n3_2a.
-specialize Id2_08 with P. 
-intros Id2_08a.
-MP n3_2a Id2_08a.
-MP n3_2a Id2_08a.
-Equiv n3_2a.
-exact n3_2a.
+  specialize n3_2 with (P→P) (P→P). 
+  intros n3_2a.
+  specialize Id2_08 with P. 
+  intros Id2_08a.
+  MP n3_2a Id2_08a.
+  MP n3_2a Id2_08a.
+  Equiv n3_2a.
+  exact n3_2a.
 Qed.
 
 Theorem n4_21 : ∀ P Q : Prop,
 (P ↔ Q) ↔ (Q ↔ P).
 Proof. intros P Q.
-specialize n3_22 with (P→Q) (Q→P). 
-intros n3_22a.
-replace ((P → Q) ∧ (Q → P)) with (P↔Q) 
+  specialize n3_22 with (P→Q) (Q→P). 
+  intros n3_22a.
+  replace ((P → Q) ∧ (Q → P)) with (P↔Q) 
+    in n3_22a by now rewrite Equiv4_01.
+  replace ((Q → P) ∧ (P → Q)) with (Q↔P)
   in n3_22a by now rewrite Equiv4_01.
-replace ((Q → P) ∧ (P → Q)) with (Q↔P)
- in n3_22a by now rewrite Equiv4_01.
-specialize n3_22 with (Q→P) (P→Q). 
-intros n3_22b.
-replace ((P → Q) ∧ (Q → P)) with (P↔Q) 
-  in n3_22b by now rewrite Equiv4_01.
-replace ((Q → P) ∧ (P → Q)) with (Q↔P) 
-  in n3_22b by now rewrite Equiv4_01.
-Conj n3_22a n3_22b C.
-Equiv C.
-exact C.
-Qed.
+  specialize n3_22 with (Q→P) (P→Q). 
+  intros n3_22b.
+  replace ((P → Q) ∧ (Q → P)) with (P↔Q) 
+    in n3_22b by now rewrite Equiv4_01.
+  replace ((Q → P) ∧ (P → Q)) with (Q↔P) 
+    in n3_22b by now rewrite Equiv4_01.
+  Conj n3_22a n3_22b C.
+  Equiv C.
+  exact C.
+  Qed.
 
-Theorem n4_22 : ∀ P Q R : Prop,
-((P ↔ Q) ∧ (Q ↔ R)) → (P ↔ R).
-Proof. intros P Q R.
-specialize Simp3_26 with (P↔Q) (Q↔R). 
-intros Simp3_26a.
-specialize Simp3_26 with (P→Q) (Q→P). 
-intros Simp3_26b.
-replace ((P→Q) ∧ (Q→P)) with (P↔Q) 
-  in Simp3_26b by now rewrite Equiv4_01.
-Syll Simp3_26a Simp3_26b Sa.
-specialize Simp3_27 with (P↔Q) (Q↔R). 
-intros Simp3_27a.
-specialize Simp3_26 with (Q→R) (R→Q). 
-intros Simp3_26c.
-replace ((Q→R) ∧ (R→Q)) with (Q↔R) 
-  in Simp3_26c by now rewrite Equiv4_01.
-Syll Simp3_27a Simp3_26c Sb.
-specialize n2_83 with ((P↔Q)∧(Q↔R)) P Q R. 
-intros n2_83a.
-MP n2_83a Sa. 
-MP n2_83a Sb.
-specialize Simp3_27 with (P↔Q) (Q↔R). 
-intros Simp3_27b.
-specialize Simp3_27 with (Q→R) (R→Q). 
-intros Simp3_27c.
-replace ((Q→R) ∧ (R→Q)) with (Q↔R) 
-  in Simp3_27c by now rewrite Equiv4_01.
-Syll Simp3_27b Simp3_27c Sc.
-specialize Simp3_26 with (P↔Q) (Q↔R).
-intros Simp3_26d.
-specialize Simp3_27 with (P→Q) (Q→P). 
-intros Simp3_27d.
-replace ((P→Q) ∧ (Q→P)) with (P↔Q) 
-  in Simp3_27d by now rewrite Equiv4_01.
-Syll Simp3_26d Simp3_27d Sd.
-specialize n2_83 with ((P↔Q)∧(Q↔R)) R Q P. 
-intros n2_83b.
-MP n2_83b Sc. MP n2_83b Sd.
-clear Sd. clear Sb. clear Sc. clear Sa. clear Simp3_26a. 
-    clear Simp3_26b. clear Simp3_26c. clear Simp3_26d. 
-    clear Simp3_27a. clear Simp3_27b. clear Simp3_27c. 
-    clear Simp3_27d.
-Conj n2_83a n2_83b C. 
-specialize Comp3_43 with ((P↔Q)∧(Q↔R)) (P→R) (R→P).
-intros Comp3_43a.
-MP Comp3_43a C.
-replace ((P→R) ∧ (R→P)) with (P↔R) 
-  in Comp3_43a by now rewrite Equiv4_01.
-exact Comp3_43a.
+  Theorem n4_22 : ∀ P Q R : Prop,
+  ((P ↔ Q) ∧ (Q ↔ R)) → (P ↔ R).
+  Proof. intros P Q R.
+  specialize Simp3_26 with (P↔Q) (Q↔R). 
+  intros Simp3_26a.
+  specialize Simp3_26 with (P→Q) (Q→P). 
+  intros Simp3_26b.
+  replace ((P→Q) ∧ (Q→P)) with (P↔Q) 
+    in Simp3_26b by now rewrite Equiv4_01.
+  Syll Simp3_26a Simp3_26b Sa.
+  specialize Simp3_27 with (P↔Q) (Q↔R). 
+  intros Simp3_27a.
+  specialize Simp3_26 with (Q→R) (R→Q). 
+  intros Simp3_26c.
+  replace ((Q→R) ∧ (R→Q)) with (Q↔R) 
+    in Simp3_26c by now rewrite Equiv4_01.
+  Syll Simp3_27a Simp3_26c Sb.
+  specialize n2_83 with ((P↔Q)∧(Q↔R)) P Q R. 
+  intros n2_83a.
+  MP n2_83a Sa. 
+  MP n2_83a Sb.
+  specialize Simp3_27 with (P↔Q) (Q↔R). 
+  intros Simp3_27b.
+  specialize Simp3_27 with (Q→R) (R→Q). 
+  intros Simp3_27c.
+  replace ((Q→R) ∧ (R→Q)) with (Q↔R) 
+    in Simp3_27c by now rewrite Equiv4_01.
+  Syll Simp3_27b Simp3_27c Sc.
+  specialize Simp3_26 with (P↔Q) (Q↔R).
+  intros Simp3_26d.
+  specialize Simp3_27 with (P→Q) (Q→P). 
+  intros Simp3_27d.
+  replace ((P→Q) ∧ (Q→P)) with (P↔Q) 
+    in Simp3_27d by now rewrite Equiv4_01.
+  Syll Simp3_26d Simp3_27d Sd.
+  specialize n2_83 with ((P↔Q)∧(Q↔R)) R Q P. 
+  intros n2_83b.
+  MP n2_83b Sc. MP n2_83b Sd.
+  clear Sd. clear Sb. clear Sc. clear Sa. clear Simp3_26a. 
+      clear Simp3_26b. clear Simp3_26c. clear Simp3_26d. 
+      clear Simp3_27a. clear Simp3_27b. clear Simp3_27c. 
+      clear Simp3_27d.
+  Conj n2_83a n2_83b C. 
+  specialize Comp3_43 with ((P↔Q)∧(Q↔R)) (P→R) (R→P).
+  intros Comp3_43a.
+  MP Comp3_43a C.
+  replace ((P→R) ∧ (R→P)) with (P↔R) 
+    in Comp3_43a by now rewrite Equiv4_01.
+  exact Comp3_43a.
 Qed.
 
 Theorem n4_24 : ∀ P : Prop,
-P ↔ (P ∧ P).
+  P ↔ (P ∧ P).
 Proof. intros P.
-specialize n3_2 with P P. 
-intros n3_2a.
-specialize n2_43 with P (P ∧ P). 
-intros n2_43a.
-MP n3_2a n2_43a.
-specialize Simp3_26 with P P. 
-intros Simp3_26a.
-Conj n2_43a Simp3_26a C.
-Equiv C.
-exact C.
+  specialize n3_2 with P P. 
+  intros n3_2a.
+  specialize n2_43 with P (P ∧ P). 
+  intros n2_43a.
+  MP n3_2a n2_43a.
+  specialize Simp3_26 with P P. 
+  intros Simp3_26a.
+  Conj n2_43a Simp3_26a C.
+  Equiv C.
+  exact C.
 Qed.
 
 Theorem n4_25 : ∀ P : Prop,
-P ↔ (P ∨ P).
+  P ↔ (P ∨ P).
 Proof. intros P.
-specialize Add1_3 with P P.
-intros Add1_3a.
-specialize Taut1_2 with P. 
-intros Taut1_2a.
-Conj Add1_3a Taut1_2a C.
-Equiv C. 
-exact C.
+  specialize Add1_3 with P P.
+  intros Add1_3a.
+  specialize Taut1_2 with P. 
+  intros Taut1_2a.
+  Conj Add1_3a Taut1_2a C.
+  Equiv C. 
+  exact C.
 Qed.
 
 Theorem n4_3 : ∀ P Q : Prop,
-(P ∧ Q) ↔ (Q ∧ P).
+  (P ∧ Q) ↔ (Q ∧ P).
 Proof. intros P Q.
-specialize n3_22 with P Q.
-intros n3_22a.
-specialize n3_22 with Q P.
-intros n3_22b.
-Conj n3_22a n3_22b C.
-Equiv C. 
-exact C.
+  specialize n3_22 with P Q.
+  intros n3_22a.
+  specialize n3_22 with Q P.
+  intros n3_22b.
+  Conj n3_22a n3_22b C.
+  Equiv C. 
+  exact C.
 Qed.
 
 Theorem n4_31 : ∀ P Q : Prop,
@@ -348,6 +348,7 @@ Proof. intros P Q R.
   specialize Transp4_11 with (P∧Q→¬R) (P→¬(Q∧R)).
   intros Transp4_11a.
   apply propositional_extensionality in Transp4_11a.
+  symmetry in Transp4_11a.
   replace ((P ∧ Q → ¬R) ↔ (P → ¬(Q ∧ R))) with 
       (¬(P ∧ Q → ¬R) ↔ ¬(P → ¬(Q ∧ R))) in n4_15a
       by now apply Transp4_11a.
