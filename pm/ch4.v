@@ -861,6 +861,7 @@ Proof. intros P Q.
   specialize n4_12 with (¬P ∧ Q) (P ∨ ¬Q).
   intros n4_12a.
   apply propositional_extensionality in n4_12a.
+  symmetry in n4_12a.
   replace (¬P ∧ Q ↔ ¬(P ∨ ¬Q)) with 
       (P ∨ ¬Q ↔ ¬(¬P ∧ Q)) in n4_54a 
       by now apply n4_12a.
@@ -894,6 +895,7 @@ Proof. intros P Q.
   specialize n4_12 with (¬P ∧ ¬Q) (P ∨ Q).
   intros n4_12a.
   apply propositional_extensionality in n4_12a.
+  symmetry in n4_12a.
   replace (¬P ∧ ¬Q ↔ ¬(P ∨ Q)) with 
       (P ∨ Q ↔ ¬(¬P ∧ ¬Q)) in n4_56a
       by now apply n4_12a.
@@ -923,6 +925,7 @@ Proof. intros P Q.
   specialize Transp4_11 with (P→Q) (¬P∨Q).
   intros Transp4_11a.
   apply propositional_extensionality in Transp4_11a.
+  symmetry in Transp4_11a.
   replace ((P → Q) ↔ ¬P ∨ Q) with 
       (¬(P → Q) ↔ ¬(¬P ∨ Q)) in n4_6a
       by now apply Transp4_11a.
@@ -955,6 +958,7 @@ Proof. intros P Q.
   replace (¬(¬P ∨ ¬Q)) with (P ∧ Q) in Transp4_11a
     by now apply n4_5a.
   apply propositional_extensionality in Transp4_11a.
+  symmetry in Transp4_11a.
   replace ((P → ¬Q) ↔ ¬P ∨ ¬Q) with 
       ((¬(P → ¬Q) ↔ P ∧ Q)) in n4_62a
       by now apply Transp4_11a.
@@ -1016,6 +1020,7 @@ Proof. intros P Q.
   specialize Transp4_11 with (¬P → ¬Q) (P ∨ ¬Q).
   intros Transp4_11a.
   apply propositional_extensionality in Transp4_11a.
+  symmetry in Transp4_11a.
   replace ((¬P → ¬Q) ↔ P ∨ ¬Q) with 
       (¬(¬P → ¬Q) ↔ ¬(P ∨ ¬Q)) in n4_66a
       by now apply Transp4_11a.
@@ -1106,13 +1111,14 @@ Proof. intros P Q.
   specialize n4_57 with Q P.
   intros n4_57a.
   apply propositional_extensionality in n4_57a.
+  symmetry in n4_57a.
   replace (¬(¬Q ∧ ¬P)) with (Q ∨ P) in n4_22c
     by now apply n4_57a.
   specialize n4_31 with P Q.
   intros n4_31a.
   apply propositional_extensionality in n4_31a.
   replace (Q ∨ P) with (P ∨ Q) in n4_22c
-    by now apply n4_22c.
+    by now apply n4_31a.
   exact n4_22c.
 Qed.
 (*One could use Prod3_01 in lieu of n4_57.*)
@@ -1143,6 +1149,7 @@ Proof. intros P Q.
   specialize n4_72 with P Q.
   intros n4_72a.
   apply propositional_extensionality in n4_72a.
+  symmetry in n4_72a.
   replace (P → Q) with (Q ↔ P ∨ Q) in n2_21a
     by now apply n4_72a.
   exact n2_21a.
@@ -1164,7 +1171,7 @@ Proof. intros P Q R.
   apply propositional_extensionality in n4_21a.
   replace ((P → Q ∧ R) ↔ (P → Q) ∧ (P → R)) with 
       ((P → Q) ∧ (P → R) ↔ (P → Q ∧ R)) in n4_41a
-      by now apply n4_41a.
+      by now apply n4_21a.
   exact n4_41a.
 Qed.
 
@@ -1215,6 +1222,7 @@ Proof. intros P Q R.
   specialize n4_33 with Q (¬P) R.
   intros n4_33b.
   apply propositional_extensionality in n4_33b.
+  symmetry in n4_33b.
   replace (Q ∨ ¬P ∨ R) with 
       ((Q ∨ ¬P) ∨ R) in n4_2a
       by now apply n4_33b.
@@ -1230,12 +1238,14 @@ Proof. intros P Q R.
   specialize n4_33 with (¬P) (¬P∨Q) R.
   intros n4_33c.
   apply propositional_extensionality in n4_33c.
+  symmetry in n4_33c.
   replace (¬P ∨ (¬P ∨ Q) ∨ R) with 
       ((¬P ∨ (¬P ∨ Q)) ∨ R) in n4_2a
       by now apply n4_33c.
   specialize n4_33 with (¬P) (¬P) Q.
   intros n4_33d.
   apply propositional_extensionality in n4_33d.
+  symmetry in n4_33d.
   replace (¬P ∨ ¬P ∨ Q) with 
       ((¬P ∨ ¬P) ∨ Q) in n4_2a
       by now apply n4_33d.
@@ -1386,7 +1396,7 @@ Proof. intros P Q.
   intros Comp3_43a.
   MP Comp3_43a H.
   clear n2_61a. clear Simp2_02a. 
-    clear Simp2_02b. clear Ca.
+  clear Simp2_02b. clear Ca.
   Conj Imp3_31a Comp3_43a Cb.
   Equiv Cb.
   exact Cb.
