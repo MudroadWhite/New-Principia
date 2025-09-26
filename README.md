@@ -3,10 +3,10 @@ continuation on [formalizing Principia Mathematica](https://github.com/LogicalAt
 
 ## Why working on it
 - Principia Mathematica has a stable version
+- Coq doesn't need a lot of version updates
 - Formalizing PM is not getting an IMO gold
 - Formalizing PM doesn't need hard skills so far(?)
 - Formalizing PM feels like climbing a mountain
-- Coq doesn't need a lot of version updates
 
 ## Running the code
 
