@@ -1,5 +1,5 @@
 # New-Principia
-continuation on formalizing Principia Mathematica
+continuation on [formalizing Principia Mathematica](https://github.com/LogicalAtomist/principia)
 TODO: add links to older principia
 
 ## Why working on it
