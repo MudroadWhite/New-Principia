@@ -3,6 +3,7 @@ continuation on [formalizing Principia Mathematica](https://github.com/LogicalAt
 
 ## Why working on it
 - Principia Mathematica has a stable version
+- Formalizing PM is not getting an IMO gold
 - Formalizing PM feels like climbing a mountain
 - Coq doesn't need a lot of version updates
 
