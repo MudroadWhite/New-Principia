@@ -449,9 +449,9 @@ Proof. intros P Q R.
   intros n4_31b.
   apply propositional_extensionality in n4_31b.
   replace (R ∨ P) with (P ∨ R) in n3_47a
-    by now apply n4_31a.
-  replace (R ∨ Q) with (Q ∨ R) in n3_47a
     by now apply n4_31b.
+  replace (R ∨ Q) with (Q ∨ R) in n3_47a
+    by now apply n4_31a.
   exact n3_47a.
 Qed.
 
@@ -470,6 +470,7 @@ Proof. intros P Q R S.
   specialize n4_32 with (P→R) (Q→S) ((R→P) ∧ (S → Q)).
   intros n4_32a.
   apply propositional_extensionality in n4_32a.
+  symmetry in n4_32a.
   replace (((P → R) ∧ (Q → S)) ∧ (R → P) ∧ (S → Q)) with 
       ((P → R) ∧ (Q → S) ∧ (R → P) ∧ (S → Q)) in n3_47c
       by now apply n4_32a.
@@ -494,6 +495,7 @@ Proof. intros P Q R S.
   specialize n4_32 with (R → P) (Q → S) (S → Q).
   intros n4_32c.
   apply propositional_extensionality in n4_32c.
+  symmetry in n4_32c.
   replace (((R → P) ∧ (Q → S)) ∧ (S → Q)) with 
       ((R → P) ∧ (Q → S) ∧ (S → Q)) in n3_47c
       by now apply n4_32c.
@@ -535,6 +537,7 @@ Proof.  intros P Q R S.
   specialize n4_32 with (P → R) (Q → S) (R → P).
   intros n4_32b.
   apply propositional_extensionality in n4_32b.
+  symmetry in n4_32b.
   replace (((P → R) ∧ (Q → S)) ∧ (R → P)) with 
       ((P → R) ∧ (Q → S) ∧ (R → P)) in n3_47a
       by now apply n4_32b.
@@ -545,6 +548,7 @@ Proof.  intros P Q R S.
   Conj  n3_22a n3_22b Cb.
   Equiv Cb.
   apply propositional_extensionality in Cb.
+  symmetry in Cb.
   replace ((Q → S) ∧ (R → P)) with 
       ((R → P) ∧ (Q → S)) in n3_47a
       by now apply Cb.
@@ -559,6 +563,7 @@ Proof.  intros P Q R S.
   specialize n4_32 with (P↔R) (Q→S) (S→Q).
   intros n4_32d.
   apply propositional_extensionality in n4_32d.
+  symmetry in n4_32d.
   replace (((P ↔ R) ∧ (Q → S)) ∧ (S → Q)) with 
       ((P ↔ R) ∧ (Q → S) ∧ (S → Q)) in n3_47a
       by now apply n4_32d.
@@ -568,7 +573,7 @@ Proof.  intros P Q R S.
 Qed.
 
 Theorem n4_4 : ∀ P Q R : Prop,
-  (P ∧ (Q ∨ R)) ↔ ((P∧ Q) ∨ (P ∧ R)).
+  (P ∧ (Q ∨ R)) ↔ ((P ∧ Q) ∨ (P ∧ R)).
 Proof. intros P Q R.
   specialize n3_2 with P Q.
   intros n3_2a.
