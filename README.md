@@ -15,6 +15,7 @@ Coq version: 8.20.0, installed with the `opam` environment:
 opam update
 opam pin coq add 8.20.0
 ```
+Running the project:
 
 ```bash
 coq_makefile -f _CoqProject -o CoqMakefile
