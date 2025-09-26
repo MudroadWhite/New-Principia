@@ -6,5 +6,14 @@ TODO
 
 ## Running the code
 
-- Coq version and environment setup: TODO
-- Running script: TODO
+Coq version: 8.20.0, installed with the `opam` environment:
+
+```bash
+opam update
+opam pin coq add 8.20.0
+```
+
+```bash
+coq_makefile -f _CoqProject -o CoqMakefile
+make -f CoqMakefile
+```
