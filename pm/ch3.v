@@ -2,11 +2,6 @@ Require Import PM.pm.lib.
 Require Import PM.pm.ch1.
 Require Import PM.pm.ch2.
 
-Import Unicode.Utf8.
-Import Classical_Prop.
-Import ClassicalFacts.
-Import PropExtensionality.
-
 Theorem Prod3_01 : ∀ P Q : Prop, 
   (P ∧ Q) = (¬(¬P ∨ ¬Q)).
 Proof. intros P Q. 
