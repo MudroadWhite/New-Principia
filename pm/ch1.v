@@ -1,10 +1,5 @@
 Require Import PM.pm.lib.
 
-Import Unicode.Utf8.
-Import Classical_Prop.
-Import ClassicalFacts.
-Import PropExtensionality.
-
 (* We first give the axioms of Principia in *1. *)
 
 Theorem Impl1_01 : ∀ P Q : Prop, (P → Q) = (¬P ∨ Q). 

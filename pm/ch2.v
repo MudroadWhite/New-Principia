@@ -1,11 +1,6 @@
 Require Import PM.pm.lib.
 Require Import PM.pm.ch1.
 
-Import Unicode.Utf8.
-Import Classical_Prop.
-Import ClassicalFacts.
-Import PropExtensionality.
-
 (*We proceed to the deductions of of Principia.*)
 
 Theorem Abs2_01 : ∀ P : Prop,

@@ -1,3 +1,9 @@
+Require Import PM.pm.lib.
+Require Import PM.pm.ch1.
+Require Import PM.pm.ch2.
+Require Import PM.pm.ch3.
+Require Import PM.pm.ch4.
+
 Theorem n5_1 : ∀ P Q : Prop,
   (P ∧ Q) → (P ↔ Q).
   Proof. intros P Q.

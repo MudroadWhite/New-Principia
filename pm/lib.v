@@ -3,7 +3,12 @@ Require Import ClassicalFacts.
 Require Import Classical_Prop.
 Require Import PropExtensionality.
 
-From Ltac2 Require Import Ltac2 Printf.
+Export Unicode.Utf8.
+Export Classical_Prop.
+Export ClassicalFacts.
+Export PropExtensionality.
+
+(* From Ltac2 Require Import Ltac2 Printf. *)
 
 (* 
 ¬(P ∨ Q) → ¬P.

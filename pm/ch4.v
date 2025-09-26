@@ -3,11 +3,6 @@ Require Import PM.pm.ch1.
 Require Import PM.pm.ch2.
 Require Import PM.pm.ch3.
 
-Import Unicode.Utf8.
-Import Classical_Prop.
-Import ClassicalFacts.
-Import PropExtensionality.
-
 Theorem Equiv4_01 : ∀ P Q : Prop, 
   (P ↔ Q) = ((P → Q) ∧ (Q → P)). 
 Proof. intros. reflexivity. Qed.
