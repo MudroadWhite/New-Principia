@@ -1047,7 +1047,6 @@ Proof.
     pose (n9_06 (¬(Phi z1 → Psi z1)) f_S4) as n9_06.
     (* Peel down a level of `exists` *)
     destruct S4_i3 as [y1 S4_i4].
-    (* TODO: try fun (P : Prop → Prop) => exists y, P y in the future *)
     pose (f_equal (fun (P : Prop → Prop) => P y1) eqf_S4) as eqf_S4_y1.
     rewrite <- eqf_S4_y1 in S4_i4.
     (* ...And wrap it back *)

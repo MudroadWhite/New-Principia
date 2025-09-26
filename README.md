@@ -1,8 +1,11 @@
 # New-Principia
 continuation on formalizing Principia Mathematica
+TODO: add links to older principia
 
 ## Why working on it
-TODO
+- Principia Mathematica has a stable version
+- Formalizing PM feels like climbing a mountain
+- Coq doesn't need a lot of version updates
 
 ## Running the code
 
