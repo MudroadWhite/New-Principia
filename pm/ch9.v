@@ -113,15 +113,16 @@ Proof.
   (** S4 **)
   assert (S4 : ∀ z : Prop, ∃ x y : Prop, (Phi x → Psi x) → Phi y → Psi z).
   {
-    (* Unsatisfying. Not total forward reasoning. Still the only way works
-      Maybe we can further assert the intermediate steps to produce better result
+    (* 
+    Here the proof is very unsatisfying. Usually we should define the function 
+    over all the `exists`, but instead we peel them off to define a function 
+    without the `exists`. I don't think this is the right way to proceed on, but
+    it's current the only way working
     *)
     intro z0.
-    (* For each of the `∃` proposition, it just seems to be easier to firstly
-    peel them off *)
+    (* Peeling the `∃` propositions *)
     destruct S3 as [x S3_1]. exists x.
     destruct S3_1 as [y S3_2]. exists y.
-    (* Is it really the right way to define the function? *)
     set (f_S3 := fun x0 => (Phi x → Psi x) → Phi y → Psi x0).
     pose (n9_13 Z f_S3) as n9_13.
     exact (n9_13 S3_2 z0).
@@ -241,11 +242,13 @@ Proof.
   assert (S4 : forall y, exists x, exists z, (Phi x -> Psi x) -> (Phi y -> Psi z)).
   {
     intro y0.
-    remember (fun y => exists x, exists z, (Phi x -> Psi x) -> (Phi y -> Psi z))
-      as f_S3 eqn:eqf_S3.
-    pose (f_S3 y0) as S3_y0.
+    set (f_S3 := (fun y => (exists x, exists z, 
+      (Phi x -> Psi x) -> (Phi y -> Psi z)))).
+    (* remember (fun y => exists x, exists z, (Phi x -> Psi x) -> (Phi y -> Psi z))
+      as f_S3 eqn:eqf_S3. *)
     pose (n9_13 y0 f_S3) as n9_13.
     rewrite -> eqf_S3 in n9_13.
+    Print n9_13.
     pose (n9_13 S3) as H.
     Print n9_13. 
   
