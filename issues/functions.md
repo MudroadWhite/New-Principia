@@ -4,7 +4,7 @@ Typically in type system, or when we design a programming language syntax theore
 1. When to introduce a function?
 2. How to compute/eliminate a function?
 
-Started from chapter 9, Principia doesn't have it defined how function works formally. It doesn't have axioms for introduction rule or elimination rule for functions, It looks like just a simple substitution tool after all, so what can go wrong?
+Started from chapter 9, Principia doesn't have it defined how function works formally. It doesn't have axioms for introduction rule or elimination rule for functions. Function looks like just a simple substitution tool after all, so what can go wrong?
 
 Since I haven't figured out a unified way to do, here are some different methods that the proofs use to make the functions working.
 
