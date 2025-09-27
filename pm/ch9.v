@@ -132,7 +132,7 @@ Proof.
     assert (S4_i1 : ∀ z : Prop, ∃ x y : Prop, 
       ¬(Phi x → Psi x) ∨ (Phi y → Psi z)).
     {
-      (* Peeling the propositions *)
+      (* Peeling the proposition *)
       intro z0. pose (S4 z0) as S4_1. 
       destruct S4_1 as [z1 S4_2]. exists z1.
       destruct S4_2 as [z2 S4_3]. exists z2.
@@ -143,16 +143,13 @@ Proof.
     remember (fun y0 => Phi y0 → Psi z0) as f_S4 eqn:eqf_S4.
     destruct S4_i2 as [z1 S4_i3]. exists z1.
     pose (n9_06 (¬(Phi z1 → Psi z1)) f_S4) as n9_06.
-    (* Peel down a level of `∃` *)
-    destruct S4_i3 as [y1 S4_i4].
-    (* TODO: try fun (P : Prop → Prop) => ∃ y, P y in the future *)
-    pose (f_equal (fun (P : Prop → Prop) => P y1) eqf_S4) as eqf_S4_y1.
-    rewrite <- eqf_S4_y1 in S4_i4.
-    (* ...And wrap it back *)
-    pose (ex_intro (fun y => ¬ (Phi z1 → Psi z1) ∨ f_S4 y) y1 S4_i4) as S4_i5.
-    rewrite <- n9_06 in S4_i5.
-    rewrite -> eqf_S4 in S4_i5.
-    pose (n2_53 (¬ (Phi z1 → Psi z1)) (∃ x : Prop, Phi x → Psi z0) S4_i5) as n2_53.
+    (* Here we use `f_equal` to avoid another peeling down *)
+    pose (f_equal (fun (P : Prop → Prop) => 
+      (exists y1, ¬ (Phi z1 → Psi z1) ∨ (P y1))) eqf_S4) as eqf_S4_y1.
+    rewrite <- eqf_S4_y1 in S4_i3.
+    rewrite <- n9_06 in S4_i3.
+    rewrite -> eqf_S4 in S4_i3.
+    pose (n2_53 (¬ (Phi z1 → Psi z1)) (∃ x : Prop, Phi x → Psi z0) S4_i3) as n2_53.
     pose (n2_12 (Phi z1 → Psi z1)) as n2_12.
     rewrite -> eqf_S4.
     exact (fun y1 => n2_53 (n2_12 y1)).
@@ -215,25 +212,25 @@ Proof.
   exact S8.
 Qed.
 
-Theorem n9_22 (y : Prop) (Phi Psi : Prop -> Prop) :
+Theorem n9_22 (Y : Prop) (Phi Psi : Prop -> Prop) :
   (∀ x, Phi x -> Psi x) -> (∃ x, Phi x) -> (∃ x, Psi x).
 Proof. 
-  assert (S1 : (Phi y -> Psi y) -> (Phi y -> Psi y)).
-  { exact (Id2_08 (Phi y -> Psi y)). }
-  assert (S2 : exists z, (Phi y -> Psi y) -> (Phi y -> Psi z)).
+  assert (S1 : (Phi Y -> Psi Y) -> (Phi Y -> Psi Y)).
+  { exact (Id2_08 (Phi Y -> Psi Y)). }
+  assert (S2 : exists z, (Phi Y -> Psi Y) -> (Phi Y -> Psi z)).
   { 
-    remember (fun z => (Phi y -> Psi y) -> (Phi y -> Psi z))
+    remember (fun z => (Phi Y -> Psi Y) -> (Phi Y -> Psi z))
       as f_S1 eqn:eqf_S1.
-    pose (n9_1 f_S1 y) as n9_1.
+    pose (n9_1 f_S1 Y) as n9_1.
     rewrite -> eqf_S1 in n9_1.
     rewrite -> eqf_S1.
     exact (n9_1 S1).
   }
-  assert (S3 : exists x, exists z, (Phi x -> Psi x) -> (Phi y -> Psi z)).
+  assert (S3 : exists x, exists z, (Phi x -> Psi x) -> (Phi Y -> Psi z)).
   { 
-    remember (fun x => exists z, (Phi x -> Psi x) -> (Phi y -> Psi z))
+    remember (fun x => exists z, (Phi x -> Psi x) -> (Phi Y -> Psi z))
       as f_S2 eqn:eqf_S2.
-    pose (n9_1 f_S2 y) as n9_1.
+    pose (n9_1 f_S2 Y) as n9_1.
     rewrite -> eqf_S2 in n9_1.
     rewrite -> eqf_S2.
     exact (n9_1 S2).
@@ -242,19 +239,58 @@ Proof.
   {
     set (f_S3 := (fun y => (exists x, exists z, 
       (Phi x -> Psi x) -> (Phi y -> Psi z)))).
-    change ((exists x, exists z, (Phi x -> Psi x) -> (Phi y -> Psi z)))
-      with (f_S3 y) in S3.
+    change ((exists x, exists z, (Phi x -> Psi x) -> (Phi Y -> Psi z)))
+      with (f_S3 Y) in S3.
     change (∀ y0 : Prop, ∃ x z : Prop, (Phi x → Psi x) → Phi y0 → Psi z)
       with (∀ y0 : Prop, f_S3 y0).
-    exact (n9_13 y f_S3 S3).
+    exact (n9_13 Y f_S3 S3).
   }
   assert (S5 : forall y, exists x, (Phi x -> Psi x) -> (exists z, (Phi y -> Psi z))).
   { 
-    set (f_S4 := (fun x => (exists z : Prop,
-      (Phi x → Psi x) → Phi y → Psi z))).
-    (* Print existT. *)
-    change (exists z : Prop, (Phi x → Psi x) → Phi y → Psi z)
-      with (f_S4 z) in S4.
+  (* S4': exists z ,(Phi x → Psi x) → Phi y → Psi z *)
+  (* S5': (Phi x -> Psi x) -> (exists z, (Phi y -> Psi z)) *)
+  (* n9_06:
+    ∀ (p : Prop) (Phi : Prop → Prop),
+      (p ∨ ∃ x : Prop, Phi x) = ∃ x : Prop, p ∨ Phi x
+  *)
+    assert (S4_i1 : forall y, exists x, exists z, 
+      ~ (Phi x -> Psi x) \/ (Phi y -> Psi z)).
+    {
+    (* When the proposition involves an equation, peeling the proposition seems to
+    be inevitable
+    Otherwise, we're supposed to lift the proposition `P` into a proposition of
+    `forall x, exists y, ..., P x y ` *)
+      intro y0.
+      pose (S4 y0) as S4_1.
+      destruct S4_1 as [x S4_2]. exists x.
+      destruct S4_2 as [z S4_3]. exists z.
+      rewrite -> Impl1_01 in S4_3.
+      exact S4_3.
+    }
+    (* 
+    remember (fun y x => (exists z : Prop,
+      ~ (Phi x -> Psi x) → (Phi y -> Psi z))) as f_S4 eqn:eqf_S4.
+    *)
+    intro y0. pose (S4_i1 y0) as S4_i2.
+    remember (fun x z => ¬ (Phi x → Psi x) ∨ (Phi y0 → Psi z)) as f_S4
+      eqn:eqf_S4.
+    pose (f_equal (fun (P : Prop -> Prop -> Prop) => P y0) eqf_S4) as eqf_S4_y0.
+    simpl in eqf_S4_y0.
+    set (f_S4 := (fun y x => (exists z : Prop,
+      ~ (Phi x -> Psi x) → (Phi y -> Psi z)))).
+    
+
+    (* TODO: use f_equal  *)
+    change (∀ y : Prop, ∃ x z : Prop,
+      ¬ (Phi x → Psi x) ∨ (Phi y → Psi z))
+    with
+      (∀ y : Prop, ∃ x z : Prop, f_S4 y x) in S4_i1.
+    Print n9_06.
+
+
+    change (forall y : Prop, exists (x z : Prop), (Phi x → Psi x) → Phi y → Psi z)
+      with (forall y : Prop, exists x, f_S4 y x) in S4.
+    
     pose (n9_06 z f_S4) as n9_06.
   admit. 
   }
