@@ -82,6 +82,16 @@ Theorem n9_2 (y : Prop) : ∀ (Phi : Prop → Prop), (∀ x : Prop, Phi x) → P
   apply H.
 Qed.
 
+Goal forall y, forall (P Q : Prop -> Prop), (exists x, P x -> Q y) -> (exists x, ~ P x \/ Q y).
+Proof.
+  intros y P Q H.
+  pose Impl1_01 as Impl1_01.
+  set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
+    as Impl1_01a.
+  setoid_rewrite Impl1_01a in H.
+  assumption.
+Qed.
+
 (* NOTE: `z` here seems to be something needed to consider in the future: there's a 
 difference between `z` and `∀ z, z`. We will have to check how to express this
 according to the original article
@@ -135,6 +145,7 @@ Proof.
       intro z0. pose (S4 z0) as S4_1.
       destruct S4_1 as [z1 S4_2]. exists z1.
       destruct S4_2 as [z2 S4_3]. exists z2.
+      (* TODO: investigate setoid_rewrite *)
       rewrite -> Impl1_01 in S4_3.
       exact S4_3.
     }
