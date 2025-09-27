@@ -30,11 +30,11 @@ Definition n9_06 (p : Prop) (Phi : Prop → Prop) :
   (p ∨ (∃ x : Prop, Phi x)) = ∃ x : Prop, p ∨ Phi x. Admitted.
 
 Definition n9_07 : ∀ (Phi Psi : Prop → Prop),
-  (∀ x : Prop, Phi x) \/ (∃ y : Prop, Psi y)
-  = ∀ x : Prop, ∃ y : Prop, Phi x \/ Psi y. Admitted.
+  (∀ x : Prop, Phi x) ∨ (∃ y : Prop, Psi y)
+  = ∀ x : Prop, ∃ y : Prop, Phi x ∨ Psi y. Admitted.
 
 Definition n9_08 (Phi Psi : Prop → Prop) :
-  ((∃ y, Psi y) \/ (∀ x, Phi x)) = ∀ x, ∃ y, Psi y \/ Phi x. Admitted.
+  ((∃ y, Psi y) ∨ (∀ x, Phi x)) = ∀ x, ∃ y, Psi y ∨ Phi x. Admitted.
 
 Definition n9_1 (Phi : Prop → Prop) (x : Prop) : 
   (Phi x → ∃ z : Prop, Phi z). Admitted.
@@ -69,7 +69,7 @@ Theorem n9_2 (y : Prop) : ∀ (Phi : Prop → Prop), (∀ x : Prop, Phi x) → P
   (** Step 1 **)
   specialize n2_1 with (Phi y). intros n2_1a.
   (** Step 2 **)
-  specialize n9_1 with (fun x : Prop => ~ Phi x \/ Phi y) y. intros n9_1a.
+  specialize n9_1 with (fun x : Prop => ~ Phi x ∨ Phi y) y. intros n9_1a.
   simpl in n9_1a.
   MP n2_1a n9_1a.
   (** Step 3 **)
@@ -121,12 +121,8 @@ Proof.
     peel them off *)
     destruct S3 as [x S3_1]. exists x.
     destruct S3_1 as [y S3_2]. exists y.
-    rewrite -> Impl1_01. rewrite -> Impl1_01 in S3_2.
-    (* Coq reports "not covertible" for the following equivalent: *)
-    (* remember (fun x' => (¬ (Phi x → Psi x)) ∨ (Phi y → Psi x')) as f_S3 eqn:eq_fS_3. *)
-    (* We might use `rewrite`plus function equality for this case *)
-    set (f_S3 := fun x' => (¬ (Phi x → Psi x)) ∨ (Phi y → Psi x')).
-    change (¬ (Phi x → Psi x) ∨ (Phi y → Psi z0)) with (f_S3 z0).
+    (* Is it really the right way to define the function? *)
+    set (f_S3 := fun x0 => (Phi x → Psi x) → Phi y → Psi x0).
     pose (n9_13 Z f_S3) as n9_13.
     exact (n9_13 S3_2 z0).
   }
@@ -135,7 +131,7 @@ Proof.
     (Phi x → Psi x) → (∃ y : Prop, Phi y → Psi z))).
   {
     assert (S4_i1 : ∀ z : Prop, ∃ x y : Prop, 
-      ¬(Phi x → Psi x) \/ (Phi y → Psi z)).
+      ¬(Phi x → Psi x) ∨ (Phi y → Psi z)).
     {
       intro z0. pose (S4 z0) as S4_1. 
       destruct S4_1 as [z1 S4_2]. exists z1.
@@ -164,7 +160,7 @@ Proof.
   assert (S6 : ((∃ x, ¬(Phi x → Psi x)) ∨ (∀ y, ∃ z, (¬ Phi z) ∨ Psi y))).
   {
     assert (S5_1 : ∀ z0 : Prop, ∃ x0 : Prop, 
-      (~ (Phi x0 → Psi x0) \/ (∃ y0 : Prop, (¬ Phi y0) ∨ Psi z0))
+      (~ (Phi x0 → Psi x0) ∨ (∃ y0 : Prop, (¬ Phi y0) ∨ Psi z0))
     ). 
     {
       intro z0. pose (S5 z0) as S5_i1.
@@ -223,19 +219,43 @@ Theorem n9_22 (y : Prop) (Phi Psi : Prop -> Prop) :
   (∀ x, Phi x -> Psi x) -> (∃ x, Phi x) -> (∃ x, Psi x).
 Proof. 
   assert (S1 : (Phi y -> Psi y) -> (Phi y -> Psi y)).
-  { admit. }
+  { exact (Id2_08 (Phi y -> Psi y)). }
   assert (S2 : exists z, (Phi y -> Psi y) -> (Phi y -> Psi z)).
-  { admit. }
+  { 
+    remember (fun z => (Phi y -> Psi y) -> (Phi y -> Psi z))
+      as f_S1 eqn:eqf_S1.
+    pose (n9_1 f_S1 y) as n9_1.
+    rewrite -> eqf_S1 in n9_1.
+    rewrite -> eqf_S1.
+    exact (n9_1 S1).
+  }
   assert (S3 : exists x, exists z, (Phi x -> Psi x) -> (Phi y -> Psi z)).
-  { admit. }
+  { 
+    remember (fun x => exists z, (Phi x -> Psi x) -> (Phi y -> Psi z))
+      as f_S2 eqn:eqf_S2.
+    pose (n9_1 f_S2 y) as n9_1.
+    rewrite -> eqf_S2 in n9_1.
+    rewrite -> eqf_S2.
+    exact (n9_1 S2).
+  }
   assert (S4 : forall y, exists x, exists z, (Phi x -> Psi x) -> (Phi y -> Psi z)).
-  { admit. }
+  {
+    intro y0.
+    remember (fun y => exists x, exists z, (Phi x -> Psi x) -> (Phi y -> Psi z))
+      as f_S3 eqn:eqf_S3.
+    pose (f_S3 y0) as S3_y0.
+    pose (n9_13 y0 f_S3) as n9_13.
+    rewrite -> eqf_S3 in n9_13.
+    pose (n9_13 S3) as H.
+    Print n9_13. 
+  
+  }
   assert (S5 : forall y, exists x, (Phi x -> Psi x) -> (exists z, (Phi y -> Psi z))).
   { admit. }
-  assert (S6 : (exists x, ~ (Phi x -> Psi x)) \/ forall y, (exists z, (Phi y -> Psi z))).
+  assert (S6 : (exists x, ~ (Phi x -> Psi x)) ∨ forall y, (exists z, (Phi y -> Psi z))).
   { admit. }
-  assert (S7 : (exists x, ~ (Phi x -> Psi x)) \/ 
-    forall y, ~ (Phi y) \/ exists z, Psi z).
+  assert (S7 : (exists x, ~ (Phi x -> Psi x)) ∨ 
+    forall y, ~ (Phi y) ∨ exists z, Psi z).
   { admit. }
   assert (S8 : (∀ x, Phi x -> Psi x) -> (∃ x, Phi x) -> (∃ x, Psi x)).
   { admit. }
@@ -249,87 +269,87 @@ Proof. Admitted.
 Theorem n9_24 : ∀ (Phi : Prop -> Prop), (∃ x : Prop, Phi x) -> (∃ x : Prop, Phi x).
 Proof. Admitted.
 
-Theorem n9_25 : ∀ (Phi : Prop -> Prop) (P : Prop), (∀ x : Prop, P \/ Phi x) -> P \/ (∀ x : Prop, Phi x).
+Theorem n9_25 : ∀ (Phi : Prop -> Prop) (P : Prop), (∀ x : Prop, P ∨ Phi x) -> P ∨ (∀ x : Prop, Phi x).
 Proof. Admitted.
 
-Theorem n9_3 : ∀ (Phi : Prop -> Prop), (∀ x : Prop, Phi x) \/ (∀ x : Prop, Phi x) -> (∀ x : Prop, Phi x).
+Theorem n9_3 : ∀ (Phi : Prop -> Prop), (∀ x : Prop, Phi x) ∨ (∀ x : Prop, Phi x) -> (∀ x : Prop, Phi x).
 Proof. Admitted.
 
-Theorem n9_31 : ∀ (Phi : Prop -> Prop), (∃ x : Prop, Phi x) \/ (∃ x : Prop, Phi x) -> (∃ x : Prop, Phi x).
+Theorem n9_31 : ∀ (Phi : Prop -> Prop), (∃ x : Prop, Phi x) ∨ (∃ x : Prop, Phi x) -> (∃ x : Prop, Phi x).
 Proof. Admitted.
 
-Theorem n9_32 : ∀ (Phi : Prop -> Prop) (Q : Prop), Q -> (∀ x : Prop, Phi x) \/ Q.
+Theorem n9_32 : ∀ (Phi : Prop -> Prop) (Q : Prop), Q -> (∀ x : Prop, Phi x) ∨ Q.
 Proof. Admitted.
 
-Theorem n9_33 : ∀ (Phi : Prop -> Prop) (Q : Prop), Q -> (∃ x : Prop, Phi x) \/ Q.
+Theorem n9_33 : ∀ (Phi : Prop -> Prop) (Q : Prop), Q -> (∃ x : Prop, Phi x) ∨ Q.
 Proof. Admitted.
 
-Theorem n9_34 : ∀ (Phi : Prop -> Prop) (P : Prop), (∀ x : Prop, Phi x) -> P \/ (∀ x : Prop, Phi x).
+Theorem n9_34 : ∀ (Phi : Prop -> Prop) (P : Prop), (∀ x : Prop, Phi x) -> P ∨ (∀ x : Prop, Phi x).
 Proof. Admitted.
 
-Theorem n9_35 : ∀ (Phi : Prop -> Prop) (P : Prop), (∃ x : Prop, Phi x) -> P \/ (∃ x : Prop, Phi x).
+Theorem n9_35 : ∀ (Phi : Prop -> Prop) (P : Prop), (∃ x : Prop, Phi x) -> P ∨ (∃ x : Prop, Phi x).
 Proof. Admitted.
 
-Theorem n9_36 : ∀ (Phi : Prop -> Prop) (P : Prop), P \/ (∀ x : Prop, Phi x) -> (∀ x : Prop, Phi x) \/ P.
+Theorem n9_36 : ∀ (Phi : Prop -> Prop) (P : Prop), P ∨ (∀ x : Prop, Phi x) -> (∀ x : Prop, Phi x) ∨ P.
 Proof. Admitted.
 
-Theorem n9_361 : ∀ (Phi : Prop -> Prop) (P : Prop), (∀ x : Prop, Phi x) \/ P -> P \/ (∀ x : Prop, Phi x).
+Theorem n9_361 : ∀ (Phi : Prop -> Prop) (P : Prop), (∀ x : Prop, Phi x) ∨ P -> P ∨ (∀ x : Prop, Phi x).
 Proof. Admitted.
 
-Theorem n9_37 : ∀ (Phi : Prop -> Prop) (P : Prop), P \/ (∃ x : Prop, Phi x) -> (∃ x : Prop, Phi x) \/ P.
+Theorem n9_37 : ∀ (Phi : Prop -> Prop) (P : Prop), P ∨ (∃ x : Prop, Phi x) -> (∃ x : Prop, Phi x) ∨ P.
 Proof. Admitted.
 
-Theorem n9_371 : ∀ (Phi : Prop -> Prop) (P : Prop), (∃ x : Prop, Phi x) \/ P -> P \/ (∃ x : Prop, Phi x).
+Theorem n9_371 : ∀ (Phi : Prop -> Prop) (P : Prop), (∃ x : Prop, Phi x) ∨ P -> P ∨ (∃ x : Prop, Phi x).
 Proof. Admitted.
 
-Theorem n9_4 : ∀ (Phi : Prop -> Prop) (P Q : Prop), P \/ Q \/ (∀ x : Prop, Phi x)
-  -> Q \/ P \/ (∀ x : Prop, Phi x).
+Theorem n9_4 : ∀ (Phi : Prop -> Prop) (P Q : Prop), P ∨ Q ∨ (∀ x : Prop, Phi x)
+  -> Q ∨ P ∨ (∀ x : Prop, Phi x).
 Proof. Admitted.
 
-Theorem n9_401 : ∀ (Phi : Prop -> Prop) (P Q : Prop), P \/ Q \/ (∃ x : Prop, Phi x)
-  -> Q \/ P \/ (∃ x : Prop, Phi x).
+Theorem n9_401 : ∀ (Phi : Prop -> Prop) (P Q : Prop), P ∨ Q ∨ (∃ x : Prop, Phi x)
+  -> Q ∨ P ∨ (∃ x : Prop, Phi x).
 Proof. Admitted.
 
-Theorem n9_41 : ∀ (Phi : Prop -> Prop) (P R : Prop), P \/ (∀ x : Prop, Phi x) \/ R
-  -> (∀ x : Prop, Phi x) \/ P \/ R.
+Theorem n9_41 : ∀ (Phi : Prop -> Prop) (P R : Prop), P ∨ (∀ x : Prop, Phi x) ∨ R
+  -> (∀ x : Prop, Phi x) ∨ P ∨ R.
 Proof. Admitted.
 
-Theorem n9_411 : ∀ (Phi : Prop -> Prop) (P R : Prop), P \/ (∃ x : Prop, Phi x) \/ R
-  -> (∃ x : Prop, Phi x) \/ P \/ R.
+Theorem n9_411 : ∀ (Phi : Prop -> Prop) (P R : Prop), P ∨ (∃ x : Prop, Phi x) ∨ R
+  -> (∃ x : Prop, Phi x) ∨ P ∨ R.
 Proof. Admitted.
 
-Theorem n9_42 : ∀ (Phi : Prop -> Prop) (Q R : Prop), (∀ x : Prop, Phi x) \/ Q \/ R
-  -> Q \/ (∀ x : Prop, Phi x) \/ R.
+Theorem n9_42 : ∀ (Phi : Prop -> Prop) (Q R : Prop), (∀ x : Prop, Phi x) ∨ Q ∨ R
+  -> Q ∨ (∀ x : Prop, Phi x) ∨ R.
 Proof. Admitted.
 
-Theorem n9_421 : ∀ (Phi : Prop -> Prop) (Q R : Prop), (∃ x : Prop, Phi x) \/ Q \/ R
-  -> Q \/ (∃ x : Prop, Phi x) \/ R.
+Theorem n9_421 : ∀ (Phi : Prop -> Prop) (Q R : Prop), (∃ x : Prop, Phi x) ∨ Q ∨ R
+  -> Q ∨ (∃ x : Prop, Phi x) ∨ R.
 Proof. Admitted.
 
 (* TODO: Accuracy in understanding? *)
 Theorem n9_5 : ∀ (Phi : Prop -> Prop) (P Q : Prop), (P -> Q) 
-  -> (P \/ ∀ x : Prop, Phi x) -> (Q \/ ∀ x : Prop, Phi x).
+  -> (P ∨ ∀ x : Prop, Phi x) -> (Q ∨ ∀ x : Prop, Phi x).
 Proof. Admitted.
 
 Theorem n9_501 : ∀ (Phi : Prop -> Prop) (P Q : Prop), (P -> Q) 
-  -> (P \/ ∃ x : Prop, Phi x) -> (Q \/ ∃ x : Prop, Phi x).
+  -> (P ∨ ∃ x : Prop, Phi x) -> (Q ∨ ∃ x : Prop, Phi x).
 Proof. Admitted.
 
 Theorem n9_51 : ∀ (Phi : Prop -> Prop) (P R : Prop), 
-  (P -> ∀ x : Prop, Phi x) -> P \/ R -> (∀ x : Prop, Phi x) \/ R.
+  (P -> ∀ x : Prop, Phi x) -> P ∨ R -> (∀ x : Prop, Phi x) ∨ R.
 Proof. Admitted.
 
 Theorem n_9_511 : ∀ (Phi : Prop -> Prop) (P R : Prop), 
-  (P -> ∃ x : Prop, Phi x) -> P \/ R -> (∃ x : Prop, Phi x) \/ R.
+  (P -> ∃ x : Prop, Phi x) -> P ∨ R -> (∃ x : Prop, Phi x) ∨ R.
 Proof. Admitted.
 
 (* TODO: Accuracy in understanding? *)
 Theorem n_9_52 : ∀ (Phi : Prop -> Prop) (Q R : Prop), 
-  ((∀ x : Prop, Phi x) -> Q) -> (∀ x : Prop, Phi x) \/ R -> Q \/ R.
+  ((∀ x : Prop, Phi x) -> Q) -> (∀ x : Prop, Phi x) ∨ R -> Q ∨ R.
 Proof. Admitted.
 
 Theorem n_9_521 : ∀ (Phi : Prop -> Prop) (Q R : Prop), 
-  ((∃ x : Prop, Phi x) -> Q) -> (∃ x : Prop, Phi x) \/ R -> Q \/ R.
+  ((∃ x : Prop, Phi x) -> Q) -> (∃ x : Prop, Phi x) ∨ R -> Q ∨ R.
 Proof. Admitted.
 
 (* Thm 9.6, 9.61 - 9.63: pure text propositions *)
