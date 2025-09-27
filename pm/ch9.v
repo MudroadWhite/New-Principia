@@ -133,7 +133,7 @@ Proof.
       ¬(Phi x → Psi x) ∨ (Phi y → Psi z)).
     {
       (* Peeling the proposition *)
-      intro z0. pose (S4 z0) as S4_1. 
+      intro z0. pose (S4 z0) as S4_1.
       destruct S4_1 as [z1 S4_2]. exists z1.
       destruct S4_2 as [z2 S4_3]. exists z2.
       pose (n2_54 (¬ (Phi z1 → Psi z1)) (Phi z2 → Psi z0)) as n2_54.
@@ -141,13 +141,13 @@ Proof.
     }
     intro z0. pose (S4_i1 z0) as S4_i2.
     remember (fun y0 => Phi y0 → Psi z0) as f_S4 eqn:eqf_S4.
-    destruct S4_i2 as [z1 S4_i3]. exists z1.
+    (* destruct S4_i2 as [z1 S4_i3]. exists z1.
     pose (n9_06 (¬(Phi z1 → Psi z1)) f_S4) as n9_06.
     (* Here we use `f_equal` to avoid another peeling down *)
     pose (f_equal (fun (P : Prop → Prop) => 
       (exists y1, ¬ (Phi z1 → Psi z1) ∨ (P y1))) eqf_S4) as eqf_S4_y1.
     rewrite <- eqf_S4_y1 in S4_i3.
-    rewrite <- n9_06 in S4_i3.
+    rewrite <- n9_06 in S4_i3. *)
     rewrite -> eqf_S4 in S4_i3.
     pose (n2_53 (¬ (Phi z1 → Psi z1)) (∃ x : Prop, Phi x → Psi z0) S4_i3) as n2_53.
     pose (n2_12 (Phi z1 → Psi z1)) as n2_12.
