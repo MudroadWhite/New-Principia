@@ -113,27 +113,26 @@ Proof.
   (** S4 **)
   assert (S4 : ∀ z : Prop, ∃ x y : Prop, (Phi x → Psi x) → Phi y → Psi z).
   {
-    (* 
-    Here the proof is very unsatisfying. Usually we should define the function 
-    over all the `exists`, but instead we peel them off to define a function 
-    without the `exists`. I don't think this is the right way to proceed on, but
-    it's current the only way working
-    *)
-    intro z0.
-    (* Peeling the `∃` propositions *)
-    destruct S3 as [x S3_1]. exists x.
-    destruct S3_1 as [y S3_2]. exists y.
-    set (f_S3 := fun x0 => (Phi x → Psi x) → Phi y → Psi x0).
-    pose (n9_13 Z f_S3) as n9_13.
-    exact (n9_13 S3_2 z0).
+    set (f_S3 := fun z => (∃ x y : Prop, (Phi x → Psi x) → Phi y → Psi z)).
+    change (∃ x y : Prop, (Phi x → Psi x) → Phi y → Psi Z) with (f_S3 Z) in
+      S3.
+      change (∃ x y : Prop, (Phi x → Psi x) → Phi y → Psi Z) with (f_S3 z).
+    exact (n9_13 Z f_S3 S3).
   }
   (** S5 **)
   assert (S5 : ∀ z : Prop, (∃ x : Prop, 
     (Phi x → Psi x) → (∃ y : Prop, Phi y → Psi z))).
   {
+    (* 
+    From here on the proof becomes very unsatisfying. Usually we should define the 
+    function over all the `exists`, but instead we peel them off to define a function 
+    without the `exists`. I don't think this is the right way to proceed on, but
+    it's current the only way working
+    *)
     assert (S4_i1 : ∀ z : Prop, ∃ x y : Prop, 
       ¬(Phi x → Psi x) ∨ (Phi y → Psi z)).
     {
+      (* Peeling the propositions *)
       intro z0. pose (S4 z0) as S4_1. 
       destruct S4_1 as [z1 S4_2]. exists z1.
       destruct S4_2 as [z2 S4_3]. exists z2.
@@ -241,20 +240,24 @@ Proof.
   }
   assert (S4 : forall y, exists x, exists z, (Phi x -> Psi x) -> (Phi y -> Psi z)).
   {
-    intro y0.
     set (f_S3 := (fun y => (exists x, exists z, 
       (Phi x -> Psi x) -> (Phi y -> Psi z)))).
-    (* remember (fun y => exists x, exists z, (Phi x -> Psi x) -> (Phi y -> Psi z))
-      as f_S3 eqn:eqf_S3. *)
-    pose (n9_13 y0 f_S3) as n9_13.
-    rewrite -> eqf_S3 in n9_13.
-    Print n9_13.
-    pose (n9_13 S3) as H.
-    Print n9_13. 
-  
+    change ((exists x, exists z, (Phi x -> Psi x) -> (Phi y -> Psi z)))
+      with (f_S3 y) in S3.
+    change (∀ y0 : Prop, ∃ x z : Prop, (Phi x → Psi x) → Phi y0 → Psi z)
+      with (∀ y0 : Prop, f_S3 y0).
+    exact (n9_13 y f_S3 S3).
   }
   assert (S5 : forall y, exists x, (Phi x -> Psi x) -> (exists z, (Phi y -> Psi z))).
-  { admit. }
+  { 
+    set (f_S4 := (fun x => (exists z : Prop,
+      (Phi x → Psi x) → Phi y → Psi z))).
+    (* Print existT. *)
+    change (exists z : Prop, (Phi x → Psi x) → Phi y → Psi z)
+      with (f_S4 z) in S4.
+    pose (n9_06 z f_S4) as n9_06.
+  admit. 
+  }
   assert (S6 : (exists x, ~ (Phi x -> Psi x)) ∨ forall y, (exists z, (Phi y -> Psi z))).
   { admit. }
   assert (S7 : (exists x, ~ (Phi x -> Psi x)) ∨ 
