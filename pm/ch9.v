@@ -101,6 +101,13 @@ Theorem n9_21 (Z : Prop) (Phi Psi : Prop → Prop) :
   → (∀ y, Phi y) 
   → ∀ z, Psi z.
 Proof.
+  (* Necessary tools to be used globally *)
+  (* Manually set up a `<->` relation from `=` relation to utilize
+  `setoid_rewrite`. This enables substitution outside of the
+  `forall`s and `exists`.
+  Can we automate this with Ltac? *)
+  set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
+    as Impl1_01a.
   (** S1 **)
   pose proof (Id2_08 (Phi Z → Psi Z)) as S1.
   (** S2 **)
@@ -141,13 +148,8 @@ Proof.
     assert (S4_i1 : ∀ z : Prop, ∃ x y : Prop, 
       ¬(Phi x → Psi x) ∨ (Phi y → Psi z)).
     {
-      (* Peeling the proposition *)
-      intro z0. pose (S4 z0) as S4_1.
-      destruct S4_1 as [z1 S4_2]. exists z1.
-      destruct S4_2 as [z2 S4_3]. exists z2.
-      (* TODO: investigate setoid_rewrite *)
-      rewrite -> Impl1_01 in S4_3.
-      exact S4_3.
+      setoid_rewrite Impl1_01a in S4.
+      exact S4.
     }
     intro z0. pose (S4_i1 z0) as S4_i2.
     remember (fun y0 => Phi y0 → Psi z0) as f_S4 eqn:eqf_S4.
@@ -170,18 +172,9 @@ Proof.
       (~ (Phi x0 → Psi x0) ∨ (∃ y0 : Prop, (¬ Phi y0) ∨ Psi z0))
     ). 
     {
-      intro z0. pose (S5 z0) as S5_i1.
-      destruct S5_i1 as [z1 S5_i2]. exists z1.
-      pose (Impl1_01 (Phi z1 → Psi z1) (∃ y : Prop, Phi y → Psi z0))
-        as Impl1_01_1.
-      rewrite -> Impl1_01_1 in S5_i2.
-      destruct S5_i2.
-      { left. exact H. }
-      { right.
-        destruct H as [y H1]. exists y.
-        pose (Impl1_01 (Phi y) (Psi z0)) as Impl_1_01_2.
-        rewrite -> Impl_1_01_2 in H1.
-        exact H1. }
+      setoid_rewrite Impl1_01a in S5.
+      setoid_rewrite Impl1_01a in S5 at 3.
+      exact S5.
     }
     remember (fun x1 => ¬ (Phi x1 → Psi x1)) as f_S5_1 eqn:eqf_S5_1.
     remember (fun z1 => (∃ y0 : Prop, (¬ Phi y0) ∨ Psi z1)) as f_S5_2 eqn:eqf_S5_2.
@@ -225,6 +218,14 @@ Qed.
 Theorem n9_22 (Y : Prop) (Phi Psi : Prop -> Prop) :
   (∀ x, Phi x -> Psi x) -> (∃ x, Phi x) -> (∃ x, Psi x).
 Proof. 
+  (* TOOLS *)
+  set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
+    as Impl1_01a.
+  set (λ (P0 : Prop) (F : Prop -> Prop),
+    eq_to_equiv (P0 ∨ ∃ x : Prop, F x) (∃ x : Prop, P0 ∨ F x) 
+    (n9_06 P0 F))
+    as n9_06a.
+  (* ******** *)
   assert (S1 : (Phi Y -> Psi Y) -> (Phi Y -> Psi Y)).
   { exact (Id2_08 (Phi Y -> Psi Y)). }
   assert (S2 : exists z, (Phi Y -> Psi Y) -> (Phi Y -> Psi z)).
@@ -257,52 +258,10 @@ Proof.
   }
   assert (S5 : forall y, exists x, (Phi x -> Psi x) -> (exists z, (Phi y -> Psi z))).
   { 
-  (* S4': exists z ,(Phi x → Psi x) → Phi y → Psi z *)
-  (* S5': (Phi x -> Psi x) -> (exists z, (Phi y -> Psi z)) *)
-  (* n9_06:
-    ∀ (p : Prop) (Phi : Prop → Prop),
-      (p ∨ ∃ x : Prop, Phi x) = ∃ x : Prop, p ∨ Phi x
-  *)
-    assert (S4_i1 : forall y, exists x, exists z, 
-      ~ (Phi x -> Psi x) \/ (Phi y -> Psi z)).
-    {
-    (* When the proposition involves an equation, peeling the proposition seems to
-    be inevitable
-    Otherwise, we're supposed to lift the proposition `P` into a proposition of
-    `forall x, exists y, ..., P x y ` *)
-      intro y0.
-      pose (S4 y0) as S4_1.
-      destruct S4_1 as [x S4_2]. exists x.
-      destruct S4_2 as [z S4_3]. exists z.
-      rewrite -> Impl1_01 in S4_3.
-      exact S4_3.
-    }
-    (* 
-    remember (fun y x => (exists z : Prop,
-      ~ (Phi x -> Psi x) → (Phi y -> Psi z))) as f_S4 eqn:eqf_S4.
-    *)
-    intro y0. pose (S4_i1 y0) as S4_i2.
-    remember (fun x z => ¬ (Phi x → Psi x) ∨ (Phi y0 → Psi z)) as f_S4
-      eqn:eqf_S4.
-    pose (f_equal (fun (P : Prop -> Prop -> Prop) => P y0) eqf_S4) as eqf_S4_y0.
-    simpl in eqf_S4_y0.
-    set (f_S4 := (fun y x => (exists z : Prop,
-      ~ (Phi x -> Psi x) → (Phi y -> Psi z)))).
-    
-
-    (* TODO: use f_equal  *)
-    change (∀ y : Prop, ∃ x z : Prop,
-      ¬ (Phi x → Psi x) ∨ (Phi y → Psi z))
-    with
-      (∀ y : Prop, ∃ x z : Prop, f_S4 y x) in S4_i1.
-    Print n9_06.
-
-
-    change (forall y : Prop, exists (x z : Prop), (Phi x → Psi x) → Phi y → Psi z)
-      with (forall y : Prop, exists x, f_S4 y x) in S4.
-    
-    pose (n9_06 z f_S4) as n9_06.
-  admit. 
+    setoid_rewrite -> Impl1_01a in S4.
+    setoid_rewrite <- n9_06a in S4.
+    setoid_rewrite <- Impl1_01a in S4.
+    exact S4.
   }
   assert (S6 : (exists x, ~ (Phi x -> Psi x)) ∨ forall y, (exists z, (Phi y -> Psi z))).
   { admit. }
