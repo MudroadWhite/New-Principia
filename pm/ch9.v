@@ -271,14 +271,29 @@ Proof.
   }
   assert (S8 : (∀ x, Phi x -> Psi x) -> (∃ x, Phi x) -> (∃ x, Psi x)).
   { 
-    rewrite <- n9_01 in S7.
-    rewrite <- Impl1_01a in S7.
-    Print n9_02.
-    rewrite <- n9_02 in S7.
-    
-  admit. }
+    assert (S7_i1 : (∀ x : Prop, Phi x → Psi x)
+      → (¬¬(∀ y : Prop, ¬ Phi y)) ∨ ∃ z : Prop, Psi z).
+    {
+      rewrite <- n9_01 in S7.
+      rewrite <- Impl1_01 in S7.
+      (* Should we also use `setoid_rewrite` here to avoid breaking down
+      the propositions? *)
+      intro H.
+      destruct (S7 H).
+      { left. apply n2_12 in H0. exact H0. }
+      { right. exact H0. }
+    }
+    rewrite -> n9_01 in S7_i1.
+    rewrite <- Impl1_01 in S7_i1.
+    (* TODO: make the following proof better *)
+    intros Px Ex.
+    pose (S7_i1 Px) as S7_i2.
+    destruct S7_i2 as [x HnegP].
+    { destruct Ex. exists x. exact (n2_12 (Phi x) H). }
+    { exists x. exact HnegP. }
+  }
   exact S8.
-Admitted.
+Qed.
 
 Theorem n9_23 : ∀ (Phi : Prop -> Prop), (∀ x : Prop, Phi x) -> (∀ x : Prop, Phi x).
 Proof. Admitted.
