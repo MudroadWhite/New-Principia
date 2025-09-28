@@ -101,7 +101,7 @@ Theorem n9_21 (Z : Prop) (Phi Psi : Prop → Prop) :
   → (∀ y, Phi y) 
   → ∀ z, Psi z.
 Proof.
-  (* Necessary tools to be used globally *)
+  (** Necessary tools to be used globally **)
   (* Manually set up a `<->` relation from `=` relation to utilize
   `setoid_rewrite`. This enables substitution outside of the
   `forall`s and `exists`.
@@ -189,16 +189,10 @@ Proof.
   }
   assert (S7 : (∃ x : Prop, ¬(Phi x → Psi x)) ∨ ((∃ y : Prop, (¬ Phi y)) ∨ (∀ z : Prop, Psi z))).
   {
-    (* f_S6_1 and f_S6_2 has different behaviors on S6.
-    The commented code below shouldnt be deleted *)
     remember (fun y => ¬ (Phi y)) as f_S6_1 eqn:eqf_S6_1.
     remember (fun z => Psi z) as f_S6_2 eqn:eqf_S6_2.
-    (* assert (eqH : ((∃ y, f_S6_1 y) ∨ (∀ z0 : Prop, f_S6_2 z0)) =
-          ∀ z0, ∃ y, f_S6_1 y ∨ f_S6_2 z0). { exact (n9_08 f_S6_2 f_S6_1). } *)
-    (* rewrite -> eqf_S6_1 in S6. *)
     rewrite -> n9_08. (* Alternatively, we can provide an exact instance for n9_08
-    to form an exact equation, as comment above. But since 2 functions don't behave
-    in the same way, this exact equation still needs some tunings *)
+    to form an exact equation *)
     rewrite -> eqf_S6_1.
     exact S6.
   }
@@ -223,8 +217,13 @@ Proof.
     as Impl1_01a.
   set (λ (P0 : Prop) (F : Prop -> Prop),
     eq_to_equiv (P0 ∨ ∃ x : Prop, F x) (∃ x : Prop, P0 ∨ F x) 
-    (n9_06 P0 F))
-    as n9_06a.
+    (n9_06 P0 F)) as n9_06a.
+  set (λ Phi0 Psi0 : (Prop -> Prop), 
+    eq_to_equiv 
+      ((∃ y : Prop, Psi0 y) ∨ ∀ x : Prop, Phi0 x) 
+      (∀ x : Prop, ∃ y : Prop, Psi0 y ∨ Phi0 x) 
+      (n9_08 Phi0 Psi0))
+    as n9_08a.
   (* ******** *)
   assert (S1 : (Phi Y -> Psi Y) -> (Phi Y -> Psi Y)).
   { exact (Id2_08 (Phi Y -> Psi Y)). }
@@ -264,9 +263,12 @@ Proof.
     exact S4.
   }
   assert (S6 : (exists x, ~ (Phi x -> Psi x)) ∨ forall y, (exists z, (Phi y -> Psi z))).
-  { admit. }
-  assert (S7 : (exists x, ~ (Phi x -> Psi x)) ∨ 
-    forall y, ~ (Phi y) ∨ exists z, Psi z).
+  {
+    setoid_rewrite -> Impl1_01a in S5.
+    setoid_rewrite <- n9_08a in S5.
+    exact S5.
+  }
+  assert (S7 : (exists x, ~ (Phi x -> Psi x)) ∨ forall y, ~ (Phi y) ∨ exists z, Psi z).
   { admit. }
   assert (S8 : (∀ x, Phi x -> Psi x) -> (∃ x, Phi x) -> (∃ x, Psi x)).
   { admit. }
