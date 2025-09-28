@@ -11,6 +11,7 @@ continuation on [formalizing Principia Mathematica](https://github.com/LogicalAt
 ## Features
 - Forward style reasoning, pertaining the most flavor of original proof
 - Nice proof architecture and clean, maybe beautiful proof window
+- No 3rd party library involved so far
 
 ## Running the code
 
