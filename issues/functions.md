@@ -8,7 +8,7 @@ Started from chapter 9, Principia doesn't have it defined how function works for
 
 Since I haven't figured out a unified way to do, here are some different methods that the proofs use to make the functions working.
 
-1. `set` tactic to define a function directly. Pairs with `change` when it needs a `rewrite`. Doesn't work very well on `exists` propositions and more generally bound variables.
+1. `set` tactic to define a function directly. Pairs with `change` when it needs a `rewrite`. Doesn't work very well on `exists` propositions and more generally bound variables. `change` tactic doesn't even modify the underlying proof object.
 2. `remember` tactic that generates a equation of `f = P x` to use. Will be blocked by `exists` proposition and more generally bound variables, but better than `set` in general.
 3. `setoid_rewrite`. For every axioms defined in the form of `f = P x`, we need to change them into the form of `f <-> P x`. After this tedious manual work, it seems to work very well to "penetrate" through all the quantifiers.
 

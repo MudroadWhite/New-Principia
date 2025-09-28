@@ -30,7 +30,7 @@ Definition n9_06 (p : Prop) (Phi : Prop → Prop) :
   (p ∨ (∃ x : Prop, Phi x)) = ∃ x : Prop, p ∨ Phi x. Admitted.
 
 Definition n9_07 : ∀ (Phi Psi : Prop → Prop),
-  (∀ x : Prop, Phi x) ∨ (∃ y : Prop, Psi y)
+  ((∀ x : Prop, Phi x) ∨ (∃ y : Prop, Psi y))
   = ∀ x : Prop, ∃ y : Prop, Phi x ∨ Psi y. Admitted.
 
 Definition n9_08 (Phi Psi : Prop → Prop) :
@@ -80,16 +80,6 @@ Theorem n9_2 (y : Prop) : ∀ (Phi : Prop → Prop), (∀ x : Prop, Phi x) → P
   rewrite <- n9_01a in n9_1a.
   rewrite <- Impl1_01 in n9_1a. apply n9_1a.
   apply H.
-Qed.
-
-Goal forall y, forall (P Q : Prop -> Prop), (exists x, P x -> Q y) -> (exists x, ~ P x \/ Q y).
-Proof.
-  intros y P Q H.
-  pose Impl1_01 as Impl1_01.
-  set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
-    as Impl1_01a.
-  setoid_rewrite Impl1_01a in H.
-  assumption.
 Qed.
 
 (* NOTE: `z` here seems to be something needed to consider in the future: there's a 
@@ -151,6 +141,7 @@ Proof.
       setoid_rewrite Impl1_01a in S4.
       exact S4.
     }
+    (* TODO: simplify the proof here with `setoid_rewrite` *)
     intro z0. pose (S4_i1 z0) as S4_i2.
     remember (fun y0 => Phi y0 → Psi z0) as f_S4 eqn:eqf_S4.
     destruct S4_i2 as [z1 S4_i3]. exists z1.
@@ -215,15 +206,19 @@ Proof.
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
-  set (λ (P0 : Prop) (F : Prop -> Prop),
-    eq_to_equiv (P0 ∨ ∃ x : Prop, F x) (∃ x : Prop, P0 ∨ F x) 
-    (n9_06 P0 F)) as n9_06a.
+  set (λ (P0 : Prop) (Phi0 : Prop -> Prop),
+    eq_to_equiv (P0 ∨ ∃ x : Prop, Phi0 x) (∃ x : Prop, P0 ∨ Phi0 x) 
+    (n9_06 P0 Phi0)) as n9_06a.
   set (λ Phi0 Psi0 : (Prop -> Prop), 
     eq_to_equiv 
       ((∃ y : Prop, Psi0 y) ∨ ∀ x : Prop, Phi0 x) 
       (∀ x : Prop, ∃ y : Prop, Psi0 y ∨ Phi0 x) 
-      (n9_08 Phi0 Psi0))
-    as n9_08a.
+      (n9_08 Phi0 Psi0)) as n9_08a.
+  set (λ Phi0 Psi0 : (Prop -> Prop), 
+    eq_to_equiv 
+      ((∀ x : Prop, Phi0 x) ∨ (∃ y : Prop, Psi0 y))
+      (∀ x : Prop, ∃ y : Prop, Phi0 x ∨ Psi0 y)
+      (n9_07 Phi0 Psi0)) as n9_07a.
   (* ******** *)
   assert (S1 : (Phi Y -> Psi Y) -> (Phi Y -> Psi Y)).
   { exact (Id2_08 (Phi Y -> Psi Y)). }
@@ -268,13 +263,22 @@ Proof.
     setoid_rewrite <- n9_08a in S5.
     exact S5.
   }
-  assert (S7 : (exists x, ~ (Phi x -> Psi x)) ∨ forall y, ~ (Phi y) ∨ exists z, Psi z).
-  { admit. }
+  assert (S7 : (exists x, ~ (Phi x -> Psi x)) ∨ (forall y, ~ (Phi y)) ∨ exists z, Psi z).
+  { 
+    setoid_rewrite -> Impl1_01a in S6 at 3.
+    setoid_rewrite <- n9_07a in S6.
+    exact S6.
+  }
   assert (S8 : (∀ x, Phi x -> Psi x) -> (∃ x, Phi x) -> (∃ x, Psi x)).
-  { admit. }
+  { 
+    rewrite <- n9_01 in S7.
+    rewrite <- Impl1_01a in S7.
+    Print n9_02.
+    rewrite <- n9_02 in S7.
+    
+  admit. }
   exact S8.
 Admitted.
-  
 
 Theorem n9_23 : ∀ (Phi : Prop -> Prop), (∀ x : Prop, Phi x) -> (∀ x : Prop, Phi x).
 Proof. Admitted.
