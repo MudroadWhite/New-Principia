@@ -34,10 +34,8 @@ Ltac Equiv H1 :=
 Theorem Transp4_1 : ∀ P Q : Prop,
   (P → Q) ↔ (¬Q → ¬P).
 Proof. intros P Q.
-  specialize Transp2_16 with P Q. 
-  intros Transp2_16a.
-  specialize Transp2_17 with P Q. 
-  intros Transp2_17a.
+  pose (Transp2_16 P Q) as Transp2_16a.
+  pose (Transp2_17 P Q) as Transp2_17a. 
   Conj Transp2_16a Transp2_17a C.
   Equiv C. 
   exact C.
@@ -46,10 +44,8 @@ Qed.
 Theorem Transp4_11 : ∀ P Q : Prop,
   (P ↔ Q) ↔ (¬P ↔ ¬Q).
 Proof. intros P Q.
-  specialize Transp2_16 with P Q. 
-  intros Transp2_16a.
-  specialize Transp2_16 with Q P. 
-  intros Transp2_16b.
+  pose (Transp2_16 P Q) as Transp2_16a.
+  pose (Transp2_16 Q P) as Transp2_16b.
   Conj Transp2_16a Transp2_16b Ca.
   specialize n3_47 with (P→Q) (Q→P) (¬Q→¬P) (¬P→¬Q). 
   intros n3_47a.
@@ -105,7 +101,7 @@ Proof. intros P Q.
   intros n3_47b.
   MP n3_47b H0.
   clear Transp2_03a. clear Transp2_15a. clear Ca. 
-    clear Transp2_03b. clear Transp2_15b. clear Cb.
+  clear Transp2_03b. clear Transp2_15b. clear Cb.
   Conj n3_47a n3_47b Cc.
   rewrite <- Equiv4_01 in Cc.
   rewrite <- Equiv4_01 in Cc.
