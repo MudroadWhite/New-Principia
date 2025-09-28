@@ -39,15 +39,15 @@ Definition n9_08 (Phi Psi : Prop → Prop) :
 Definition n9_1 (Phi : Prop → Prop) (x : Prop) : 
   (Phi x → ∃ z : Prop, Phi z). Admitted.
 
-Axiom n9_11 : ∀ x y : Prop, ∀ F : Prop → Prop, ((F x ∨ F y) → (∃z : Prop, F z)).
+Definition n9_11 (Phi : Prop → Prop) (x y : Prop) : 
+  ((Phi x ∨ Phi y) → (∃ z : Prop, Phi z)). Admitted.
 
 (* Pp n9_12 : What is implied by a true premiss is true. *)
 
 (* Pp n9_13 : In any assersion containing a real variable, this real variable
 may be turned into an apparent variable of which all possible values are asserted
 to satisfy the function in question. *)
-Axiom n9_13 : ∀ x : Prop, ∀ F : Prop → Prop, F x
-  → (∀ y : Prop, F y).
+Definition n9_13 (Phi : Prop -> Prop) (x : Prop) : Phi x → (∀ y : Prop, Phi y). Admitted.
 
 (* TODO: 
 - Formalize the idea of `is same type` 
@@ -82,10 +82,6 @@ Theorem n9_2 (y : Prop) : ∀ (Phi : Prop → Prop), (∀ x : Prop, Phi x) → P
   apply H.
 Qed.
 
-(* NOTE: `z` here seems to be something needed to consider in the future: there's a 
-difference between `z` and `∀ z, z`. We will have to check how to express this
-according to the original article
-*)
 Theorem n9_21 (Z : Prop) (Phi Psi : Prop → Prop) :
   (∀ x, Phi x → Psi x) 
   → (∀ y, Phi y) 
@@ -123,7 +119,7 @@ Proof.
     set (f_S3 := fun z => (∃ x y : Prop, (Phi x → Psi x) → Phi y → Psi z)).
     change (∃ x y : Prop, (Phi x → Psi x) → Phi y → Psi Z) with (f_S3 Z) in S3.
     change (∃ x y : Prop, (Phi x → Psi x) → Phi y → Psi Z) with (f_S3 z).
-    exact (n9_13 Z f_S3 S3).
+    exact (n9_13 f_S3 Z S3).
   }
   (** S5 **)
   assert (S5 : ∀ z : Prop, (∃ x : Prop, 
@@ -189,8 +185,6 @@ Proof.
   }
   assert (S8 : (∀ x, Phi x → Psi x) → (∀ y, Phi y) → ∀ z, Psi z).
   {
-    (* Here I want to be lazy and don't want to stick to total forward reasoning with 
-    concrete instances specified. "Left as an exercise" *)
     rewrite <- n9_01 in S7.
     rewrite <- n9_01 in S7.
     rewrite <- Impl1_01 in S7.
@@ -248,7 +242,7 @@ Proof.
       with (f_S3 Y) in S3.
     change (∀ y0 : Prop, ∃ x z : Prop, (Phi x → Psi x) → Phi y0 → Psi z)
       with (∀ y0 : Prop, f_S3 y0).
-    exact (n9_13 Y f_S3 S3).
+    exact (n9_13 f_S3 Y S3).
   }
   assert (S5 : forall y, exists x, (Phi x -> Psi x) -> (exists z, (Phi y -> Psi z))).
   { 
@@ -316,9 +310,23 @@ Proof.
   exact H.
 Qed.
 
-Theorem n9_3 (Phi : Prop -> Prop) : 
+Theorem n9_3 (x : Prop) (Phi : Prop -> Prop) : 
   (∀ x : Prop, Phi x) ∨ (∀ x : Prop, Phi x) -> (∀ x : Prop, Phi x).
-Proof. Admitted.
+Proof.
+  assert (S1 : (Phi x \/ Phi x) -> Phi x).
+  { admit. }
+  assert (S2 : exists y, (Phi x \/ Phi y) -> Phi x).
+  { admit. }
+  assert (S3 : forall x, exists y, (Phi x \/ Phi y) -> Phi x).
+  { admit. }
+  assert (S4 : forall x, (Phi x \/ forall y, Phi y) -> Phi x).
+  { admit. }
+  assert (S5 : forall x, (Phi x \/ forall y, Phi y) -> (forall x, Phi x)).
+  { admit. }
+  assert (S6 : (∀ x : Prop, Phi x) ∨ (∀ x : Prop, Phi x) -> (∀ x : Prop, Phi x)).
+  { admit. }
+  exact S6.
+Admitted.
 
 Theorem n9_31 : ∀ (Phi : Prop -> Prop), (∃ x : Prop, Phi x) ∨ (∃ x : Prop, Phi x) -> (∃ x : Prop, Phi x).
 Proof. Admitted.
