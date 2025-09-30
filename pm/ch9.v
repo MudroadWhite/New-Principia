@@ -117,8 +117,8 @@ Proof.
   assert (S4 : ∀ z : Prop, ∃ x y : Prop, (Phi x → Psi x) → Phi y → Psi z).
   {
     set (f_S3 := fun z => (∃ x y : Prop, (Phi x → Psi x) → Phi y → Psi z)).
-    change (∃ x y : Prop, (Phi x → Psi x) → Phi y → Psi Z) with (f_S3 Z) in S3.
-    change (∃ x y : Prop, (Phi x → Psi x) → Phi y → Psi Z) with (f_S3 z).
+    change (∃ x y, (Phi x → Psi x) → Phi y → Psi Z) with (f_S3 Z) in S3.
+    change (∃ x y, (Phi x → Psi x) → Phi y → Psi Z) with (f_S3 z).
     exact (n9_13 f_S3 Z S3).
   }
   (** S5 **)
@@ -168,8 +168,8 @@ Proof.
     pose (n9_08 f_S5_2 f_S5_1) as n9_08.
     rewrite -> eqf_S5_1.
     rewrite -> eqf_S5_1 in n9_08.
-    (* Notice the different behavior between f1 and f2. Seems like every functions
-    involving `∃` will have some problems *)
+    (* Notice the different availability to rewrite, between f1 and f2. Seems like 
+    every functions involving `∃` will have some problems *)
     rewrite -> eqf_S5_2 in n9_08.
     rewrite -> n9_08.
     exact S5_1.
@@ -185,10 +185,8 @@ Proof.
   }
   assert (S8 : (∀ x, Phi x → Psi x) → (∀ y, Phi y) → ∀ z, Psi z).
   {
-    rewrite <- n9_01 in S7.
-    rewrite <- n9_01 in S7.
-    rewrite <- Impl1_01 in S7.
-    rewrite <- Impl1_01 in S7.
+    repeat rewrite <- n9_01 in S7.
+    repeat rewrite <- Impl1_01 in S7.
     exact S7.
   }
   exact S8.
@@ -214,8 +212,7 @@ Proof.
       (∀ x : Prop, ∃ y : Prop, Phi0 x ∨ Psi0 y)
       (n9_07 Phi0 Psi0)) as n9_07a.
   (* ******** *)
-  assert (S1 : (Phi Y -> Psi Y) -> (Phi Y -> Psi Y)).
-  { exact (Id2_08 (Phi Y -> Psi Y)). }
+  pose (Id2_08 (Phi Y -> Psi Y)) as S1.
   assert (S2 : exists z, (Phi Y -> Psi Y) -> (Phi Y -> Psi z)).
   { 
     remember (fun z => (Phi Y -> Psi Y) -> (Phi Y -> Psi z))
@@ -279,8 +276,8 @@ Proof.
     }
     rewrite -> n9_01 in S7_i1.
     rewrite <- Impl1_01 in S7_i1.
-    (* TODO: make the following proof better *)
-    (* TODO: use 9.02 accoreding to original proof *)
+    (* TODO: make the following proof better without destructing *)
+    (* TODO: use 9.02 according to original text *)
     intros Px Ex.
     pose (S7_i1 Px) as S7_i2.
     destruct S7_i2 as [x HnegP].
@@ -313,15 +310,32 @@ Qed.
 Theorem n9_3 (x : Prop) (Phi : Prop -> Prop) : 
   (∀ x : Prop, Phi x) ∨ (∀ x : Prop, Phi x) -> (∀ x : Prop, Phi x).
 Proof.
-  assert (S1 : (Phi x \/ Phi x) -> Phi x).
-  { admit. }
-  assert (S2 : exists y, (Phi x \/ Phi y) -> Phi x).
-  { admit. }
-  assert (S3 : forall x, exists y, (Phi x \/ Phi y) -> Phi x).
-  { admit. }
-  assert (S4 : forall x, (Phi x \/ forall y, Phi y) -> Phi x).
-  { admit. }
-  assert (S5 : forall x, (Phi x \/ forall y, Phi y) -> (forall x, Phi x)).
+  pose (Taut1_2 (Phi x)) as S1.
+  assert (S2 : exists y, (Phi x ∨ Phi y) -> Phi x).
+  { 
+    remember (fun y => (Phi x \/ Phi y) -> Phi x) as f_S1
+      eqn:eqf_S1.
+    pose (n9_1 f_S1 x) as n9_1a.
+    rewrite -> eqf_S1.
+    rewrite -> eqf_S1 in n9_1a.
+    exact (n9_1a S1).
+  }
+  assert (S3 : ∀ x, exists y, (Phi x ∨ Phi y) -> Phi x).
+  {
+    remember (fun x => exists y, (Phi x ∨ Phi y) -> Phi x) as f_S2
+      eqn:eqf_S2.
+    pose (n9_13 f_S2 x) as n9_13a.
+    rewrite -> eqf_S2 in n9_13a.
+    exact (n9_13a S2).
+  }
+  assert (S4 : ∀ x, (Phi x ∨ ∀ y, Phi y) -> Phi x).
+  {
+    
+    Print n9_05.
+    Print n9_01.
+    Print n9_04.
+  admit. }
+  assert (S5 : ∀ x, (Phi x ∨ ∀ y, Phi y) -> (∀ x, Phi x)).
   { admit. }
   assert (S6 : (∀ x : Prop, Phi x) ∨ (∀ x : Prop, Phi x) -> (∀ x : Prop, Phi x)).
   { admit. }
