@@ -20,3 +20,6 @@ Without `setoid_rewrite`, for a function to be defined for quantifiers, I feel t
 1. Destruct the quantifier in the hypothesis and in the goal. `forall` is easy to break and make, while `exists` involves the constructor `existT`.
 2. Define the function in the defined context
 3. Either wrap back everything up to proceed, or match the goal `exact`ly
+
+## Partial evaluation for theorems, for function rewrites
+TODO: finish this section
