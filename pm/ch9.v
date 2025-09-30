@@ -47,6 +47,10 @@ Definition n9_11 (Phi : Prop → Prop) (x y : Prop) :
 (* Pp n9_13 : In any assersion containing a real variable, this real variable
 may be turned into an apparent variable of which all possible values are asserted
 to satisfy the function in question. *)
+(* 
+- `y` in `Phi y` is a real variable
+- `y` in `forall y, Phi y` is an apparent variable
+*)
 Definition n9_13 (Phi : Prop -> Prop) (x : Prop) : Phi x → (∀ y : Prop, Phi y). Admitted.
 
 (* TODO: 
@@ -307,15 +311,15 @@ Proof.
   exact H.
 Qed.
 
-Theorem n9_3 (x : Prop) (Phi : Prop -> Prop) : 
+Theorem n9_3 (X : Prop) (Phi : Prop -> Prop) : 
   (∀ x : Prop, Phi x) ∨ (∀ x : Prop, Phi x) -> (∀ x : Prop, Phi x).
 Proof.
-  pose (Taut1_2 (Phi x)) as S1.
-  assert (S2 : exists y, (Phi x ∨ Phi y) -> Phi x).
+  pose (Taut1_2 (Phi X)) as S1.
+  assert (S2 : exists y, (Phi X ∨ Phi y) -> Phi X).
   { 
-    remember (fun y => (Phi x \/ Phi y) -> Phi x) as f_S1
+    remember (fun y => (Phi X \/ Phi y) -> Phi X) as f_S1
       eqn:eqf_S1.
-    pose (n9_1 f_S1 x) as n9_1a.
+    pose (n9_1 f_S1 X) as n9_1a.
     rewrite -> eqf_S1.
     rewrite -> eqf_S1 in n9_1a.
     exact (n9_1a S1).
@@ -324,23 +328,55 @@ Proof.
   {
     remember (fun x => exists y, (Phi x ∨ Phi y) -> Phi x) as f_S2
       eqn:eqf_S2.
-    pose (n9_13 f_S2 x) as n9_13a.
+    pose (n9_13 f_S2 X) as n9_13a.
     rewrite -> eqf_S2 in n9_13a.
     exact (n9_13a S2).
   }
   assert (S4 : ∀ x, (Phi x ∨ ∀ y, Phi y) -> Phi x).
   {
-    
-    Print n9_05.
-    Print n9_01.
-    Print n9_04.
-  admit. }
-  assert (S5 : ∀ x, (Phi x ∨ ∀ y, Phi y) -> (∀ x, Phi x)).
-  { admit. }
+    assert (S3_i1 : ∀ x, exists y, ~ (Phi x ∨ Phi y) \/ Phi x).
+    {
+      (* Here I'm lazy to prove without destructs. TODO: eliminate them *)
+      intro x0. pose (S3 x0) as S3_1.
+      destruct S3_1 as [y S3_2]. exists y.
+      rewrite -> Impl1_01 in S3_2.
+      exact S3_2.
+    }
+    assert (S3_i2 : ∀ x, ¬ (Phi x ∨ ∀ y, Phi y) ∨ Phi x).
+    {
+      remember (fun x y => ¬ (Phi x ∨ Phi y)) as f_S3 eqn:eqf_S3.
+      pose (f_equal (fun (P : Prop → Prop -> Prop) => 
+        (forall x, exists y, (P x y) \/ Phi x)) eqf_S3) as eqf_S3_xy.
+      simpl in eqf_S3_xy.
+      (* setoid_rewrite being unusable *)
+      rewrite <- eqf_S3_xy in S3_i1.
+      (* Too difficult to perform without destructions. TODO: perform without destruction
+      in the future *)
+      intro x0.
+      pose (S3_i1 x0) as S3_i1_1.
+      rewrite <- (n9_05 (f_S3 x0) (Phi x0)) in S3_i1_1.
+      rewrite -> eqf_S3 in S3_i1_1.
+      rewrite <- (n9_01 (fun x => Phi x0 \/ Phi x)) in S3_i1_1.
+      rewrite <- (n9_04 Phi (Phi x0)) in S3_i1_1.
+      exact S3_i1_1.
+    }
+    (* Eventually we <- the `Impl1_01` *)
+    intro x0. pose (S3_i2 x0) as S3_2.
+    rewrite <- Impl1_01 in S3_2.
+    exact S3_2.
+  }
+  assert (S5 : (∀ x, (Phi x ∨ ∀ y, Phi y)) -> (∀ x, Phi x)).
+  {
+    exact (n9_21 X (* <- Here the "apparent variable" can be arbitrary *)
+      (fun x => Phi x ∨ (∀ y : Prop, Phi y)) Phi S4).
+  }
   assert (S6 : (∀ x : Prop, Phi x) ∨ (∀ x : Prop, Phi x) -> (∀ x : Prop, Phi x)).
-  { admit. }
+  { 
+    rewrite <- n9_03 in S5.
+    exact S5.
+  }
   exact S6.
-Admitted.
+Qed.
 
 Theorem n9_31 : ∀ (Phi : Prop -> Prop), (∃ x : Prop, Phi x) ∨ (∃ x : Prop, Phi x) -> (∃ x : Prop, Phi x).
 Proof. Admitted.
