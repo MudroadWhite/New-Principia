@@ -40,7 +40,7 @@ Definition n9_1 (Phi : Prop → Prop) (x : Prop) :
   (Phi x → ∃ z : Prop, Phi z). Admitted.
 
 Definition n9_11 (Phi : Prop → Prop) (x y : Prop) : 
-  ((Phi x ∨ Phi y) → (∃ z : Prop, Phi z)). Admitted.
+  (Phi x ∨ Phi y) → (∃ z : Prop, Phi z). Admitted.
 
 (* Pp n9_12 : What is implied by a true premiss is true. *)
 
@@ -49,9 +49,11 @@ may be turned into an apparent variable of which all possible values are asserte
 to satisfy the function in question. *)
 (* 
 - `y` in `Phi y` is a real variable
-- `y` in `forall y, Phi y` is an apparent variable
+- `y` in `∀ y, Phi y` is an apparent variable
+- This simulation seems to be very unsatisfying! Don't use without any clear 
+  intention from original text
 *)
-Definition n9_13 (Phi : Prop -> Prop) (x : Prop) : Phi x → (∀ y : Prop, Phi y). Admitted.
+Definition n9_13 (Phi : Prop -> Prop) (X : Prop) : Phi X = (∀ y : Prop, Phi y). Admitted.
 
 (* TODO: 
 - Formalize the idea of `is same type` 
@@ -94,7 +96,7 @@ Proof.
   (** Necessary tools to be used globally **)
   (* Manually set up a `<->` relation from `=` relation to utilize
   `setoid_rewrite`. This enables substitution outside of the
-  `forall`s and `exists`.
+  `∀`s and `exists`.
   Can we automate this with Ltac? *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
@@ -123,35 +125,32 @@ Proof.
     set (f_S3 := fun z => (∃ x y : Prop, (Phi x → Psi x) → Phi y → Psi z)).
     change (∃ x y, (Phi x → Psi x) → Phi y → Psi Z) with (f_S3 Z) in S3.
     change (∃ x y, (Phi x → Psi x) → Phi y → Psi Z) with (f_S3 z).
-    exact (n9_13 f_S3 Z S3).
+    rewrite -> (n9_13 f_S3 Z) in S3.
+    exact S3.
   }
   (** S5 **)
   assert (S5 : ∀ z : Prop, (∃ x : Prop, 
     (Phi x → Psi x) → (∃ y : Prop, Phi y → Psi z))).
   {
     (* 
-    From here on the proof becomes very unsatisfying. Usually we should define the 
-    function over all the `exists`, but instead we peel them off to define a function 
-    without the `exists`. I don't think this is the right way to proceed on, but
-    it's current the only way working
+    From here on the proof becomes very unsatisfying. Since it's difficult to use 
+    other tools, we have to destruct the propositions to procceed. I don't think 
+    this is the right way to proceed on, but it's current the only way working
     *)
     assert (S4_i1 : ∀ z : Prop, ∃ x y : Prop, 
       ¬(Phi x → Psi x) ∨ (Phi y → Psi z)).
-    {
-      setoid_rewrite Impl1_01a in S4.
-      exact S4.
-    }
-    (* TODO: simplify the proof here with `setoid_rewrite` *)
+    { setoid_rewrite Impl1_01a in S4. exact S4. }
+    (* TODO: simplify the proof maybe with `setoid_rewrite`. Don't forget to 
+      set up the `eq_to_equiv` instnace *)
     intro z0. pose (S4_i1 z0) as S4_i2.
     remember (fun y0 => Phi y0 → Psi z0) as f_S4 eqn:eqf_S4.
     destruct S4_i2 as [z1 S4_i3]. exists z1.
+    (* TODO: try to use the following instance with `f_equal` to see how it goes
+    pose (n9_06 f_S4) as n9_06.
+    *)
     pose (n9_06 f_S4 (¬(Phi z1 → Psi z1))) as n9_06.
-    (* Here we use `f_equal` to avoid another peeling down *)
-    pose (f_equal (fun (P : Prop → Prop) => 
-      (exists y1, ¬ (Phi z1 → Psi z1) ∨ (P y1))) eqf_S4) as eqf_S4_y1.
-    rewrite <- eqf_S4_y1 in S4_i3.
+    rewrite -> eqf_S4 in n9_06.
     rewrite <- n9_06 in S4_i3.
-    rewrite -> eqf_S4 in S4_i3.
     pose (n2_53 (¬ (Phi z1 → Psi z1)) (∃ x : Prop, Phi x → Psi z0) S4_i3) as n2_53.
     pose (n2_12 (Phi z1 → Psi z1)) as n2_12.
     rewrite -> eqf_S4.
@@ -172,8 +171,6 @@ Proof.
     pose (n9_08 f_S5_2 f_S5_1) as n9_08.
     rewrite -> eqf_S5_1.
     rewrite -> eqf_S5_1 in n9_08.
-    (* Notice the different availability to rewrite, between f1 and f2. Seems like 
-    every functions involving `∃` will have some problems *)
     rewrite -> eqf_S5_2 in n9_08.
     rewrite -> n9_08.
     exact S5_1.
@@ -182,8 +179,7 @@ Proof.
   {
     remember (fun y => ¬ (Phi y)) as f_S6_1 eqn:eqf_S6_1.
     remember (fun z => Psi z) as f_S6_2 eqn:eqf_S6_2.
-    rewrite -> n9_08. (* Alternatively, we can provide an exact instance for n9_08
-    to form an exact equation *)
+    rewrite -> n9_08.
     rewrite -> eqf_S6_1.
     exact S6.
   }
@@ -235,7 +231,7 @@ Proof.
     rewrite -> eqf_S2.
     exact (n9_1 S2).
   }
-  assert (S4 : forall y, exists x, exists z, (Phi x -> Psi x) -> (Phi y -> Psi z)).
+  assert (S4 : ∀ y, exists x, exists z, (Phi x -> Psi x) -> (Phi y -> Psi z)).
   {
     set (f_S3 := (fun y => (exists x, exists z, 
       (Phi x -> Psi x) -> (Phi y -> Psi z)))).
@@ -243,22 +239,23 @@ Proof.
       with (f_S3 Y) in S3.
     change (∀ y0 : Prop, ∃ x z : Prop, (Phi x → Psi x) → Phi y0 → Psi z)
       with (∀ y0 : Prop, f_S3 y0).
-    exact (n9_13 f_S3 Y S3).
+    rewrite -> (n9_13 f_S3 Y) in S3.
+    exact S3.
   }
-  assert (S5 : forall y, exists x, (Phi x -> Psi x) -> (exists z, (Phi y -> Psi z))).
+  assert (S5 : ∀ y, exists x, (Phi x -> Psi x) -> (exists z, (Phi y -> Psi z))).
   { 
     setoid_rewrite -> Impl1_01a in S4.
     setoid_rewrite <- n9_06a in S4.
     setoid_rewrite <- Impl1_01a in S4.
     exact S4.
   }
-  assert (S6 : (exists x, ~ (Phi x -> Psi x)) ∨ forall y, (exists z, (Phi y -> Psi z))).
+  assert (S6 : (exists x, ~ (Phi x -> Psi x)) ∨ ∀ y, (exists z, (Phi y -> Psi z))).
   {
     setoid_rewrite -> Impl1_01a in S5.
     setoid_rewrite <- n9_08a in S5.
     exact S5.
   }
-  assert (S7 : (exists x, ~ (Phi x -> Psi x)) ∨ (forall y, ~ (Phi y)) ∨ exists z, Psi z).
+  assert (S7 : (exists x, ~ (Phi x -> Psi x)) ∨ (∀ y, ~ (Phi y)) ∨ exists z, Psi z).
   { 
     setoid_rewrite -> Impl1_01a in S6 at 3.
     setoid_rewrite <- n9_07a in S6.
@@ -277,6 +274,7 @@ Proof.
       destruct (S7 H).
       { left. apply n2_12 in H0. exact H0. }
       { right. exact H0. }
+      Show Proof.
     }
     rewrite -> n9_01 in S7_i1.
     rewrite <- Impl1_01 in S7_i1.
@@ -302,9 +300,7 @@ Proof. exact (Id2_08 (∃ x : Prop, Phi x)). Qed.
 Theorem n9_25 (p : Prop) (Phi : Prop -> Prop) : 
   (∀ x : Prop, p ∨ Phi x) -> p ∨ (∀ x : Prop, Phi x).
 Proof.
-  (* I doubt if there is a severe typo. I think `*9.23` has nothing to do with
-  the proof, unless original text is considering different types of proposition.
-  Here I'll just use `*9.04`. *)
+  (* TODO: rewrite the proof! start posing the initial proposition with n9_23. *)
   pose (n9_04 Phi p) as n9_04.
   intro H.
   rewrite <- n9_04 in H.
@@ -317,7 +313,7 @@ Proof.
   pose (Taut1_2 (Phi X)) as S1.
   assert (S2 : exists y, (Phi X ∨ Phi y) -> Phi X).
   { 
-    remember (fun y => (Phi X \/ Phi y) -> Phi X) as f_S1
+    remember (fun y => (Phi X ∨ Phi y) -> Phi X) as f_S1
       eqn:eqf_S1.
     pose (n9_1 f_S1 X) as n9_1a.
     rewrite -> eqf_S1.
@@ -328,13 +324,14 @@ Proof.
   {
     remember (fun x => exists y, (Phi x ∨ Phi y) -> Phi x) as f_S2
       eqn:eqf_S2.
-    pose (n9_13 f_S2 X) as n9_13a.
-    rewrite -> eqf_S2 in n9_13a.
-    exact (n9_13a S2).
+    pose (n9_13 f_S2 X) as n9_13.
+    rewrite -> eqf_S2 in n9_13.
+    rewrite -> n9_13 in S2.
+    exact S2.
   }
   assert (S4 : ∀ x, (Phi x ∨ ∀ y, Phi y) -> Phi x).
   {
-    assert (S3_i1 : ∀ x, exists y, ~ (Phi x ∨ Phi y) \/ Phi x).
+    assert (S3_i1 : ∀ x, exists y, ~ (Phi x ∨ Phi y) ∨ Phi x).
     {
       (* Here I'm lazy to prove without destructs. TODO: eliminate them *)
       intro x0. pose (S3 x0) as S3_1.
@@ -346,7 +343,7 @@ Proof.
     {
       remember (fun x y => ¬ (Phi x ∨ Phi y)) as f_S3 eqn:eqf_S3.
       pose (f_equal (fun (P : Prop → Prop -> Prop) => 
-        (forall x, exists y, (P x y) \/ Phi x)) eqf_S3) as eqf_S3_xy.
+        (∀ x, exists y, (P x y) ∨ Phi x)) eqf_S3) as eqf_S3_xy.
       simpl in eqf_S3_xy.
       (* setoid_rewrite being unusable *)
       rewrite <- eqf_S3_xy in S3_i1.
@@ -356,7 +353,7 @@ Proof.
       pose (S3_i1 x0) as S3_i1_1.
       rewrite <- (n9_05 (f_S3 x0) (Phi x0)) in S3_i1_1.
       rewrite -> eqf_S3 in S3_i1_1.
-      rewrite <- (n9_01 (fun x => Phi x0 \/ Phi x)) in S3_i1_1.
+      rewrite <- (n9_01 (fun x => Phi x0 ∨ Phi x)) in S3_i1_1.
       rewrite <- (n9_04 Phi (Phi x0)) in S3_i1_1.
       exact S3_i1_1.
     }
@@ -378,8 +375,48 @@ Proof.
   exact S6.
 Qed.
 
-Theorem n9_31 : ∀ (Phi : Prop -> Prop), (∃ x : Prop, Phi x) ∨ (∃ x : Prop, Phi x) -> (∃ x : Prop, Phi x).
-Proof. Admitted.
+Theorem n9_31 (X : Prop) (Phi : Prop -> Prop) : 
+  ((∃ x : Prop, Phi x) ∨ (∃ x : Prop, Phi x)) -> (∃ x : Prop, Phi x).
+Proof. 
+  assert (S1 : (∀ y, Phi X ∨ Phi y) -> exists z, Phi z).
+  {
+    pose (n9_11 Phi X X) as n9_11. 
+    pose (n9_13 (fun y => Phi X ∨ Phi y) X) as n9_13.
+    replace (Phi X ∨ Phi X) with (∀ y : Prop, Phi X ∨ Phi y) in n9_11.
+    (* Seems Coq automatically admitted the proof here. We should use the n9_13
+    in normal case. Alternatively, can we just utilize this to create an Ltac
+    specifically for `n9_13`?!...... *)
+    exact n9_11.
+  }
+  assert (S2 : (exists y, Phi X ∨ Phi y) -> (exists z, Phi z)).
+  {
+    replace (∀ y : Prop, Phi X ∨ Phi y) with (∀ y : Prop, Phi y \/ Phi X)
+      in S1.
+    2: { (* NOTE: the right way is use setoid_rewrite on `Perm1_4`. Here being lazy *)
+      apply propositional_extensionality.
+      setoid_rewrite <- or_comm at 1.
+      reflexivity.
+    }
+    replace (∀ y : Prop, Phi y ∨ Phi X) with ((∀ x : Prop, Phi x) ∨ Phi X)
+      in S1 by apply n9_03.
+    remember (fun x => ~ Phi x) as f_S1 eqn:eqf_S1.
+    replace (∀ x : Prop, Phi x) with (∀ x : Prop, ~ ~(Phi x)) in S1.
+    2: {
+      apply propositional_extensionality.
+      split.
+      { exact (fun f x => (n2_14 (Phi x) (f x))). }
+      { exact (fun f x => (n2_12 (Phi x) (f x))). }
+    }
+    Print n9_02.
+    rewrite <- eqf_S1 in S1.
+    (* ∀ Phi : Prop → Prop, (∃ x : Prop, Phi x) ≠ ∀ x : Prop, ¬ Phi x *)
+    Print n9_02.
+  
+  }
+  
+
+  
+Admitted.
 
 Theorem n9_32 : ∀ (Phi : Prop -> Prop) (Q : Prop), Q -> (∀ x : Prop, Phi x) ∨ Q.
 Proof. Admitted.
