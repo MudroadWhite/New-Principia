@@ -262,7 +262,7 @@ Proof.
   assert (S8 : (∀ x, Phi x -> Psi x) -> (∃ x, Phi x) -> (∃ x, Psi x)).
   { 
     assert (S7_i1 : (∀ x : Prop, Phi x → Psi x)
-      → (¬¬(∀ y : Prop, ¬ Phi y)) ∨ ∃ z : Prop, Psi z).
+      -> (¬¬(∀ y : Prop, ¬ Phi y)) ∨ ∃ z : Prop, Psi z).
     {
       rewrite <- n9_01 in S7.
       rewrite <- Impl1_01 in S7.
@@ -273,13 +273,12 @@ Proof.
       }
       exact S7.
     }
-    rewrite -> n9_01 in S7_i1.
+    rewrite <- n9_02 in S7_i1.
     rewrite <- Impl1_01 in S7_i1.
-    (* NOTE: *9.02 in original text has not been used *)
-    replace (∃ x : Prop, ¬ ¬ Phi x) with (∃ x : Prop, Phi x) in S7_i1.
+    replace (¬ ¬ ∃ x : Prop, Phi x) with (∃ x : Prop, Phi x) in S7_i1.
     2: {
       apply propositional_extensionality. 
-      setoid_rewrite -> n4_13 at 3.
+      setoid_rewrite <- n4_13.
       reflexivity.
     }
     exact S7_i1.
@@ -359,8 +358,9 @@ Proof.
   exact S6.
 Qed.
 
-(* I think thw proof to this proposition is wrong. TODO: find another way to do this
-in the future *)
+(* I think thw proof to this proposition is totally wrong, but all 
+russell wants to do is just introducing in an `exists`. TODO: find 
+another way to do this correctly in the future *)
 Theorem n9_31 (X : Prop) (Phi : Prop -> Prop) : 
   ((∃ x : Prop, Phi x) ∨ (∃ x : Prop, Phi x)) -> (∃ x : Prop, Phi x).
 Proof. 
@@ -387,11 +387,7 @@ Proof.
     replace (∀ y : Prop, (Phi y ∨ Phi X  → ∃ z : Prop, Phi z))
       with ((∀ y : Prop, Phi y) ∨ Phi X  → ∃ z : Prop, Phi z)
       in S1.
-    2: {
-      admit.
-      (* ∀ Phi : Prop → Prop, (¬ ∃ x : Prop, Phi x) = ∀ x : Prop, ¬ Phi x *)
-      (* apply n9_03. *)
-    }
+    2: { admit. }
     replace (∀ y : Prop, Phi y) with (∀ y : Prop, ¬ ¬ (Phi y)) in S1.
     2: { admit. }
     remember (fun x => ¬ Phi x) as f_S1 eqn:eqf_S1.
@@ -412,29 +408,72 @@ Proof.
   }
 Admitted.
 
-Theorem n9_32 : ∀ (Phi : Prop -> Prop) (Q : Prop), Q -> (∀ x : Prop, Phi x) ∨ Q.
-Proof. Admitted.
+Theorem n9_32 (Phi : Prop -> Prop) (Q X : Prop) : Q -> (∀ x : Prop, Phi x) ∨ Q.
+Proof. 
+  (* TOOLS *)
+  set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
+    as Impl1_01a.
+  (* ******** *)
+  pose (Add1_3 (Phi X) Q) as S1.
+  assert (S2 : forall x, Q -> (Phi x) \/ Q).
+  {
+    pose (n9_13 (fun x => Q -> (Phi x) \/ Q) X) as n9_13.
+    replace (Q → Phi X ∨ Q) with (forall x, Q -> (Phi x) \/ Q) in S1.
+    exact S1.
+  }
+  assert (S3 : Q -> forall x, Phi x \/ Q).
+  { 
+    pose proof (n9_25 (~ Q) (fun x => Phi x \/ Q)) as n9_25.
+    simpl in n9_25.
+    replace (∀ x : Prop, Q → Phi x ∨ Q) with (∀ x : Prop, ~ Q \/ (Phi x ∨ Q)).
+    2: {
+      setoid_rewrite -> Impl1_01a.
+    }
 
+    replace (∀ x : Prop, Q ∨ Phi x) with (∀ x : Prop, Phi x \/ Q) in n9_25.
+    2: { admit. }
+    exact (n9_25 S2).
+
+  }
+  assert (S4 : Q -> (∀ x : Prop, Phi x) ∨ Q).
+  { admit. }
+  exact S4.
+Admitted.
+  
 Theorem n9_33 : ∀ (Phi : Prop -> Prop) (Q : Prop), Q -> (∃ x : Prop, Phi x) ∨ Q.
-Proof. Admitted.
+Proof. 
+  (* Proof as above *)
+Admitted.
 
 Theorem n9_34 : ∀ (Phi : Prop -> Prop) (P : Prop), (∀ x : Prop, Phi x) -> P ∨ (∀ x : Prop, Phi x).
-Proof. Admitted.
+Proof. 
+  
+Admitted.
 
 Theorem n9_35 : ∀ (Phi : Prop -> Prop) (P : Prop), (∃ x : Prop, Phi x) -> P ∨ (∃ x : Prop, Phi x).
-Proof. Admitted.
+Proof. 
+  (* Proof as above *)
+Admitted.
 
 Theorem n9_36 : ∀ (Phi : Prop -> Prop) (P : Prop), P ∨ (∀ x : Prop, Phi x) -> (∀ x : Prop, Phi x) ∨ P.
-Proof. Admitted.
+Proof. 
+  
+Admitted.
 
 Theorem n9_361 : ∀ (Phi : Prop -> Prop) (P : Prop), (∀ x : Prop, Phi x) ∨ P -> P ∨ (∀ x : Prop, Phi x).
-Proof. Admitted.
+Proof. 
+  (* Proof as above *)
+Admitted.
 
 Theorem n9_37 : ∀ (Phi : Prop -> Prop) (P : Prop), P ∨ (∃ x : Prop, Phi x) -> (∃ x : Prop, Phi x) ∨ P.
-Proof. Admitted.
+Proof.
+  (* Proof as above *)
+Admitted.
 
 Theorem n9_371 : ∀ (Phi : Prop -> Prop) (P : Prop), (∃ x : Prop, Phi x) ∨ P -> P ∨ (∃ x : Prop, Phi x).
-Proof. Admitted.
+Proof. 
+  (* Proof as above *)
+Admitted.
 
 Theorem n9_4 : ∀ (Phi : Prop -> Prop) (P Q : Prop), P ∨ Q ∨ (∀ x : Prop, Phi x)
   -> Q ∨ P ∨ (∀ x : Prop, Phi x).
