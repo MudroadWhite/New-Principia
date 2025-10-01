@@ -21,6 +21,8 @@ Extra real variables could occur in `Theorem` definitions, if original text has 
 
 Orders of these extra variables are currently unspecified, and can be messy through the signatures.
 
+TODO: maybe there is a much clearer way to carefully distinguish between apparent and real variables
+
 ## Proving theorems, by steps
 
 TODO:
