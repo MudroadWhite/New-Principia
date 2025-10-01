@@ -414,7 +414,7 @@ Proof.
   (* set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a. *)
   (* ******** *)
-  pose (Add1_3 (Phi X) Q) as S1.
+  pose proof (Add1_3 (Phi X) Q) as S1.
   assert (S2 : forall x, Q -> (Phi x) \/ Q).
   {
     pose (n9_13 (fun x => Q -> (Phi x) \/ Q) X) as n9_13.
@@ -445,24 +445,47 @@ Proof.
   exact S4.
 Admitted.
   
-Theorem n9_33 : ∀ (Phi : Prop -> Prop) (Q : Prop), Q -> (∃ x : Prop, Phi x) ∨ Q.
+Theorem n9_33 (Phi : Prop -> Prop) (Q : Prop) : Q -> (∃ x : Prop, Phi x) ∨ Q.
 Proof. 
   (* Proof as above *)
 Admitted.
 
-Theorem n9_34 : ∀ (Phi : Prop -> Prop) (P : Prop), (∀ x : Prop, Phi x) -> P ∨ (∀ x : Prop, Phi x).
+Theorem n9_34 (Phi : Prop -> Prop) (X P : Prop) : 
+  (∀ x : Prop, Phi x) -> P ∨ (∀ x : Prop, Phi x).
 Proof. 
-  
-Admitted.
+  pose proof (Add1_3 P (Phi X)) as S1.
+  assert (S2 : forall x, Phi x -> P \/ Phi x).
+  { 
+    pose proof (n9_13 (fun x => Phi x -> P \/ Phi x) X).
+    replace (Phi X → P ∨ Phi X) with (forall x, Phi x -> P \/ Phi x)
+      in S1.
+    exact S1.
+  }
+  assert (S3 : (forall x, Phi x) -> (forall x, P \/ Phi x)).
+  { exact (n9_21 X Phi (fun x => P \/ Phi x) S2). }
+  assert (S4 : (∀ x : Prop, Phi x) -> P ∨ (∀ x : Prop, Phi x)).
+  {
+    pose proof (n9_04 Phi P) as n9_04. 
+    rewrite <- n9_04 in S3.
+    exact S3.
+  }
+  exact S4.
+Qed.
 
-Theorem n9_35 : ∀ (Phi : Prop -> Prop) (P : Prop), (∃ x : Prop, Phi x) -> P ∨ (∃ x : Prop, Phi x).
+Theorem n9_35 (Phi : Prop -> Prop) (P : Prop) : (∃ x : Prop, Phi x) -> P ∨ (∃ x : Prop, Phi x).
 Proof. 
   (* Proof as above *)
 Admitted.
 
-Theorem n9_36 : ∀ (Phi : Prop -> Prop) (P : Prop), P ∨ (∀ x : Prop, Phi x) -> (∀ x : Prop, Phi x) ∨ P.
+Theorem n9_36 (Phi : Prop -> Prop) (X P : Prop) : P ∨ (∀ x : Prop, Phi x) -> (∀ x : Prop, Phi x) ∨ P.
 Proof. 
-  
+  assert (S1 : (P \/ Phi X) -> (Phi X \/ P)).
+  { admit. }
+  assert (S2 : forall x, (P \/ Phi x) -> (Phi x \/ P)).
+  { admit. }
+  assert (S3 : P ∨ (∀ x : Prop, Phi x) -> (∀ x : Prop, Phi x) ∨ P).
+  { admit. }
+  exact S3.
 Admitted.
 
 Theorem n9_361 : ∀ (Phi : Prop -> Prop) (P : Prop), (∀ x : Prop, Phi x) ∨ P -> P ∨ (∀ x : Prop, Phi x).
