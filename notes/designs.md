@@ -13,7 +13,7 @@ The convention below starts from chapter 9.
 
 Functions are supposed to be named to keep in the same style with original text. They are either direct greek letters like `φ` or their upper-cased English equivalent like `Phi`.
 
-In original text, apparent variables are quantified variables in `forall`, `exists` and so on. They're usually lower case literals like `x`.
+By original text, apparent variables are quantified variables in `forall`, `exists` and so on. They're usually lower case literals like `x`.
 
 Real variables are variables directly introduced into the propositions. They're usually upper case literals like `X`. In *theorems*, they are stated at the left hand side of the theorem's definition.
 
