@@ -479,14 +479,24 @@ Admitted.
 
 Theorem n9_36 (Phi : Prop -> Prop) (X P : Prop) : P ∨ (∀ x : Prop, Phi x) -> (∀ x : Prop, Phi x) ∨ P.
 Proof. 
-  assert (S1 : (P \/ Phi X) -> (Phi X \/ P)).
-  { admit. }
-  assert (S2 : forall x, (P \/ Phi x) -> (Phi x \/ P)).
-  { admit. }
+  pose proof (Perm1_4 P (Phi X)) as S1.
+  assert (S2 : (forall x, (P \/ Phi x)) -> forall x, (Phi x \/ P)).
+  { 
+    pose proof (n9_13 (fun x => P ∨ Phi x → Phi x ∨ P) X) as n9_13a.
+    rewrite -> n9_13a in S1.
+    pose proof (n9_21 X (fun x => P \/ Phi x) (fun x => Phi x \/ P)) as n9_21.
+    exact (n9_21 S1).
+  }
   assert (S3 : P ∨ (∀ x : Prop, Phi x) -> (∀ x : Prop, Phi x) ∨ P).
-  { admit. }
+  { 
+    pose proof (n9_04 Phi P) as n9_04.
+    rewrite <- n9_04 in S2.
+    pose proof (n9_03 Phi P) as n9_03.
+    rewrite <- n9_03 in S2.
+    exact S2.
+  }
   exact S3.
-Admitted.
+Qed.
 
 Theorem n9_361 : ∀ (Phi : Prop -> Prop) (P : Prop), (∀ x : Prop, Phi x) ∨ P -> P ∨ (∀ x : Prop, Phi x).
 Proof. 
