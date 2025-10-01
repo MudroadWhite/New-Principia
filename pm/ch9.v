@@ -517,9 +517,25 @@ Theorem n9_4 (Phi : Prop -> Prop) (P Q : Prop) : P ∨ Q ∨ (∀ x : Prop, Phi 
   -> Q ∨ P ∨ (∀ x : Prop, Phi x).
 Proof. 
   assert (S1 : (forall x, P \/ (Q \/ Phi x)) -> (forall x, Q \/ (P \/ Phi x))).
-  { admit. }
+  {
+    pose proof (fun x => (Assoc1_5 P Q (Phi x))) as Assoc1_5.
+    pose proof (n9_21 P (fun x => P \/ Q \/ Phi x) (fun x => Q \/ P \/ Phi x)) as n9_21.
+    exact (n9_21 Assoc1_5).
+  }
   assert (S2 : P ∨ Q ∨ (∀ x : Prop, Phi x) -> Q ∨ P ∨ (∀ x : Prop, Phi x)).
-  { admit. }
+  { 
+    replace (∀ x : Prop, P ∨ Q ∨ Phi x) with (∀ x : Prop, (P ∨ Q) ∨ Phi x) in S1
+      by admit.
+    replace (∀ x : Prop, Q ∨ P ∨ Phi x) with (∀ x : Prop, (Q ∨ P) ∨ Phi x) in S1
+      by admit.
+    rewrite <- (n9_04 Phi (P \/ Q)) in S1.
+    rewrite <- (n9_04 Phi (Q \/ P)) in S1.
+    replace ((P ∨ Q) ∨ (∀ x : Prop, Phi x)) with (P ∨ Q ∨ ∀ x : Prop, Phi x) in S1
+      by admit.
+    replace ((Q ∨ P) ∨ ∀ x : Prop, Phi x) with (Q ∨ P ∨ ∀ x : Prop, Phi x) in S1
+      by admit.
+    exact S1.
+  }
   exact S2.
 Admitted.
 
