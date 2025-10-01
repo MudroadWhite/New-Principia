@@ -73,22 +73,21 @@ Definition n9_14 : ∀ (x a : Prop) (Phi : Prop -> Prop),
 (* Pp n9_15 : If for some `a` there is a proposition `Phi a`, then there is a function
   `phi x^` and vice versa. *)
 
-Theorem n9_2 (y : Prop) : ∀ (Phi : Prop → Prop), (∀ x : Prop, Phi x) → Phi y.
-  Proof. intros.
+Theorem n9_2 (Y : Prop) (Phi : Prop → Prop) : (∀ x : Prop, Phi x) → Phi Y.
+Proof. 
   (** Step 1 **)
-  specialize n2_1 with (Phi y). intros n2_1a.
+  pose (n2_1 (Phi Y)) as n2_1.
   (** Step 2 **)
-  specialize n9_1 with (fun x : Prop => ¬ Phi x ∨ Phi y) y. intros n9_1a.
-  simpl in n9_1a.
-  MP n2_1a n9_1a.
+  pose (n9_1 (fun x : Prop => ¬ Phi x ∨ Phi Y) Y) as n9_1.
+  MP n2_1 n9_1. simpl in n9_1.
   (** Step 3 **)
-  pose (n9_05 (fun x : Prop => ¬ Phi x) (Phi y)) as n9_05a. cbn in n9_05a.
-  rewrite <- n9_05a in n9_1a.
+  pose (n9_05 (fun x : Prop => ¬ Phi x) (Phi Y)) as n9_05. cbn in n9_05.
+  rewrite <- n9_05 in n9_1.
   (** Step 4 **)
-  specialize n9_01 with Phi. intros n9_01a.
-  rewrite <- n9_01a in n9_1a.
-  rewrite <- Impl1_01 in n9_1a. apply n9_1a.
-  apply H.
+  pose (n9_01 Phi) as n9_01.
+  rewrite <- n9_01 in n9_1.
+  rewrite <- Impl1_01 in n9_1. 
+  apply n9_1.
 Qed.
 
 Theorem n9_21 (Z : Prop) (Phi Psi : Prop → Prop) :
@@ -361,6 +360,7 @@ Qed.
 (* I think thw proof to this proposition is totally wrong, but all 
 russell wants to do is just introducing in an `exists`. TODO: find 
 another way to do this correctly in the future *)
+(* TODO: 9.13, 9.1, 9.22? *)
 Theorem n9_31 (X : Prop) (Phi : Prop -> Prop) : 
   ((∃ x : Prop, Phi x) ∨ (∃ x : Prop, Phi x)) -> (∃ x : Prop, Phi x).
 Proof. 
