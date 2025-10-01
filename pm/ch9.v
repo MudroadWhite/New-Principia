@@ -411,8 +411,8 @@ Admitted.
 Theorem n9_32 (Phi : Prop -> Prop) (Q X : Prop) : Q -> (∀ x : Prop, Phi x) ∨ Q.
 Proof. 
   (* TOOLS *)
-  set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
-    as Impl1_01a.
+  (* set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
+    as Impl1_01a. *)
   (* ******** *)
   pose (Add1_3 (Phi X) Q) as S1.
   assert (S2 : forall x, Q -> (Phi x) \/ Q).
@@ -425,18 +425,23 @@ Proof.
   { 
     pose proof (n9_25 (~ Q) (fun x => Phi x \/ Q)) as n9_25.
     simpl in n9_25.
-    replace (∀ x : Prop, Q → Phi x ∨ Q) with (∀ x : Prop, ~ Q \/ (Phi x ∨ Q)).
+    replace (∀ x : Prop, Q → Phi x ∨ Q) with (∀ x : Prop, ~ Q \/ (Phi x ∨ Q))
+      in S2.
     2: {
-      setoid_rewrite -> Impl1_01a.
+      (* TODO: use f_equal here to generate the right equation? *)
+      Print f_equal.
+      admit.
     }
-
-    replace (∀ x : Prop, Q ∨ Phi x) with (∀ x : Prop, Phi x \/ Q) in n9_25.
-    2: { admit. }
-    exact (n9_25 S2).
-
+    pose (n9_25 S2) as S2_1.
+    rewrite <- Impl1_01 in S2_1.
+    exact S2_1.
   }
   assert (S4 : Q -> (∀ x : Prop, Phi x) ∨ Q).
-  { admit. }
+  { 
+    intro Q0. pose (S3 Q0) as S3_1.
+    rewrite <- (n9_03 Phi Q) in S3_1.
+    exact S3_1.
+  }
   exact S4.
 Admitted.
   
