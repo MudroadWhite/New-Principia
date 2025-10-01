@@ -361,6 +361,7 @@ Qed.
 (* I think thw proof to this proposition is totally wrong, but all 
 russell wants to do is just introducing in an `exists`. TODO: find 
 another way to do this correctly in the future *)
+(* TODO: 9.13, 9.22? *)
 Theorem n9_31 (X : Prop) (Phi : Prop -> Prop) : 
   ((∃ x : Prop, Phi x) ∨ (∃ x : Prop, Phi x)) -> (∃ x : Prop, Phi x).
 Proof. 
@@ -377,7 +378,7 @@ Proof.
   assert (S2 : (exists y, Phi X ∨ Phi y) -> (exists z, Phi z)).
   {
     replace (∀ y : Prop, Phi X ∨ Phi y  → ∃ z : Prop, Phi z) 
-      with (∀ y : Prop, Phi y \/ Phi X  → ∃ z : Prop, Phi z)
+      with (∀ y : Prop, Phi y ∨ Phi X  → ∃ z : Prop, Phi z)
       in S1.
     2: { (* NOTE: the right way is use setoid_rewrite on `Perm1_4`. Here being lazy *)
       apply propositional_extensionality.
@@ -415,17 +416,17 @@ Proof.
     as Impl1_01a. *)
   (* ******** *)
   pose proof (Add1_3 (Phi X) Q) as S1.
-  assert (S2 : forall x, Q -> (Phi x) \/ Q).
+  assert (S2 : ∀ x, Q -> (Phi x) ∨ Q).
   {
-    pose (n9_13 (fun x => Q -> (Phi x) \/ Q) X) as n9_13.
-    replace (Q → Phi X ∨ Q) with (forall x, Q -> (Phi x) \/ Q) in S1.
+    pose (n9_13 (fun x => Q -> (Phi x) ∨ Q) X) as n9_13.
+    replace (Q → Phi X ∨ Q) with (∀ x, Q -> (Phi x) ∨ Q) in S1.
     exact S1.
   }
-  assert (S3 : Q -> forall x, Phi x \/ Q).
+  assert (S3 : Q -> ∀ x, Phi x ∨ Q).
   { 
-    pose proof (n9_25 (~ Q) (fun x => Phi x \/ Q)) as n9_25.
+    pose proof (n9_25 (~ Q) (fun x => Phi x ∨ Q)) as n9_25.
     simpl in n9_25.
-    replace (∀ x : Prop, Q → Phi x ∨ Q) with (∀ x : Prop, ~ Q \/ (Phi x ∨ Q))
+    replace (∀ x : Prop, Q → Phi x ∨ Q) with (∀ x : Prop, ~ Q ∨ (Phi x ∨ Q))
       in S2.
     2: {
       (* TODO: use f_equal here to generate the right equation? *)
@@ -454,15 +455,15 @@ Theorem n9_34 (Phi : Prop -> Prop) (X P : Prop) :
   (∀ x : Prop, Phi x) -> P ∨ (∀ x : Prop, Phi x).
 Proof. 
   pose proof (Add1_3 P (Phi X)) as S1.
-  assert (S2 : forall x, Phi x -> P \/ Phi x).
+  assert (S2 : ∀ x, Phi x -> P ∨ Phi x).
   { 
-    pose proof (n9_13 (fun x => Phi x -> P \/ Phi x) X).
-    replace (Phi X → P ∨ Phi X) with (forall x, Phi x -> P \/ Phi x)
+    pose proof (n9_13 (fun x => Phi x -> P ∨ Phi x) X).
+    replace (Phi X → P ∨ Phi X) with (∀ x, Phi x -> P ∨ Phi x)
       in S1.
     exact S1.
   }
-  assert (S3 : (forall x, Phi x) -> (forall x, P \/ Phi x)).
-  { exact (n9_21 X Phi (fun x => P \/ Phi x) S2). }
+  assert (S3 : (∀ x, Phi x) -> (∀ x, P ∨ Phi x)).
+  { exact (n9_21 X Phi (fun x => P ∨ Phi x) S2). }
   assert (S4 : (∀ x : Prop, Phi x) -> P ∨ (∀ x : Prop, Phi x)).
   {
     pose proof (n9_04 Phi P) as n9_04. 
@@ -480,11 +481,11 @@ Admitted.
 Theorem n9_36 (Phi : Prop -> Prop) (X P : Prop) : P ∨ (∀ x : Prop, Phi x) -> (∀ x : Prop, Phi x) ∨ P.
 Proof. 
   pose proof (Perm1_4 P (Phi X)) as S1.
-  assert (S2 : (forall x, (P \/ Phi x)) -> forall x, (Phi x \/ P)).
+  assert (S2 : (∀ x, (P ∨ Phi x)) -> ∀ x, (Phi x ∨ P)).
   { 
     pose proof (n9_13 (fun x => P ∨ Phi x → Phi x ∨ P) X) as n9_13a.
     rewrite -> n9_13a in S1.
-    pose proof (n9_21 X (fun x => P \/ Phi x) (fun x => Phi x \/ P)) as n9_21.
+    pose proof (n9_21 X (fun x => P ∨ Phi x) (fun x => Phi x ∨ P)) as n9_21.
     exact (n9_21 S1).
   }
   assert (S3 : P ∨ (∀ x : Prop, Phi x) -> (∀ x : Prop, Phi x) ∨ P).
@@ -516,10 +517,10 @@ Admitted.
 Theorem n9_4 (Phi : Prop -> Prop) (P Q : Prop) : P ∨ Q ∨ (∀ x : Prop, Phi x)
   -> Q ∨ P ∨ (∀ x : Prop, Phi x).
 Proof. 
-  assert (S1 : (forall x, P \/ (Q \/ Phi x)) -> (forall x, Q \/ (P \/ Phi x))).
+  assert (S1 : (∀ x, P ∨ (Q ∨ Phi x)) -> (∀ x, Q ∨ (P ∨ Phi x))).
   {
     pose proof (fun x => (Assoc1_5 P Q (Phi x))) as Assoc1_5.
-    pose proof (n9_21 P (fun x => P \/ Q \/ Phi x) (fun x => Q \/ P \/ Phi x)) as n9_21.
+    pose proof (n9_21 P (fun x => P ∨ Q ∨ Phi x) (fun x => Q ∨ P ∨ Phi x)) as n9_21.
     exact (n9_21 Assoc1_5).
   }
   assert (S2 : P ∨ Q ∨ (∀ x : Prop, Phi x) -> Q ∨ P ∨ (∀ x : Prop, Phi x)).
@@ -528,8 +529,8 @@ Proof.
       by admit.
     replace (∀ x : Prop, Q ∨ P ∨ Phi x) with (∀ x : Prop, (Q ∨ P) ∨ Phi x) in S1
       by admit.
-    rewrite <- (n9_04 Phi (P \/ Q)) in S1.
-    rewrite <- (n9_04 Phi (Q \/ P)) in S1.
+    rewrite <- (n9_04 Phi (P ∨ Q)) in S1.
+    rewrite <- (n9_04 Phi (Q ∨ P)) in S1.
     replace ((P ∨ Q) ∨ (∀ x : Prop, Phi x)) with (P ∨ Q ∨ ∀ x : Prop, Phi x) in S1
       by admit.
     replace ((Q ∨ P) ∨ ∀ x : Prop, Phi x) with (Q ∨ P ∨ ∀ x : Prop, Phi x) in S1
@@ -569,9 +570,23 @@ Proof.
   (* Proof as above *)
 Admitted.
 
-Theorem n9_5 (Phi : Prop -> Prop) (P Q : Prop) : 
+Theorem n9_5 (Phi : Prop -> Prop) (P Q : Prop) (Y : Prop) : 
   (P -> Q) -> ((P ∨ ∀ x : Prop, Phi x) -> (Q ∨ ∀ x : Prop, Phi x)).
-Proof. Admitted.
+Proof. 
+  assert (S1 : (P -> Q) -> ((P ∨ Phi Y) -> (Q ∨ Phi Y))).
+  { admit. }
+  assert (S2 : (P -> Q) -> exists x, (P ∨ Phi x) -> (Q ∨ Phi Y)).
+  { admit. }
+  assert (S3 : (P -> Q) -> ∀ y, exists x, (P ∨ Phi x) -> (Q ∨ Phi y)).
+  { admit. }
+  assert (S4 : (P -> Q) -> (exists x, (P ∨ Phi x)) ∨ ~ (∀ y, Q ∨ Phi y)).
+  { admit. }
+  assert (S5 : (P -> Q) -> (∀ x, (P ∨ Phi x)) ∨ (∀ y, Q ∨ Phi y)).
+  { admit. }
+  assert (S6 : (P -> Q) -> ((P ∨ ∀ x : Prop, Phi x) -> (Q ∨ ∀ x : Prop, Phi x))).
+  { admit. }
+  exact S6.
+Admitted.
 
 Theorem n9_501 (Phi : Prop -> Prop) (P Q : Prop) : (P -> Q) 
   -> (P ∨ ∃ x : Prop, Phi x) -> (Q ∨ ∃ x : Prop, Phi x).
@@ -579,9 +594,17 @@ Proof.
   (* Proof as above *)
 Admitted.
 
-Theorem n9_51 (Phi : Prop -> Prop) (P R : Prop) : 
+Theorem n9_51 (Phi : Prop -> Prop) (P R : Prop) (X : Prop) : 
   (P -> ∀ x : Prop, Phi x) -> P ∨ R -> (∀ x : Prop, Phi x) ∨ R.
-Proof. Admitted.
+Proof. 
+  assert (S1 : (P -> Phi X) -> ((P ∨ R) -> (Phi X ∨ R))).
+  { admit. }
+  assert (S2 : (∀ x, P -> Phi x) -> (∀ x, (P ∨ R) -> (Phi x ∨ R))).
+  { admit. }
+  assert (S3 : (P -> ∀ x : Prop, Phi x) -> P ∨ R -> (∀ x : Prop, Phi x) ∨ R).
+  { admit. }
+  exact S3.
+Admitted.
 
 Theorem n9_511 (Phi : Prop -> Prop) (P R : Prop) : (P -> ∃ x : Prop, Phi x) 
   -> P ∨ R -> (∃ x : Prop, Phi x) ∨ R.
@@ -589,10 +612,18 @@ Proof.
   (* Proof as above *)
 Admitted.
 
-Theorem n9_52 (Phi : Prop -> Prop) (Q R : Prop) :
+Theorem n9_52 (Phi : Prop -> Prop) (Q R : Prop) (X : Prop) :
   ((∀ x : Prop, Phi x) -> Q) -> ((∀ x : Prop, Phi x) ∨ R) -> (Q ∨ R).
 Proof. 
-  (* Proof as above *)
+  assert (S1 : (Phi X -> Q) -> ((Phi X ∨ R) -> (Q ∨ R))).
+  { admit. }
+  assert (S2 : (exists x, (Phi x -> Q)) -> (exists x, (Phi x ∨ R) -> (Q ∨ R))).
+  { admit. }
+  assert (S3 : ((∀ x, Phi x) -> Q) -> (∀ x, Phi x ∨ R) -> (Q ∨ R)).
+  { admit. }
+  assert (S4 : ((∀ x : Prop, Phi x) -> Q) -> ((∀ x : Prop, Phi x) ∨ R) -> (Q ∨ R)).
+  { admit. }
+  exact S4.
 Admitted.
 
 Theorem n9_521 (Phi : Prop -> Prop) (Q R : Prop) :
