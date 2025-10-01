@@ -1,9 +1,9 @@
 # Design on Theorems and Propositions
 
 ## Definitions and Theorems
-Definitions and theorems are being used, not because of their *literal meaning*, but because of their availability to nicely represent a proposition, just like a "class" or a "structure" in typical programming languages.
+`Definition`s and `Theorem`s are being used, not because of their *literal meaning*, but because of their ability to nicely represent a proposition, just like a "class" or a "structure" in typical programming languages.
 
-Definitions are used to define primitive propositions and "definitions" in Principia. As the `Definition` mechanic being interfering with the foundation for Principia, Principia's `Definition`s are immediately `Admitted` without any proofs. Whether we should provide definitions with proofs should be considered in the future.
+`Definition`s are used to define primitive propositions and "definitions" in Principia. As the `Definition` mechanic being interfering with the foundation for Principia, Principia's `Definition`s are immediately `Admitted` without any proofs. Whether we should provide definitions with proofs should be considered in the future.
 
 Theorems are used to define theorems in Principia. You have to prove them and end with `Qed`s.
 
@@ -13,7 +13,7 @@ The convention below starts from chapter 9.
 
 Functions are supposed to be named to keep in the same style with original text. They are either direct greek letters like `φ` or their upper-cased English equivalent like `Phi`.
 
-By original text, apparent variables are quantified variables in `forall`, `exists` and so on. They're usually lower case literals like `x`.
+In original text, apparent variables are quantified variables in `forall`, `exists` and so on. They're usually lower case literals like `x`.
 
 Real variables are variables directly introduced into the propositions. They're usually upper case literals like `X`. In *theorems*, they are stated at the left hand side of the theorem's definition.
 
