@@ -377,34 +377,23 @@ Proof.
   assert (S2 : (exists y, Phi X ∨ Phi y) -> (exists z, Phi z)).
   {
     replace (∀ y : Prop, Phi X ∨ Phi y  → ∃ z : Prop, Phi z) 
-      with (∀ y : Prop, Phi y \/ Phi X  → ∃ z : Prop, Phi z)
-      in S1.
+      with (∀ y : Prop, Phi y \/ Phi X  → ∃ z : Prop, Phi z) in S1.
     2: { (* NOTE: the right way is use setoid_rewrite on `Perm1_4`. Here being lazy *)
       apply propositional_extensionality.
       setoid_rewrite <- or_comm at 1.
       reflexivity.
     }
     replace (∀ y : Prop, (Phi y ∨ Phi X  → ∃ z : Prop, Phi z))
-      with ((∀ y : Prop, Phi y) ∨ Phi X  → ∃ z : Prop, Phi z)
-      in S1.
-    2: { admit. }
-    replace (∀ y : Prop, Phi y) with (∀ y : Prop, ¬ ¬ (Phi y)) in S1.
-    2: { admit. }
+      with ((∀ y : Prop, Phi y) ∨ Phi X  → ∃ z : Prop, Phi z) in S1 by admit.
+    replace (∀ y : Prop, Phi y) with (∀ y : Prop, ¬ ¬ (Phi y)) in S1 by admit.
     remember (fun x => ¬ Phi x) as f_S1 eqn:eqf_S1.
-    (* replace (∀ y : Prop, Phi X ∨ Phi y → ∃ z : Prop, Phi z)
-      with (∀ y : Prop, Phi X ∨ ¬ ¬(Phi y) → ∃ z : Prop, Phi z)
-      in S1.
-    2: {
-      symmetry. apply propositional_extensionality.
-      setoid_rewrite -> n4_13 at 7. reflexivity.
-    } *)
     replace (∀ x : Prop, ¬ ¬ Phi x) with (∀ x : Prop, ¬ (f_S1 x)) in S1
       by (rewrite -> eqf_S1; reflexivity).
     replace (∀ x : Prop, ¬ f_S1 x) with (¬ (∃ x : Prop, f_S1 x)) in S1
       by exact (n9_02 f_S1).
     rewrite -> eqf_S1 in S1.
-    replace (¬ (∃ x : Prop, f_S1 x)) with (∃ x : Prop, f_S1 x).
-    admit. admit.
+    replace (¬ (∃ x : Prop, f_S1 x)) with (∃ x : Prop, f_S1 x) by admit.
+    admit.
   }
 Admitted.
 
@@ -429,7 +418,25 @@ Proof.
       in S2.
     2: {
       (* TODO: use f_equal here to generate the right equation? *)
-      Print f_equal.
+      pose Impl1_01 as Impl1_01. symmetry in Impl1_01.
+      (* pose f_equal as f_equal'. *)
+      Require Import Coq.Logic.FunctionalExtensionality.
+      Print functional_extensionality.
+      pose (functional_extensionality
+        
+        (Impl1_01 X Q)) as functional_extensionality.
+      (* pose (f_equal (fun (P : Prop → Prop) => 
+      (exists y1, ¬ (Phi z1 → Psi z1) ∨ (P y1))) eqf_S4) as eqf_S4_y1. *)
+      pose (fun (P Q : Prop) =>
+      (f_equal [A := Prop] Prop (fun (P' : Prop -> Prop) =>
+        (forall x : Prop, P' x)) 
+        (¬ P ∨ Q)
+        (P → Q)
+        )) as f_equal_1. simpl in f_equal_1.
+      pose (f_equal_1 )
+        (Impl1_01 )) as f_equal_1.
+        (Q) ) as f_equal_1.
+        (fun x => (Phi x) \/ Q) ) as f_equal_1.
       admit.
     }
     pose (n9_25 S2) as S2_1.
