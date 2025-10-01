@@ -513,54 +513,78 @@ Proof.
   (* Proof as above *)
 Admitted.
 
-Theorem n9_4 : ∀ (Phi : Prop -> Prop) (P Q : Prop), P ∨ Q ∨ (∀ x : Prop, Phi x)
+Theorem n9_4 (Phi : Prop -> Prop) (P Q : Prop) : P ∨ Q ∨ (∀ x : Prop, Phi x)
   -> Q ∨ P ∨ (∀ x : Prop, Phi x).
-Proof. Admitted.
+Proof. 
+  assert (S1 : (forall x, P \/ (Q \/ Phi x)) -> (forall x, Q \/ (P \/ Phi x))).
+  { admit. }
+  assert (S2 : P ∨ Q ∨ (∀ x : Prop, Phi x) -> Q ∨ P ∨ (∀ x : Prop, Phi x)).
+  { admit. }
+  exact S2.
+Admitted.
 
-Theorem n9_401 : ∀ (Phi : Prop -> Prop) (P Q : Prop), P ∨ Q ∨ (∃ x : Prop, Phi x)
+Theorem n9_401 (Phi : Prop -> Prop) (P Q : Prop) : P ∨ Q ∨ (∃ x : Prop, Phi x)
   -> Q ∨ P ∨ (∃ x : Prop, Phi x).
-Proof. Admitted.
+Proof. 
+  (* Proof as above *)
+Admitted.
 
-Theorem n9_41 : ∀ (Phi : Prop -> Prop) (P R : Prop), P ∨ (∀ x : Prop, Phi x) ∨ R
+Theorem n9_41 (Phi : Prop -> Prop) (P R : Prop) : P ∨ (∀ x : Prop, Phi x) ∨ R
   -> (∀ x : Prop, Phi x) ∨ P ∨ R.
-Proof. Admitted.
+Proof. 
+  (* Proof as above *)
+Admitted.
 
-Theorem n9_411 : ∀ (Phi : Prop -> Prop) (P R : Prop), P ∨ (∃ x : Prop, Phi x) ∨ R
+Theorem n9_411 (Phi : Prop -> Prop) (P R : Prop) : P ∨ (∃ x : Prop, Phi x) ∨ R
   -> (∃ x : Prop, Phi x) ∨ P ∨ R.
-Proof. Admitted.
+Proof. 
+  (* Proof as above *)
+Admitted.
 
-Theorem n9_42 : ∀ (Phi : Prop -> Prop) (Q R : Prop), (∀ x : Prop, Phi x) ∨ Q ∨ R
+Theorem n9_42 (Phi : Prop -> Prop) (Q R : Prop) : (∀ x : Prop, Phi x) ∨ Q ∨ R
   -> Q ∨ (∀ x : Prop, Phi x) ∨ R.
-Proof. Admitted.
+Proof. 
+  (* Proof as above *)
+Admitted.
 
-Theorem n9_421 : ∀ (Phi : Prop -> Prop) (Q R : Prop), (∃ x : Prop, Phi x) ∨ Q ∨ R
+Theorem n9_421 (Phi : Prop -> Prop) (Q R : Prop) : (∃ x : Prop, Phi x) ∨ Q ∨ R
   -> Q ∨ (∃ x : Prop, Phi x) ∨ R.
+Proof. 
+  (* Proof as above *)
+Admitted.
+
+Theorem n9_5 (Phi : Prop -> Prop) (P Q : Prop) : 
+  (P -> Q) -> ((P ∨ ∀ x : Prop, Phi x) -> (Q ∨ ∀ x : Prop, Phi x)).
 Proof. Admitted.
 
-(* TODO: Accuracy in understanding? *)
-Theorem n9_5 : ∀ (Phi : Prop -> Prop) (P Q : Prop), (P -> Q) 
-  -> (P ∨ ∀ x : Prop, Phi x) -> (Q ∨ ∀ x : Prop, Phi x).
-Proof. Admitted.
-
-Theorem n9_501 : ∀ (Phi : Prop -> Prop) (P Q : Prop), (P -> Q) 
+Theorem n9_501 (Phi : Prop -> Prop) (P Q : Prop) : (P -> Q) 
   -> (P ∨ ∃ x : Prop, Phi x) -> (Q ∨ ∃ x : Prop, Phi x).
-Proof. Admitted.
+Proof. 
+  (* Proof as above *)
+Admitted.
 
-Theorem n9_51 : ∀ (Phi : Prop -> Prop) (P R : Prop), 
+Theorem n9_51 (Phi : Prop -> Prop) (P R : Prop) : 
   (P -> ∀ x : Prop, Phi x) -> P ∨ R -> (∀ x : Prop, Phi x) ∨ R.
 Proof. Admitted.
 
-Theorem n_9_511 : ∀ (Phi : Prop -> Prop) (P R : Prop), 
-  (P -> ∃ x : Prop, Phi x) -> P ∨ R -> (∃ x : Prop, Phi x) ∨ R.
-Proof. Admitted.
+Theorem n9_511 (Phi : Prop -> Prop) (P R : Prop) : (P -> ∃ x : Prop, Phi x) 
+  -> P ∨ R -> (∃ x : Prop, Phi x) ∨ R.
+Proof. 
+  (* Proof as above *)
+Admitted.
 
-(* TODO: Accuracy in understanding? *)
-Theorem n_9_52 : ∀ (Phi : Prop -> Prop) (Q R : Prop), 
-  ((∀ x : Prop, Phi x) -> Q) -> (∀ x : Prop, Phi x) ∨ R -> Q ∨ R.
-Proof. Admitted.
+Theorem n9_52 (Phi : Prop -> Prop) (Q R : Prop) :
+  ((∀ x : Prop, Phi x) -> Q) -> ((∀ x : Prop, Phi x) ∨ R) -> (Q ∨ R).
+Proof. 
+  (* Proof as above *)
+Admitted.
 
-Theorem n_9_521 : ∀ (Phi : Prop -> Prop) (Q R : Prop), 
+Theorem n9_521 (Phi : Prop -> Prop) (Q R : Prop) :
   ((∃ x : Prop, Phi x) -> Q) -> (∃ x : Prop, Phi x) ∨ R -> Q ∨ R.
-Proof. Admitted.
+Proof. 
+  (* Proof as above *)
+Admitted.
 
-(* Thm 9.6, 9.61 - 9.63: pure text propositions *)
+(* Thm 9.6, 9.61 - 9.63: pure text propositions
+TODO: write them down
+*)
