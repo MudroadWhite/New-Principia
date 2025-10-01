@@ -7,3 +7,4 @@ I started this project by
 - Setting up a Rocq project to contain the files
 - Fixing stuck proofs through ch 1-5
 - Starting the formalization from Chapter 9.
+- Simplifying `Nicod1_4.v`, `Yuelin.v`, `Jorgensen3_47.v`, `Lemma5_7.v` in Landon's original repository, cutting down 20% of their original LoC and greatly enhance their readability
