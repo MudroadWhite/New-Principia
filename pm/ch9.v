@@ -79,7 +79,6 @@ Theorem n9_2 (y : Prop) : ∀ (Phi : Prop → Prop), (∀ x : Prop, Phi x) → P
   specialize n2_1 with (Phi y). intros n2_1a.
   (** Step 2 **)
   specialize n9_1 with (fun x : Prop => ¬ Phi x ∨ Phi y) y. intros n9_1a.
-  simpl in n9_1a.
   MP n2_1a n9_1a.
   (** Step 3 **)
   pose (n9_05 (fun x : Prop => ¬ Phi x) (Phi y)) as n9_05a. cbn in n9_05a.
@@ -361,7 +360,6 @@ Qed.
 (* I think thw proof to this proposition is totally wrong, but all 
 russell wants to do is just introducing in an `exists`. TODO: find 
 another way to do this correctly in the future *)
-(* TODO: 9.13, 9.22? *)
 Theorem n9_31 (X : Prop) (Phi : Prop -> Prop) : 
   ((∃ x : Prop, Phi x) ∨ (∃ x : Prop, Phi x)) -> (∃ x : Prop, Phi x).
 Proof. 
@@ -574,9 +572,24 @@ Theorem n9_5 (Phi : Prop -> Prop) (P Q : Prop) (Y : Prop) :
   (P -> Q) -> ((P ∨ ∀ x : Prop, Phi x) -> (Q ∨ ∀ x : Prop, Phi x)).
 Proof. 
   assert (S1 : (P -> Q) -> ((P ∨ Phi Y) -> (Q ∨ Phi Y))).
-  { admit. }
+  { 
+    (* *9.21 ignored *)
+    pose proof (Sum1_6 (Phi Y) P Q) as Sum1_6.
+    replace (Phi Y ∨ P) with (P \/ Phi Y) in Sum1_6 by admit.
+    replace (Phi Y ∨ Q) with (Q \/ Phi Y) in Sum1_6 by admit. 
+    exact Sum1_6.
+  }
   assert (S2 : (P -> Q) -> exists x, (P ∨ Phi x) -> (Q ∨ Phi Y)).
-  { admit. }
+  { 
+    remember (fun x => Phi x) as f_S1 eqn:eqf_S1.
+    pose (n9_1 f_S1 Y) as n9_1a. simpl in n9_1a.
+    replace (Phi Y) with (exists x, Phi x) in S1.
+    2: { 
+      apply n9_1a.
+    }
+    
+    pose n9_06 as n9_06.
+  }
   assert (S3 : (P -> Q) -> ∀ y, exists x, (P ∨ Phi x) -> (Q ∨ Phi y)).
   { admit. }
   assert (S4 : (P -> Q) -> (exists x, (P ∨ Phi x)) ∨ ~ (∀ y, Q ∨ Phi y)).
