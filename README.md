@@ -28,4 +28,4 @@ coq_makefile -f _CoqProject -o CoqMakefile
 make -f CoqMakefile
 ```
 
-If you have added a new file to be compiled, don't forget to also add an entry of that file into the `_CoqProject`.
+For any new files for the project, don't forget to add their paths into the `_CoqProject`.
