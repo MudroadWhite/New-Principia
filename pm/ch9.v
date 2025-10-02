@@ -11,10 +11,10 @@ Definition n9_01 (Phi : Prop -> Prop) :
 Definition n9_02 (Phi : Prop -> Prop) :
   (¬ (∃ x : Prop, Phi x)) = (∀ x : Prop, ¬ Phi x). Admitted.
 
-Definition n9_011 (x : Prop) (Phi : Prop -> Prop) : 
+Definition n9_011 (Phi : Prop -> Prop) : 
   (¬ (∀ x, Phi x)) = ¬ (∀ x, Phi x). Admitted.
 
-Definition n9_021 (x : Prop) (Phi : Prop -> Prop) :
+Definition n9_021 (Phi : Prop -> Prop) :
   (¬ (∃ x, Phi x)) = ¬ (∃ x, Phi x). Admitted.
 
 Definition n9_03 (Phi : Prop -> Prop) (p : Prop) :
@@ -29,18 +29,18 @@ Definition n9_05 (Phi : Prop -> Prop) (p : Prop) :
 Definition n9_06 (Phi : Prop -> Prop) (p : Prop) : 
   (p ∨ (∃ x : Prop, Phi x)) = ∃ x : Prop, p ∨ (Phi x). Admitted.
 
-Definition n9_07 : ∀ (Phi Psi : Prop → Prop),
+Definition n9_07 (Phi Psi : Prop → Prop) : 
   ((∀ x : Prop, Phi x) ∨ (∃ y : Prop, Psi y))
   = ∀ x : Prop, ∃ y : Prop, Phi x ∨ Psi y. Admitted.
 
 Definition n9_08 (Phi Psi : Prop → Prop) :
   ((∃ y, Psi y) ∨ (∀ x, Phi x)) = ∀ x, ∃ y, Psi y ∨ Phi x. Admitted.
 
-Definition n9_1 (Phi : Prop → Prop) (x : Prop) : 
-  (Phi x → ∃ z : Prop, Phi z). Admitted.
+Definition n9_1 (Phi : Prop → Prop) (X : Prop) : 
+  (Phi X → ∃ z : Prop, Phi z). Admitted.
 
-Definition n9_11 (Phi : Prop → Prop) (x y : Prop) : 
-  (Phi x ∨ Phi y) → (∃ z : Prop, Phi z). Admitted.
+Definition n9_11 (Phi : Prop → Prop) (X Y : Prop) : 
+  (Phi X ∨ Phi Y) → (∃ z : Prop, Phi z). Admitted.
 
 (* Pp n9_12 : What is implied by a true premiss is true. 
 I don't know how to translate this so far
@@ -67,8 +67,8 @@ Definition is_same_type (u v : Prop) : Prop. Admitted.
 
 Definition SameTy9_131 := is_same_type.
 
-Definition n9_14 : ∀ (x a : Prop) (Phi : Prop -> Prop),
-  Phi x -> (SameTy9_131 x a <-> Phi a). Admitted.
+Definition n9_14 : ∀ (X a : Prop) (Phi : Prop -> Prop),
+  Phi X -> (SameTy9_131 X a <-> Phi a). Admitted.
 
 (* Pp n9_15 : If for some `a` there is a proposition `Phi a`, then there is a function
   `phi x^` and vice versa. *)
@@ -111,28 +111,15 @@ Proof.
   pose proof (Id2_08 (Phi Z → Psi Z)) as S1.
   (** S2 **)
   assert (S2 : ∃ y : Prop, (Phi Z → Psi Z) → Phi y → Psi Z).
-  {
-    remember (fun x => (Phi Z → Psi Z) → Phi x → Psi Z) as f_S1 eqn:eqf_S1.
-    pose (n9_1 f_S1 Z) as n9_1.
-    rewrite -> eqf_S1 in n9_1. rewrite -> eqf_S1.
-    exact (n9_1 S1).
-  }
+  { exact (n9_1 (fun x => (Phi Z → Psi Z) → Phi x → Psi Z) Z S1). }
   (** S3 **)
   assert (S3 : ∃ x y : Prop, (Phi x → Psi x) → Phi y → Psi Z).
-  {
-    remember (fun x => (∃ z0 : Prop, (Phi x → Psi x) → Phi z0 → Psi Z))
-      as f_S2 eqn:eqf_S2.
-    pose (n9_1 f_S2 Z) as n9_1.
-    rewrite -> eqf_S2 in n9_1. rewrite -> eqf_S2.
-    exact (n9_1 S2).
-  }
+  { exact (n9_1 (fun x => (∃ z0 : Prop, (Phi x → Psi x) → Phi z0 → Psi Z)) Z S2). }
   (** S4 **)
   assert (S4 : ∀ z : Prop, ∃ x y : Prop, (Phi x → Psi x) → Phi y → Psi z).
   {
-    set (f_S3 := fun z => (∃ x y : Prop, (Phi x → Psi x) → Phi y → Psi z)).
-    change (∃ x y, (Phi x → Psi x) → Phi y → Psi Z) with (f_S3 Z) in S3.
-    change (∃ x y, (Phi x → Psi x) → Phi y → Psi Z) with (f_S3 z).
-    rewrite -> (n9_13 f_S3 Z) in S3.
+    rewrite -> (n9_13 (fun z => 
+      (∃ x y : Prop, (Phi x → Psi x) → Phi y → Psi z)) Z) in S3.
     exact S3.
   }
   (** S5 **)
@@ -148,9 +135,7 @@ Proof.
       ¬(Phi x → Psi x) ∨ (Phi y → Psi z)).
     { setoid_rewrite Impl1_01a in S4. exact S4. }
     intro z0. pose (S4_i1 z0) as S4_i2.
-    remember (fun y0 => Phi y0 → Psi z0) as f_S4 eqn:eqf_S4.
     setoid_rewrite <- n9_06a in S4_i2.
-    rewrite -> eqf_S4.
     destruct S4_i2 as [z1 S4_i3]. exists z1.
     pose (n2_53 (¬ (Phi z1 → Psi z1)) (∃ x : Prop, Phi x → Psi z0) S4_i3) as n2_53.
     exact (fun y1 => n2_53 (n2_12 (Phi z1 → Psi z1) y1)).
@@ -164,22 +149,13 @@ Proof.
       setoid_rewrite Impl1_01a in S5 at 3.
       exact S5.
     }
-    remember (fun x1 => ¬ (Phi x1 → Psi x1)) as f_S5_1 eqn:eqf_S5_1.
-    remember (fun z1 => (∃ y0 : Prop, (¬ Phi y0) ∨ Psi z1)) as f_S5_2 eqn:eqf_S5_2.
-    pose (n9_08 f_S5_2 f_S5_1) as n9_08.
-    rewrite -> eqf_S5_1.
-    rewrite -> eqf_S5_1 in n9_08.
-    rewrite -> eqf_S5_2 in n9_08.
+    pose (n9_08 (fun z1 => (∃ y0 : Prop, (¬ Phi y0) ∨ Psi z1)) 
+                (fun x1 => ¬ (Phi x1 → Psi x1))) as n9_08.
     rewrite -> n9_08.
     exact S5_1.
   }
   assert (S7 : (∃ x : Prop, ¬(Phi x → Psi x)) ∨ ((∃ y : Prop, (¬ Phi y)) ∨ (∀ z : Prop, Psi z))).
-  {
-    remember (fun y => ¬ (Phi y)) as f_S6_1 eqn:eqf_S6_1.
-    rewrite -> n9_08.
-    rewrite -> eqf_S6_1.
-    exact S6.
-  }
+  { rewrite -> n9_08. exact S6. }
   assert (S8 : (∀ x, Phi x → Psi x) → (∀ y, Phi y) → ∀ z, Psi z).
   {
     repeat rewrite <- n9_01 in S7.
@@ -211,32 +187,13 @@ Proof.
   (* ******** *)
   pose (Id2_08 (Phi Y -> Psi Y)) as S1.
   assert (S2 : exists z, (Phi Y -> Psi Y) -> (Phi Y -> Psi z)).
-  { 
-    remember (fun z => (Phi Y -> Psi Y) -> (Phi Y -> Psi z))
-      as f_S1 eqn:eqf_S1.
-    pose (n9_1 f_S1 Y) as n9_1.
-    rewrite -> eqf_S1 in n9_1.
-    rewrite -> eqf_S1.
-    exact (n9_1 S1).
-  }
+  { exact (n9_1 (fun z => (Phi Y -> Psi Y) -> (Phi Y -> Psi z)) Y S1). }
   assert (S3 : exists x, exists z, (Phi x -> Psi x) -> (Phi Y -> Psi z)).
-  { 
-    remember (fun x => exists z, (Phi x -> Psi x) -> (Phi Y -> Psi z))
-      as f_S2 eqn:eqf_S2.
-    pose (n9_1 f_S2 Y) as n9_1.
-    rewrite -> eqf_S2 in n9_1.
-    rewrite -> eqf_S2.
-    exact (n9_1 S2).
-  }
+  { exact (n9_1 (fun x => exists z, (Phi x -> Psi x) -> (Phi Y -> Psi z)) Y S2). }
   assert (S4 : ∀ y, exists x, exists z, (Phi x -> Psi x) -> (Phi y -> Psi z)).
   {
-    set (f_S3 := (fun y => (exists x, exists z, 
-      (Phi x -> Psi x) -> (Phi y -> Psi z)))).
-    change ((exists x, exists z, (Phi x -> Psi x) -> (Phi Y -> Psi z)))
-      with (f_S3 Y) in S3.
-    change (∀ y0 : Prop, ∃ x z : Prop, (Phi x → Psi x) → Phi y0 → Psi z)
-      with (∀ y0 : Prop, f_S3 y0).
-    rewrite -> (n9_13 f_S3 Y) in S3.
+    rewrite -> (n9_13 (fun y => (exists x, exists z, 
+      (Phi x -> Psi x) -> (Phi y -> Psi z))) Y) in S3.
     exact S3.
   }
   assert (S5 : ∀ y, exists x, (Phi x -> Psi x) -> (exists z, (Phi y -> Psi z))).
@@ -312,18 +269,10 @@ Proof.
   (* ******** *)
   pose (Taut1_2 (Phi X)) as S1.
   assert (S2 : exists y, (Phi X ∨ Phi y) -> Phi X).
-  { 
-    remember (fun y => (Phi X ∨ Phi y) -> Phi X) as f_S1 eqn:eqf_S1.
-    pose (n9_1 f_S1 X) as n9_1a.
-    rewrite -> eqf_S1.
-    rewrite -> eqf_S1 in n9_1a.
-    exact (n9_1a S1).
-  }
+  { exact (n9_1 (fun y => (Phi X ∨ Phi y) -> Phi X) X S1). }
   assert (S3 : ∀ x, exists y, (Phi x ∨ Phi y) -> Phi x).
   {
-    remember (fun x => exists y, (Phi x ∨ Phi y) -> Phi x) as f_S2 eqn:eqf_S2.
-    pose (n9_13 f_S2 X) as n9_13.
-    rewrite -> eqf_S2 in n9_13.
+    pose (n9_13 (fun x => exists y, (Phi x ∨ Phi y) -> Phi x) X) as n9_13.
     rewrite -> n9_13 in S2.
     exact S2.
   }
@@ -383,6 +332,7 @@ Proof.
       setoid_rewrite <- or_comm at 1.
       reflexivity.
     }
+    (* TODO: n2_31 *)
     replace (∀ y : Prop, (Phi y ∨ Phi X  → ∃ z : Prop, Phi z))
       with ((∀ y : Prop, Phi y) ∨ Phi X  → ∃ z : Prop, Phi z) in S1 by admit.
     replace (∀ y : Prop, Phi y) with (∀ y : Prop, ¬ ¬ (Phi y)) in S1 by admit.
@@ -420,7 +370,7 @@ Proof.
       (* TODO: use f_equal here to generate the right equation? *)
       pose Impl1_01 as Impl1_01. symmetry in Impl1_01.
       (* pose f_equal as f_equal'. *)
-      Require Import Coq.Logic.FunctionalExtensionality.
+      (* Require Import Coq.Logic.FunctionalExtensionality.
       Print functional_extensionality.
       pose (functional_extensionality
         
@@ -436,7 +386,7 @@ Proof.
       pose (f_equal_1 )
         (Impl1_01 )) as f_equal_1.
         (Q) ) as f_equal_1.
-        (fun x => (Phi x) \/ Q) ) as f_equal_1.
+        (fun x => (Phi x) \/ Q) ) as f_equal_1. *)
       admit.
     }
     pose (n9_25 S2) as S2_1.
@@ -531,6 +481,7 @@ Proof.
   }
   assert (S2 : P ∨ Q ∨ (∀ x : Prop, Phi x) -> Q ∨ P ∨ (∀ x : Prop, Phi x)).
   { 
+  (* TODO: n2_31 *)
     replace (∀ x : Prop, P ∨ Q ∨ Phi x) with (∀ x : Prop, (P ∨ Q) ∨ Phi x) in S1
       by admit.
     replace (∀ x : Prop, Q ∨ P ∨ Phi x) with (∀ x : Prop, (Q ∨ P) ∨ Phi x) in S1
