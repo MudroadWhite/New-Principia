@@ -50,12 +50,8 @@ Definition n9_12 : Prop. Admitted.
 (* Pp n9_13 : In any assersion containing a real variable, this real variable
 may be turned into an apparent variable of which all possible values are asserted
 to satisfy the function in question. *)
-(* 
-- `y` in `Phi y` is a real variable
-- `y` in `∀ y, Phi y` is an apparent variable
-- This simulation seems to be very unsatisfying! Don't use without any clear 
-  intention from original text
-*)
+(* This simulation seems to be very unsatisfying! Don't use without any clear 
+  intention from original text *)
 Definition n9_13 (Phi : Prop -> Prop) (X : Prop) : Phi X = (∀ y : Prop, Phi y). Admitted.
 
 (* TODO: 
@@ -81,6 +77,7 @@ Proof.
   pose (n9_1 (fun x : Prop => ¬ Phi x ∨ Phi Y) Y) as n9_1.
   MP n2_1 n9_1. simpl in n9_1.
   (** Step 3 **)
+  (* TODO: understand how to use modus ponens and how (1) and (2) are both involved into the proof *)
   pose (n9_05 (fun x : Prop => ¬ Phi x) (Phi Y)) as n9_05. cbn in n9_05.
   rewrite <- n9_05 in n9_1.
   (** Step 4 **)
@@ -135,6 +132,9 @@ Proof.
       ¬(Phi x → Psi x) ∨ (Phi y → Psi z)).
     { setoid_rewrite Impl1_01a in S4. exact S4. }
     intro z0. pose (S4_i1 z0) as S4_i2.
+    (* TODO: use f_equal here? *)
+    pose f_equal as H.
+    pose n9_06 as n9_06.
     setoid_rewrite <- n9_06a in S4_i2.
     destruct S4_i2 as [z1 S4_i3]. exists z1.
     pose (n2_53 (¬ (Phi z1 → Psi z1)) (∃ x : Prop, Phi x → Psi z0) S4_i3) as n2_53.
