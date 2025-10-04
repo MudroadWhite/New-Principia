@@ -245,14 +245,13 @@ Theorem n9_24 (Phi : Prop -> Prop) : (∃ x : Prop, Phi x) -> (∃ x : Prop, Phi
 (* Original proof uses Id, 9.13, 9.22 *)
 Proof. exact (Id2_08 (∃ x : Prop, Phi x)). Qed.
 
-Theorem n9_25 (p : Prop) (Phi : Prop -> Prop) : 
-  (∀ x : Prop, p ∨ Phi x) -> p ∨ (∀ x : Prop, Phi x).
+Theorem n9_25 (P : Prop) (Phi : Prop -> Prop) : 
+  (∀ x : Prop, P ∨ Phi x) -> P ∨ (∀ x : Prop, Phi x).
 Proof.
-  (* TODO: rewrite the proof! start posing the initial proposition with n9_23. *)
-  pose (n9_04 Phi p) as n9_04.
-  intro H.
-  rewrite <- n9_04 in H.
-  exact H.
+  pose (n9_23 (fun x => P \/ Phi x)) as n9_23; simpl in n9_23.
+  pose (n9_04 Phi P) as n9_04.
+  rewrite <- n9_04 in n9_23 at 2.
+  exact n9_23.
 Qed.
 
 Theorem n9_3 (X : Prop) (Phi : Prop -> Prop) : 
@@ -378,9 +377,8 @@ Proof.
     replace (∀ x : Prop, Q → Phi x ∨ Q) with (∀ x : Prop, ¬ Q ∨ (Phi x ∨ Q))
       in S2.
     2: {
-      pose Impl1_01 as Impl1_01. symmetry in Impl1_01.
       apply propositional_extensionality.
-      split; intros H x; [rewrite <- Impl1_01 | rewrite -> Impl1_01]; 
+      split; intros H x; [rewrite -> Impl1_01 | rewrite <- Impl1_01]; 
       exact (H x).
     }
     pose (n9_25 S2) as S2_1.
@@ -396,7 +394,7 @@ Proof.
   exact S4.
 Qed.
   
-Theorem n9_33 (Phi : Prop -> Prop) (Q : Prop) : Q -> (∃ x : Prop, Phi x) ∨ Q.
+Theorem n9_33 (Phi : Prop -> Prop) (Q X : Prop) : Q -> (∃ x : Prop, Phi x) ∨ Q.
 Proof. 
   (* Proof as above *)
 Admitted.
