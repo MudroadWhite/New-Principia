@@ -42,10 +42,8 @@ Definition n9_1 (Phi : Prop → Prop) (X : Prop) :
 Definition n9_11 (Phi : Prop → Prop) (X Y : Prop) : 
   (Phi X ∨ Phi Y) → (∃ z : Prop, Phi z). Admitted.
 
-(* Pp n9_12 : What is implied by a true premiss is true. 
-I don't know how to translate this so far
-*)
-Definition n9_12 : Prop. Admitted.
+(* Pp n9_12 : What is implied by a true premiss is true. *)
+Definition n9_12 (X : Prop) : X. Admitted.
 
 (* Pp n9_13 : In any assersion containing a real variable, this real variable
 may be turned into an apparent variable of which all possible values are asserted
@@ -298,13 +296,13 @@ Proof.
   exact S6.
 Qed.
 
-(* I think thw proof to this proposition is totally wrong, but all 
-russell wants to do is just introducing in an `exists`. TODO: find 
-another way to do this correctly in the future *)
-(* TODO: 9.13, 9.1, 9.22? *)
 Theorem n9_31 (X : Prop) (Phi : Prop -> Prop) : 
   ((∃ x : Prop, Phi x) ∨ (∃ x : Prop, Phi x)) -> (∃ x : Prop, Phi x).
 Proof. 
+  (* TOOLS *)
+  set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
+    as Impl1_01a.
+  (* ******** *)
   assert (S1 : ∀ y, Phi X ∨ Phi y -> exists z, Phi z).
   {
     pose (n9_11 Phi X X) as n9_11. 
@@ -315,27 +313,19 @@ Proof.
   }
   assert (S2 : (exists y, Phi X ∨ Phi y) -> (exists z, Phi z)).
   {
-    replace (∀ y : Prop, Phi X ∨ Phi y → ∃ z : Prop, Phi z) 
-      with (∀ y : Prop, Phi y ∨ Phi X → ∃ z : Prop, Phi z) in S1.
-    2: { (* NOTE: the right way is use setoid_rewrite on `Perm1_4`. Here being lazy *)
+    replace (∀ y, Phi X ∨ Phi y → ∃ z : Prop, Phi z)
+      with (∀ y, (~ (Phi X ∨ Phi y) \/ ∃ z : Prop, Phi z)) in S1.
+    2: {
       apply propositional_extensionality.
-      (* pose Perm1_4 as Perm1_4. *)
-      setoid_rewrite <- or_comm at 1.
-      reflexivity.
+      setoid_rewrite <- Impl1_01a. reflexivity.
     }
-    (* TODO: n2_31 *)
-    replace (∀ y : Prop, (Phi y ∨ Phi X  → ∃ z : Prop, Phi z))
-      with ((∀ y : Prop, Phi y) ∨ Phi X  → ∃ z : Prop, Phi z) in S1 by admit.
-    replace (∀ y : Prop, Phi y) with (∀ y : Prop, ¬ ¬ (Phi y)) in S1 by admit.
-    remember (fun x => ¬ Phi x) as f_S1 eqn:eqf_S1.
-    replace (∀ x : Prop, ¬ ¬ Phi x) with (∀ x : Prop, ¬ (f_S1 x)) in S1
-      by (rewrite -> eqf_S1; reflexivity).
-    replace (∀ x : Prop, ¬ f_S1 x) with (¬ (∃ x : Prop, f_S1 x)) in S1
-      by exact (n9_02 f_S1).
-    rewrite -> eqf_S1 in S1.
-    replace (¬ (∃ x : Prop, f_S1 x)) with (∃ x : Prop, f_S1 x) by admit.
-    admit.
+    pose n9_03 as n9_03.
+    rewrite <- n9_03 in S1.
+    rewrite <- n9_02 in S1.
+    rewrite <- Impl1_01 in S1.
+    exact S1.
   }
+  (* assert (S3 : ) *)
 Admitted.
 
 Theorem n9_32 (Phi : Prop -> Prop) (Q X : Prop) : Q -> (∀ x : Prop, Phi x) ∨ Q.
