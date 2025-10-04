@@ -1,5 +1,7 @@
 # Design on Theorems and Propositions
 
+The conventions below starts from chapter 9.
+
 ## Definitions and Theorems
 `Definition`s and `Theorem`s are being used, not because of their *literal meaning*, but because of their ability to nicely organize the data, just like a "class" or a "structure" in typical programming languages.
 
@@ -9,24 +11,22 @@ Similarly, `Theorem`s are used to define theorems in Principia, and are intended
 
 ## Naming convention: functions, apparent variables and real variables
 
-The convention below starts from chapter 9.
-
 Functions as parameters are supposed to be named as the same style of original text: either greek letters like `φ` or their upper-cased English equivalent like `Phi`.
 
 By original text, apparent variables are quantified variables in `forall`, `exists` and so on. As parameters, they're usually lower case literals like `x`.
 
 Real variables are variables directly introduced into the propositions. They're usually upper case literals like `X`. In `Theorem`s, they are stated at the left hand side of the definitions.
 
-Extra real variables could occur in `Theorem` definitions, if original text has occurrences for functions to be provided a variable, like `φx` without any quantifiers.
+It sometimes happens though, even if the theorem itself doesn't involve any real variables, its proof needs to introduce some real variables. In that case, we use `set (X := Real "x")` to enable such usage during the proof.
 
-Orders of these extra variables are currently unspecified, and can be messy through the signatures.
+## Tactics for proving theorems
 
-TODO: maybe there is a much clearer way to carefully distinguish between apparent and real variables
+There are 4 types of tactics we use.
 
-## Proving theorems, by steps
+The first type is `MP` in chapter 1. It exposes the occurences where we need to perform such application.
 
-TODO:
-1. S1, S2, ...
-2. assert
-3. S1_i1, ...; S1_1, ...
-4. forward reasoning: avoid changing the goal as much as possible; use theorems in the original text
+The second type is `pose proof`. It instantiates a theorem to be deducted.
+
+The third type is `rewrite`, for implementing the substitutions in the formal system of Principia. Unfortunately sometimes it doesn't work - and only in this case will all kinds of more complicated tactics, like `replace`, `change`, `setoid_rewrite`, etc..
+
+And last, `assert` is being useful for organizing the proofs, and providing much better readability for all the intermediate steps.
