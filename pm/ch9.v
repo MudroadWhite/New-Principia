@@ -365,10 +365,6 @@ Qed.
 
 Theorem n9_32 (Phi : Prop -> Prop) (Q X : Prop) : Q -> (∀ x : Prop, Phi x) ∨ Q.
 Proof. 
-  (* TOOLS *)
-  (* set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
-    as Impl1_01a. *)
-  (* ******** *)
   pose proof (Add1_3 (Phi X) Q) as S1.
   assert (S2 : ∀ x, Q -> (Phi x) ∨ Q).
   {
@@ -382,27 +378,10 @@ Proof.
     replace (∀ x : Prop, Q → Phi x ∨ Q) with (∀ x : Prop, ~ Q ∨ (Phi x ∨ Q))
       in S2.
     2: {
-      (* TODO: use f_equal here to generate the right equation? *)
       pose Impl1_01 as Impl1_01. symmetry in Impl1_01.
-      (* pose f_equal as f_equal'. *)
-      (* Require Import Coq.Logic.FunctionalExtensionality.
-      Print functional_extensionality.
-      pose (functional_extensionality
-        
-        (Impl1_01 X Q)) as functional_extensionality.
-      (* pose (f_equal (fun (P : Prop → Prop) => 
-      (exists y1, ¬ (Phi z1 → Psi z1) ∨ (P y1))) eqf_S4) as eqf_S4_y1. *)
-      pose (fun (P Q : Prop) =>
-      (f_equal [A := Prop] Prop (fun (P' : Prop -> Prop) =>
-        (forall x : Prop, P' x)) 
-        (¬ P ∨ Q)
-        (P → Q)
-        )) as f_equal_1. simpl in f_equal_1.
-      pose (f_equal_1 )
-        (Impl1_01 )) as f_equal_1.
-        (Q) ) as f_equal_1.
-        (fun x => (Phi x) ∨ Q) ) as f_equal_1. *)
-      admit.
+      apply propositional_extensionality.
+      split; intros H x; [rewrite <- Impl1_01 | rewrite -> Impl1_01]; 
+      exact (H x).
     }
     pose (n9_25 S2) as S2_1.
     rewrite <- Impl1_01 in S2_1.
@@ -415,7 +394,7 @@ Proof.
     exact S3_1.
   }
   exact S4.
-Admitted.
+Qed.
   
 Theorem n9_33 (Phi : Prop -> Prop) (Q : Prop) : Q -> (∃ x : Prop, Phi x) ∨ Q.
 Proof. 
