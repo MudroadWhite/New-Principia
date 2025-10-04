@@ -93,7 +93,7 @@ Proof.
   (** Necessary tools to be used globally **)
   (* Manually set up a `<->` relation from `=` relation to utilize
   `setoid_rewrite`. This enables substitution outside of the
-  `∀`s and `exists`. Can we automate this with Ltac? *)
+  `∀`s and `∃`. Can we automate this with Ltac? *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
   set (λ (Phi0 : Prop -> Prop) (P0 : Prop), 
@@ -183,30 +183,30 @@ Proof.
       (n9_07 Phi0 Psi0)) as n9_07a.
   (* ******** *)
   pose proof (Id2_08 (Phi Y -> Psi Y)) as S1.
-  assert (S2 : exists z, (Phi Y -> Psi Y) -> (Phi Y -> Psi z)).
+  assert (S2 : ∃ z, (Phi Y -> Psi Y) -> (Phi Y -> Psi z)).
   { exact (n9_1 (fun z => (Phi Y -> Psi Y) -> (Phi Y -> Psi z)) Y S1). }
-  assert (S3 : exists x, exists z, (Phi x -> Psi x) -> (Phi Y -> Psi z)).
-  { exact (n9_1 (fun x => exists z, (Phi x -> Psi x) -> (Phi Y -> Psi z)) Y S2). }
-  assert (S4 : ∀ y, exists x, exists z, (Phi x -> Psi x) -> (Phi y -> Psi z)).
+  assert (S3 : ∃ x, ∃ z, (Phi x -> Psi x) -> (Phi Y -> Psi z)).
+  { exact (n9_1 (fun x => ∃ z, (Phi x -> Psi x) -> (Phi Y -> Psi z)) Y S2). }
+  assert (S4 : ∀ y, ∃ x, ∃ z, (Phi x -> Psi x) -> (Phi y -> Psi z)).
   {
-    rewrite -> (n9_13 (fun y => (exists x, exists z, 
+    rewrite -> (n9_13 (fun y => (∃ x, ∃ z, 
       (Phi x -> Psi x) -> (Phi y -> Psi z))) Y) in S3.
     exact S3.
   }
-  assert (S5 : ∀ y, exists x, (Phi x -> Psi x) -> (exists z, (Phi y -> Psi z))).
+  assert (S5 : ∀ y, ∃ x, (Phi x -> Psi x) -> (∃ z, (Phi y -> Psi z))).
   { 
     setoid_rewrite -> Impl1_01a in S4.
     setoid_rewrite <- n9_06a in S4.
     setoid_rewrite <- Impl1_01a in S4.
     exact S4.
   }
-  assert (S6 : (exists x, ¬ (Phi x -> Psi x)) ∨ ∀ y, (exists z, (Phi y -> Psi z))).
+  assert (S6 : (∃ x, ¬ (Phi x -> Psi x)) ∨ ∀ y, (∃ z, (Phi y -> Psi z))).
   {
     setoid_rewrite -> Impl1_01a in S5.
     setoid_rewrite <- n9_08a in S5.
     exact S5.
   }
-  assert (S7 : (exists x, ¬ (Phi x -> Psi x)) ∨ (∀ y, ¬ (Phi y)) ∨ exists z, Psi z).
+  assert (S7 : (∃ x, ¬ (Phi x -> Psi x)) ∨ (∀ y, ¬ (Phi y)) ∨ ∃ z, Psi z).
   { 
     setoid_rewrite -> Impl1_01a in S6 at 3.
     setoid_rewrite <- n9_07a in S6.
@@ -263,11 +263,11 @@ Proof.
     as Impl1_01a.
   (* ******** *)
   pose proof (Taut1_2 (Phi X)) as S1.
-  assert (S2 : exists y, (Phi X ∨ Phi y) -> Phi X).
+  assert (S2 : ∃ y, (Phi X ∨ Phi y) -> Phi X).
   { exact (n9_1 (fun y => (Phi X ∨ Phi y) -> Phi X) X S1). }
-  assert (S3 : ∀ x, exists y, (Phi x ∨ Phi y) -> Phi x).
+  assert (S3 : ∀ x, ∃ y, (Phi x ∨ Phi y) -> Phi x).
   {
-    rewrite -> (n9_13 (fun x => exists y, (Phi x ∨ Phi y) -> Phi x) X) in S2.
+    rewrite -> (n9_13 (fun x => ∃ y, (Phi x ∨ Phi y) -> Phi x) X) in S2.
     exact S2.
   }
   assert (S4 : ∀ x, (Phi x ∨ ∀ y, Phi y) -> Phi x).
@@ -311,7 +311,7 @@ Proof.
   assert (S2 : (∃ y, Phi X ∨ Phi y) -> (∃ z, Phi z)).
   {
     replace (∀ y, Phi X ∨ Phi y → ∃ z : Prop, Phi z)
-      with (∀ y, (~ (Phi X ∨ Phi y) ∨ ∃ z : Prop, Phi z)) in S1.
+      with (∀ y, (¬ (Phi X ∨ Phi y) ∨ ∃ z : Prop, Phi z)) in S1.
     2: {
       apply propositional_extensionality.
       setoid_rewrite <- Impl1_01a. reflexivity.
@@ -319,7 +319,7 @@ Proof.
     rewrite <- n9_03, <- n9_02, <- Impl1_01 in S1.
     exact S1.
   }
-  assert (S3 : forall x, (∃ y, Phi x ∨ Phi y) -> ∃ z, Phi z).
+  assert (S3 : ∀ x, (∃ y, Phi x ∨ Phi y) -> ∃ z, Phi z).
   {
     pose (n9_13 (fun x => (∃ y, Phi x ∨ Phi y) -> ∃ z, Phi z) X) as n9_13.
     rewrite -> n9_13 in S2.
@@ -328,7 +328,7 @@ Proof.
   assert (S4 : (∃ x, (∃ y, Phi x ∨ Phi y)) -> (∃ z, Phi z)).
   {
     replace (∀ x, (∃ y, Phi x ∨ Phi y) → ∃ z, Phi z)
-      with (∀ x, ~ (∃ y, Phi x ∨ Phi y) \/ ∃ z, Phi z)
+      with (∀ x, ¬ (∃ y, Phi x ∨ Phi y) ∨ ∃ z, Phi z)
       in S3.
     2: {
       apply propositional_extensionality.
@@ -340,7 +340,7 @@ Proof.
   assert (S5 : ((∃ x : Prop, Phi x) ∨ (∃ y : Prop, Phi y)) -> (∃ x : Prop, Phi x)).
   {
   (* This way is so weird *)
-    replace (∃ x, ∃ y, Phi x ∨ Phi y) with ((exists x, Phi x) \/ (exists y, Phi y))
+    replace (∃ x, ∃ y, Phi x ∨ Phi y) with ((∃ x, Phi x) ∨ (∃ y, Phi y))
     in S4.
     2: {
       replace (∃ x y : Prop, Phi x ∨ Phi y) with ((∃ x y : Prop, Phi y ∨ Phi x)).
@@ -374,8 +374,8 @@ Proof.
   }
   assert (S3 : Q -> ∀ x, Phi x ∨ Q).
   { 
-    pose proof (n9_25 (~ Q) (fun x => Phi x ∨ Q)) as n9_25.
-    replace (∀ x : Prop, Q → Phi x ∨ Q) with (∀ x : Prop, ~ Q ∨ (Phi x ∨ Q))
+    pose proof (n9_25 (¬ Q) (fun x => Phi x ∨ Q)) as n9_25.
+    replace (∀ x : Prop, Q → Phi x ∨ Q) with (∀ x : Prop, ¬ Q ∨ (Phi x ∨ Q))
       in S2.
     2: {
       pose Impl1_01 as Impl1_01. symmetry in Impl1_01.
@@ -535,32 +535,33 @@ Proof.
       by (apply propositional_extensionality; split; apply Perm1_4).
     exact Sum1_6.
   }
-  assert (S2 : (P -> Q) -> exists x, (P ∨ Phi x) -> (Q ∨ Phi Y)).
+  assert (S2 : (P -> Q) -> ∃ x, (P ∨ Phi x) -> (Q ∨ Phi Y)).
   { 
-    replace (P ∨ Phi Y → Q ∨ Phi Y) with (exists x, P ∨ Phi x → Q ∨ Phi Y) in S1.
+    replace (P ∨ Phi Y → Q ∨ Phi Y) with (∃ x, P ∨ Phi x → Q ∨ Phi Y) in S1.
     2: {
       pose (n9_1 (fun x => P ∨ Phi x → Q ∨ Phi Y) Y) as n9_1.
         simpl in n9_1.
       apply propositional_extensionality.
       split.
+      (* I don't this can be proven *)
       { admit. }
       { exact n9_1. }
     }
     exact S1.
   }
-  assert (S3 : (P -> Q) -> ∀ y, exists x, (P ∨ Phi x) -> (Q ∨ Phi y)).
+  assert (S3 : (P -> Q) -> ∀ y, ∃ x, (P ∨ Phi x) -> (Q ∨ Phi y)).
   { 
     pose (n9_13 (fun y => ∃ x : Prop, P ∨ Phi x → Q ∨ Phi y) Y) as n9_13.
     (* *9.04 ignored - optional *)
     rewrite -> n9_13 in S2.
     exact S2.
   }
-  assert (S4 : (P -> Q) -> (exists x, ~ (P ∨ Phi x)) ∨ (∀ y, Q ∨ Phi y)).
+  assert (S4 : (P -> Q) -> (∃ x, ¬ (P ∨ Phi x)) ∨ (∀ y, Q ∨ Phi y)).
   { 
     replace (∀ y : Prop, ∃ x : Prop, P ∨ Phi x → Q ∨ Phi y)
-      with (∀ y : Prop, ∃ x : Prop, ~(P ∨ Phi x) ∨ Q ∨ Phi y) in S3
+      with (∀ y : Prop, ∃ x : Prop, ¬(P ∨ Phi x) ∨ Q ∨ Phi y) in S3
       by (apply propositional_extensionality; setoid_rewrite <- Impl1_01a; reflexivity).
-    rewrite <- (n9_08 (fun y => Q ∨ Phi y) (fun x => ~(P ∨ Phi x))) in S3.
+    rewrite <- (n9_08 (fun y => Q ∨ Phi y) (fun x => ¬(P ∨ Phi x))) in S3.
     exact S3.
   }
   assert (S5 : (P -> Q) -> (∀ x, (P ∨ Phi x)) -> (∀ y, Q ∨ Phi y)).
@@ -603,15 +604,15 @@ Proof.
   assert (S2 : (∀ x, P -> Phi x) -> (∀ x, (P ∨ R) -> (Phi x ∨ R))).
   { 
     pose (n9_13 (fun x => P -> Phi x) X) as n9_13a.
-    replace (P -> Phi X) with (forall x, P -> Phi x) in S1.
+    replace (P -> Phi X) with (∀ x, P -> Phi x) in S1.
     pose (n9_13 (fun x => (P ∨ R) -> (Phi x ∨ R)) X) as n9_13b.
-    replace ((P ∨ R) -> (Phi X ∨ R)) with (forall x, (P ∨ R) -> (Phi x ∨ R)) in S1.
+    replace ((P ∨ R) -> (Phi X ∨ R)) with (∀ x, (P ∨ R) -> (Phi x ∨ R)) in S1.
     exact S1.
   }
   assert (S3 : (P -> ∀ x : Prop, Phi x) -> P ∨ R -> (∀ x : Prop, Phi x) ∨ R).
   { 
     setoid_rewrite -> Impl1_01a in S2 at 2.
-    rewrite <- (n9_04 Phi (~P)) in S2.
+    rewrite <- (n9_04 Phi (¬P)) in S2.
     setoid_rewrite <- Impl1_01a in S2.
     setoid_rewrite -> Impl1_01a in S2 at 3.
     replace (∀ x : Prop, ¬ (P ∨ R) ∨ Phi x ∨ R) 
@@ -653,7 +654,7 @@ Proof.
       by (apply propositional_extensionality; split; apply Perm1_4).
     exact Sum1_6.
   }
-  assert (S2 : (exists x, (Phi x -> Q)) -> (exists x, (Phi x ∨ R) -> (Q ∨ R))).
+  assert (S2 : (∃ x, (Phi x -> Q)) -> (∃ x, (Phi x ∨ R) -> (Q ∨ R))).
   { 
     rewrite -> (n9_13 (fun x => (Phi x -> Q) -> ((Phi x ∨ R) -> (Q ∨ R))) X) in S1.
     exact (n9_22 X (fun x => Phi x -> Q) (fun x => Phi x ∨ R → Q ∨ R) S1).
@@ -676,10 +677,10 @@ Proof.
   (* Proof as above *)
 Admitted.
 
-(* Thm 9.6: `forall x, Phi x`, `~(forall x, Phi x)`, `exists x, Phi x`, `~(exists x, Phi x)` are of the same type. From *9.131, (7) and (8)  *)
+(* Thm 9.6: `∀ x, Phi x`, `¬(∀ x, Phi x)`, `∃ x, Phi x`, `¬(∃ x, Phi x)` are of the same type. From *9.131, (7) and (8)  *)
 
-(* Thm 9.61: If `Phi x^` and `Psi x^` are elementary functions of the same type, there is a function `Phi x^ \/ Psi x^`. *)
+(* Thm 9.61: If `Phi x^` and `Psi x^` are elementary functions of the same type, there is a function `Phi x^ ∨ Psi x^`. *)
 
-(* Thm 9.62 : If `Phi(x^, y^)` and `Psi z^` are elementary functions, and the x-argument to `Phi` is of the same type as the argument of `Psi`, there are functions `(forall y, Phi(x^, y)) \/ Psi x^`, `(exists y, Phi (x^, y) \/ Phi x^)` *)
+(* Thm 9.62 : If `Phi(x^, y^)` and `Psi z^` are elementary functions, and the x-argument to `Phi` is of the same type as the argument of `Psi`, there are functions `(∀ y, Phi(x^, y)) ∨ Psi x^`, `(∃ y, Phi (x^, y) ∨ Phi x^)` *)
 
-(* Thm 9.63 : If `Phi(x^, y^)` and `Psi(x^, y^)` are elementary functions of the same type, there are functions `(forall y, Phi(x^, y) \/ forall z, Psi(x^, z)), etc.` *)
+(* Thm 9.63 : If `Phi(x^, y^)` and `Psi(x^, y^)` are elementary functions of the same type, there are functions `(∀ y, Phi(x^, y) ∨ ∀ z, Psi(x^, z)), etc.` *)
