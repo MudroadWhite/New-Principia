@@ -10,11 +10,12 @@ Export Unicode.Utf8.
 Export Classical_Prop.
 Export ClassicalFacts.
 Export PropExtensionality.
+Export String.
 
 (* Experimental: A wrapper just to tag an real variable. This allows a freedom for creating them
 throughout the proofs, as well as their easier identification *)
-Definition Var (s : string) : Prop. Admitted.
-Example var_0 := Var "x".
+Definition Real (s : string) : Prop. Admitted.
+Example var_0 := Real "x".
 (* TODO: add an notation? *)
 
 (* This is for `setoid_rewrite` only. Maybe in the future, we should rename this to

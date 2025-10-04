@@ -100,7 +100,7 @@ Qed. *)
 Ltac MP H1 H2 :=
   match goal with 
     | [ H1 : ?P → ?Q, H2 : ?P |- _ ] => 
-      specialize (H1 H2)
+      specialize (H1 H2); simpl in H1
   end.
  (*We give this Ltac "MP" to make proofs 
   more human-readable and to more 

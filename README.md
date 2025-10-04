@@ -1,5 +1,7 @@
 # New-Principia
-continuation on [formalizing Principia Mathematica](https://github.com/LogicalAtomist/principia)
+Continuation on [formalizing Principia Mathematica](https://github.com/LogicalAtomist/principia).
+
+Added: Chapter 9 except the `Proof as above` theorems
 
 ## Why working on it
 - Principia Mathematica has a stable version
