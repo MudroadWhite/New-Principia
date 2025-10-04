@@ -523,12 +523,13 @@ Proof.
   (* Proof as above *)
 Admitted.
 
-Theorem n9_5 (Phi : Prop → Prop) (P Q : Prop) (Y : Prop) : 
+Theorem n9_5 (Phi : Prop → Prop) (P Q : Prop) : 
   (P → Q) → ((P ∨ ∀ x : Prop, Phi x) → (Q ∨ ∀ x : Prop, Phi x)).
 Proof. 
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
+  set (Y := Real "y").
   (* ******** *)
   assert (S1 : (P → Q) → ((P ∨ Phi Y) → (Q ∨ Phi Y))).
   { 

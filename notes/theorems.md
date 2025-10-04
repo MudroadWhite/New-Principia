@@ -17,7 +17,7 @@ By original text, apparent variables are quantified variables in `forall`, `exis
 
 Real variables are variables directly introduced into the propositions. They're usually upper case literals like `X`. In `Theorem`s, they are stated at the left hand side of the definitions.
 
-It sometimes happens though, even if the theorem itself doesn't involve any real variables, its proof needs to introduce some real variables. In that case, we use `set (X := Real "x")` to enable such usage during the proof.
+It sometimes happens though, even if the theorem itself doesn't involve any real variables, its proof needs to introduce some real variables. In that case, we use `set (X := Real "x")` to enable such usage during the proof. Theorem definitions are not supposed to suffixed with real variables more than only the variables appeared in the definition.
 
 ## Tactics for proving theorems
 
