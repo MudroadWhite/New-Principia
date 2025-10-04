@@ -93,8 +93,7 @@ Proof.
   (** Necessary tools to be used globally **)
   (* Manually set up a `<->` relation from `=` relation to utilize
   `setoid_rewrite`. This enables substitution outside of the
-  `∀`s and `exists`.
-  Can we automate this with Ltac? *)
+  `∀`s and `exists`. Can we automate this with Ltac? *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
   set (λ (Phi0 : Prop -> Prop) (P0 : Prop), 
@@ -102,6 +101,7 @@ Proof.
       (P0 ∨ ∃ x : Prop, Phi0 x) (∃ x : Prop, P0 ∨ Phi0 x) 
       (n9_06 Phi0 P0))
   as n9_06a.
+  (* ******** *)
   (** S1 **)
   pose proof (Id2_08 (Phi Z → Psi Z)) as S1.
   (** S2 **)
@@ -339,16 +339,15 @@ Proof.
   }
   assert (S5 : ((∃ x : Prop, Phi x) ∨ (∃ y : Prop, Phi y)) -> (∃ x : Prop, Phi x)).
   {
-    replace (∃ x, ∃ y, Phi x ∨ Phi y) with (exists x, (Phi x \/ exists y, Phi y))
+  (* This way is so weird *)
+    replace (∃ x, ∃ y, Phi x ∨ Phi y) with ((exists x, Phi x) \/ (exists y, Phi y))
     in S4.
     2: {
-      pose n9_05 as n9_05.
-      replace (∃ x y : Prop, Phi x ∨ Phi y) with ((∃ x y : Prop, Phi y ∨ Phi x))
-        in S4.
+      replace (∃ x y : Prop, Phi x ∨ Phi y) with ((∃ x y : Prop, Phi y ∨ Phi x)).
       2: {
         apply propositional_extensionality.
-        split.
-        apply or_comm.
+        setoid_rewrite <- or_comm at 1.
+        reflexivity.
       }
       set (λ (Phi0 : Prop -> Prop) (P0 : Prop), 
         eq_to_equiv ((∃ x : Prop, Phi0 x) ∨ P0) (∃ x : Prop, Phi0 x ∨ P0) 
@@ -356,13 +355,13 @@ Proof.
       as n9_05a.
       apply propositional_extensionality.
       setoid_rewrite <- n9_05a.
-      admit.
+      rewrite -> n9_06.
+      reflexivity.
     }
-    (* rewrite <- n9_05 in S4. *)
-    pose n9_05 as n9_05.
-    pose n9_06 as n9_06.
+    exact S4.
   }
-Admitted.
+  exact S5.
+Qed.
 
 Theorem n9_32 (Phi : Prop -> Prop) (Q X : Prop) : Q -> (∀ x : Prop, Phi x) ∨ Q.
 Proof. 
