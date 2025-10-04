@@ -539,12 +539,13 @@ Proof.
   { 
     replace (P ∨ Phi Y → Q ∨ Phi Y) with (exists x, P ∨ Phi x → Q ∨ Phi Y) in S1.
     2: {
-      (* n9_1 is the wrong way? Is this more than just typo? *)
-      (* pose (n9_1 Phi Y) as n9_1a. *)
-      (* apply n9_1a. *)
-      admit.
+      pose (n9_1 (fun x => P ∨ Phi x → Q ∨ Phi Y) Y) as n9_1.
+        simpl in n9_1.
+      apply propositional_extensionality.
+      split.
+      { admit. }
+      { exact n9_1. }
     }
-    (* *9.06 ignored - should it be even used? *)
     exact S1.
   }
   assert (S3 : (P -> Q) -> ∀ y, exists x, (P ∨ Phi x) -> (Q ∨ Phi y)).
@@ -557,8 +558,8 @@ Proof.
   assert (S4 : (P -> Q) -> (exists x, ~ (P ∨ Phi x)) ∨ (∀ y, Q ∨ Phi y)).
   { 
     replace (∀ y : Prop, ∃ x : Prop, P ∨ Phi x → Q ∨ Phi y)
-      with (∀ y : Prop, ∃ x : Prop, ~(P ∨ Phi x) ∨ Q ∨ Phi y) in S3 
-      by admit. (* Impl1_01 *)
+      with (∀ y : Prop, ∃ x : Prop, ~(P ∨ Phi x) ∨ Q ∨ Phi y) in S3
+      by (apply propositional_extensionality; setoid_rewrite <- Impl1_01a; reflexivity).
     rewrite <- (n9_08 (fun y => Q ∨ Phi y) (fun x => ~(P ∨ Phi x))) in S3.
     exact S3.
   }
@@ -661,9 +662,7 @@ Proof.
   { 
     setoid_rewrite -> Impl1_01a in S2 at 2.
     setoid_rewrite -> Impl1_01a in S2 at 3.
-    repeat rewrite <- n9_05 in S2.
-    repeat rewrite <- n9_01 in S2.
-    repeat rewrite <- Impl1_01 in S2.
+    repeat rewrite <- n9_05, <- n9_01, <- Impl1_01 in S2.
     exact S2.
   }
   assert (S4 : ((∀ x, Phi x) -> Q) -> ((∀ x, Phi x) ∨ R) -> (Q ∨ R)).
