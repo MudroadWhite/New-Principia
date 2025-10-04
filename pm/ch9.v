@@ -344,6 +344,7 @@ Proof.
     2: {
       replace (∃ x y : Prop, Phi x ∨ Phi y) with ((∃ x y : Prop, Phi y ∨ Phi x)).
       2: {
+        (* We should actually use Perm1_4 here. Simplified for laziness *)
         apply propositional_extensionality.
         setoid_rewrite <- or_comm at 1.
         reflexivity.
@@ -364,6 +365,10 @@ Qed.
 
 Theorem n9_32 (Phi : Prop -> Prop) (Q X : Prop) : Q -> (∀ x : Prop, Phi x) ∨ Q.
 Proof. 
+  (* TOOLS *)
+  set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
+  as Impl1_01a.
+  (* ******** *)
   pose proof (Add1_3 (Phi X) Q) as S1.
   assert (S2 : ∀ x, Q -> (Phi x) ∨ Q).
   {
@@ -376,11 +381,7 @@ Proof.
     pose proof (n9_25 (¬ Q) (fun x => Phi x ∨ Q)) as n9_25.
     replace (∀ x : Prop, Q → Phi x ∨ Q) with (∀ x : Prop, ¬ Q ∨ (Phi x ∨ Q))
       in S2.
-    2: {
-      apply propositional_extensionality.
-      split; intros H x; [rewrite -> Impl1_01 | rewrite <- Impl1_01]; 
-      exact (H x).
-    }
+    2: { apply propositional_extensionality; setoid_rewrite <- Impl1_01a; reflexivity. }
     pose (n9_25 S2) as S2_1.
     rewrite <- Impl1_01 in S2_1.
     exact S2_1.
@@ -471,16 +472,10 @@ Proof.
       intros H x; pose (H x) as H0; [ apply n2_32 | apply n2_31 ]; exact H0.
     }
     rewrite <- (n9_04 Phi (P ∨ Q)), <- (n9_04 Phi (Q ∨ P)) in S1.
-    replace ((P ∨ Q) ∨ (∀ x : Prop, Phi x)) with (P ∨ Q ∨ ∀ x : Prop, Phi x) in S1.
-    2: {
-      apply propositional_extensionality. 
-      split; [ apply n2_31 | apply n2_32 ]; exact H0.
-    }
-    replace ((Q ∨ P) ∨ ∀ x : Prop, Phi x) with (Q ∨ P ∨ ∀ x : Prop, Phi x) in S1.
-    2: {
-      apply propositional_extensionality. 
-      split; [ apply n2_31 | apply n2_32 ]; exact H0.
-    }
+    replace ((P ∨ Q) ∨ (∀ x : Prop, Phi x)) with (P ∨ Q ∨ ∀ x : Prop, Phi x) in S1
+      by (apply propositional_extensionality; split; [ apply n2_31 | apply n2_32 ]; exact H0 ).
+    replace ((Q ∨ P) ∨ ∀ x : Prop, Phi x) with (Q ∨ P ∨ ∀ x : Prop, Phi x) in S1
+      by (apply propositional_extensionality; split; [ apply n2_31 | apply n2_32 ]; exact H0).
     exact S1.
   }
   exact S2.
@@ -537,8 +532,7 @@ Proof.
   { 
     replace (P ∨ Phi Y → Q ∨ Phi Y) with (∃ x, P ∨ Phi x → Q ∨ Phi Y) in S1.
     2: {
-      pose (n9_1 (fun x => P ∨ Phi x → Q ∨ Phi Y) Y) as n9_1.
-        simpl in n9_1.
+      pose proof (n9_1 (fun x => P ∨ Phi x → Q ∨ Phi Y) Y) as n9_1; simpl in n9_1.
       apply propositional_extensionality.
       split.
       (* I don't this can be proven *)
