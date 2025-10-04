@@ -483,20 +483,31 @@ Proof.
   }
   assert (S2 : P ∨ Q ∨ (∀ x : Prop, Phi x) -> Q ∨ P ∨ (∀ x : Prop, Phi x)).
   { 
-  (* TODO: n2_31 *)
-    replace (∀ x : Prop, P ∨ Q ∨ Phi x) with (∀ x : Prop, (P ∨ Q) ∨ Phi x) in S1
-      by admit.
-    replace (∀ x : Prop, Q ∨ P ∨ Phi x) with (∀ x : Prop, (Q ∨ P) ∨ Phi x) in S1
-      by admit.
+    replace (∀ x : Prop, P ∨ Q ∨ Phi x) with (∀ x : Prop, (P ∨ Q) ∨ Phi x) in S1.
+    2: {
+      apply propositional_extensionality; split;
+      intros H x; pose (H x) as H0; [ apply n2_32 | apply n2_31 ]; exact H0.
+    }
+    replace (∀ x : Prop, Q ∨ P ∨ Phi x) with (∀ x : Prop, (Q ∨ P) ∨ Phi x) in S1.
+    2: {
+      apply propositional_extensionality; split;
+      intros H x; pose (H x) as H0; [ apply n2_32 | apply n2_31 ]; exact H0.
+    }
     rewrite <- (n9_04 Phi (P ∨ Q)), <- (n9_04 Phi (Q ∨ P)) in S1.
-    replace ((P ∨ Q) ∨ (∀ x : Prop, Phi x)) with (P ∨ Q ∨ ∀ x : Prop, Phi x) in S1
-      by admit.
-    replace ((Q ∨ P) ∨ ∀ x : Prop, Phi x) with (Q ∨ P ∨ ∀ x : Prop, Phi x) in S1
-      by admit.
+    replace ((P ∨ Q) ∨ (∀ x : Prop, Phi x)) with (P ∨ Q ∨ ∀ x : Prop, Phi x) in S1.
+    2: {
+      apply propositional_extensionality. 
+      split; [ apply n2_31 | apply n2_32 ]; exact H0.
+    }
+    replace ((Q ∨ P) ∨ ∀ x : Prop, Phi x) with (Q ∨ P ∨ ∀ x : Prop, Phi x) in S1.
+    2: {
+      apply propositional_extensionality. 
+      split; [ apply n2_31 | apply n2_32 ]; exact H0.
+    }
     exact S1.
   }
   exact S2.
-Admitted.
+Qed.
 
 Theorem n9_401 (Phi : Prop -> Prop) (P Q : Prop) : P ∨ Q ∨ (∃ x : Prop, Phi x)
   -> Q ∨ P ∨ (∃ x : Prop, Phi x).
