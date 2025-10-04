@@ -535,7 +535,7 @@ Proof.
       pose proof (n9_1 (fun x => P ∨ Phi x → Q ∨ Phi Y) Y) as n9_1; simpl in n9_1.
       apply propositional_extensionality.
       split.
-      (* I don't this can be proven *)
+      (* I don't think this can be proven *)
       { admit. }
       { exact n9_1. }
     }
