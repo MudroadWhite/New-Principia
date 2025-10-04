@@ -4,14 +4,12 @@ continuation on [formalizing Principia Mathematica](https://github.com/LogicalAt
 ## Why working on it
 - Principia Mathematica has a stable version
 - Coq doesn't need a lot of version updates
-- Formalizing PM is not getting an IMO gold
-- Formalizing PM doesn't need hard skills so far(?), and its a low hanging fruit
 - Formalizing PM feels like climbing a mountain
 
 ## Features
 - Forward style reasoning, pertaining the most flavor of original proof
 - Nice proof architecture and clean, maybe beautiful proof window
-- No 3rd party library involved so far
+- No 3rd party library involved so far, and instead, native and simple tactics
 - Detailed comment to the best I can
 
 ## Running the code

@@ -9,7 +9,7 @@ Started from chapter 9, Principia doesn't have it defined how function works for
 ## Tactics being used
 TLDR: We use a mixture of multiple tactics to implement a single functionality.
 
-I haven't figured out a unified way to do it universally and right, so here are the methods that I use to make the functions working:
+I haven't figured out a unified way to do it universally and right. If something simple doesn't work, below are the alternatives I might use to make the functions work:
 
 1. `set` to define a function directly. Pairs with `change` when it needs a `rewrite`. Doesn't work very well on `exists` propositions and more generally bound variables. `change` tactic doesn't even modify the underlying proof object.
 2. `remember` that generates a equation of `f = P x` to use. Will be blocked by `exists` proposition and more generally bound variables, but better than `set` in general.
