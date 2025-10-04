@@ -26,3 +26,23 @@ Proof.
   intros P Q H.
   split; try rewrite -> H; trivial.
 Qed.
+
+(* Experimental:
+We might want to design an explicit `Asserted` and make notation as `[| |]`
+to separate the parameters with the content inside
+so that real variables doesn't pollute the `forall`s, `exists` at the rhs 
+of the definition
+
+`n9_13` in this way, will be written as
+```
+Definition n9_13 (Phi : Prop → Prop) (X : Prop) : 
+  [| Phi X = (∀ y : Prop, Phi y) |]. 
+Admitted.
+```
+which is significantly different and makes more sense over its original formation
+
+Cons:
+1. MP will be affected by this embedding
+2. How do we perform all kinds of rewrites?
+*)
+Axiom Asserted : Prop -> Prop.

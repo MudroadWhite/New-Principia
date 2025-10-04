@@ -5,6 +5,22 @@ Require Import PM.pm.ch3.
 Require Import PM.pm.ch4.
 Require Import PM.pm.ch5.
 
+(* 
+Every propositions, variables in chapter 9 are supposed to be elementary propositions,
+which doesn't contain any quantifiers. That being said, in a rigorous sense, 
+`P := forall x, F x` shouldn't be allowed, but `P := X \/ Y` is allowed. Currently we 
+didn't pose any assertions on parameters being elementary propositions, and the proofs
+can be high flawed on this restriction.
+
+At the end of the chapter, Russell proved that the definition of a function P can be 
+extended to sentences involving `forall`s, and moreover, multiple param functions with 
+`forall`s within, or several `forall`s being concated with some binary logic operators.
+
+In the beginning of chapter 10, Russell wrote that the implications in this chapter is 
+called "material implication"s, and the results here will be extended to "formal 
+implication"s.
+*)
+
 Definition n9_01 (Phi : Prop → Prop) :
   (¬ (∀ x : Prop, Phi x)) = (∃ x : Prop, ¬ Phi x). Admitted.
 
