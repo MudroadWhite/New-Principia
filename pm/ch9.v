@@ -676,6 +676,10 @@ Proof.
   (* Proof as above *)
 Admitted.
 
-(* Thm 9.6, 9.61 - 9.63: pure text propositions
-TODO: write them down
-*)
+(* Thm 9.6: `forall x, Phi x`, `~(forall x, Phi x)`, `exists x, Phi x`, `~(exists x, Phi x)` are of the same type. From *9.131, (7) and (8)  *)
+
+(* Thm 9.61: If `Phi x^` and `Psi x^` are elementary functions of the same type, there is a function `Phi x^ \/ Psi x^`. *)
+
+(* Thm 9.62 : If `Phi(x^, y^)` and `Psi z^` are elementary functions, and the x-argument to `Phi` is of the same type as the argument of `Psi`, there are functions `(forall y, Phi(x^, y)) \/ Psi x^`, `(exists y, Phi (x^, y) \/ Phi x^)` *)
+
+(* Thm 9.63 : If `Phi(x^, y^)` and `Psi(x^, y^)` are elementary functions of the same type, there are functions `(forall y, Phi(x^, y) \/ forall z, Psi(x^, z)), etc.` *)
