@@ -1,5 +1,5 @@
 # New-Principia
-Continuation on [formalizing Principia Mathematica](https://github.com/LogicalAtomist/principia).
+Continuation on [formalizing Principia Mathematica](https://github.com/LogicalAtomist/principia) by Landon Elkind.
 
 Added: Chapter 9 except the `Proof as above` theorems
 
