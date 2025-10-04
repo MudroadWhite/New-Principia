@@ -61,13 +61,13 @@ Definition is_same_type (u v : Prop) : Prop. Admitted.
 
 Definition SameTy9_131 := is_same_type.
 
-Definition n9_14 : ∀ (X a : Prop) (Phi : Prop → Prop),
+Definition n9_14 : ∀ (a : Prop) (Phi : Prop → Prop) (X : Prop),
   Phi X → (SameTy9_131 X a ↔ Phi a). Admitted.
 
 (* Pp n9_15 : If for some `a` there is a proposition `Phi a`, then there is a function
   `phi x^` and vice versa. *)
 
-Theorem n9_2 (Y : Prop) (Phi : Prop → Prop) : (∀ x : Prop, Phi x) → Phi Y.
+Theorem n9_2 (Phi : Prop → Prop) (Y : Prop) : (∀ x : Prop, Phi x) → Phi Y.
 Proof. 
   (** Step 1 **)
   pose proof (n2_1 (Phi Y)) as n2_1.
@@ -84,7 +84,7 @@ Proof.
   apply n9_1.
 Qed.
 
-Theorem n9_21 (Z : Prop) (Phi Psi : Prop → Prop) :
+Theorem n9_21 (Phi Psi : Prop → Prop) :
   (∀ x, Phi x → Psi x) 
   → (∀ y, Phi y) 
   → ∀ z, Psi z.
@@ -100,6 +100,7 @@ Proof.
       (P0 ∨ ∃ x : Prop, Phi0 x) (∃ x : Prop, P0 ∨ Phi0 x) 
       (n9_06 Phi0 P0))
   as n9_06a.
+  set (Z := Real "z").
   (* ******** *)
   (** S1 **)
   pose proof (Id2_08 (Phi Z → Psi Z)) as S1.
@@ -150,7 +151,7 @@ Proof.
   exact S8.
 Qed.
 
-Theorem n9_22 (Y : Prop) (Phi Psi : Prop → Prop) :
+Theorem n9_22 (Phi Psi : Prop → Prop) :
   (∀ x, Phi x → Psi x) → (∃ x, Phi x) → (∃ x, Psi x).
 Proof. 
   (* TOOLS *)
@@ -169,6 +170,7 @@ Proof.
       ((∀ x : Prop, Phi0 x) ∨ (∃ y : Prop, Psi0 y))
       (∀ x : Prop, ∃ y : Prop, Phi0 x ∨ Psi0 y)
       (n9_07 Phi0 Psi0)) as n9_07a.
+  set (Y := Real "Y").
   (* ******** *)
   pose proof (Id2_08 (Phi Y → Psi Y)) as S1.
   assert (S2 : ∃ z, (Phi Y → Psi Y) → (Phi Y → Psi z)).
@@ -243,12 +245,13 @@ Proof.
   exact n9_23.
 Qed.
 
-Theorem n9_3 (X : Prop) (Phi : Prop → Prop) : 
+Theorem n9_3 (Phi : Prop → Prop) : 
   (∀ x : Prop, Phi x) ∨ (∀ x : Prop, Phi x) → (∀ x : Prop, Phi x).
 Proof.
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
+  set (X := Real "x").
   (* ******** *)
   pose proof (Taut1_2 (Phi X)) as S1.
   assert (S2 : ∃ y, (Phi X ∨ Phi y) → Phi X).
@@ -278,9 +281,9 @@ Proof.
     exact S3_i1.
   }
   assert (S5 : (∀ x, (Phi x ∨ ∀ y, Phi y)) → (∀ x, Phi x)).
-  (* Here the apparent variable `X` can be arbitrary *)
+  (* Here the real variable `X` can be arbitrary *)
   { 
-    pose proof (n9_21 X (fun x => Phi x ∨ (∀ y : Prop, Phi y)) Phi) as n9_21.
+    pose proof (n9_21 (fun x => Phi x ∨ (∀ y : Prop, Phi y)) Phi) as n9_21.
     MP n9_21 S4. exact n9_21. 
   }
   assert (S6 : (∀ x : Prop, Phi x) ∨ (∀ x : Prop, Phi x) → (∀ x : Prop, Phi x)).
@@ -288,12 +291,13 @@ Proof.
   exact S6.
 Qed.
 
-Theorem n9_31 (X : Prop) (Phi : Prop → Prop) : 
+Theorem n9_31 (Phi : Prop → Prop) : 
   ((∃ x : Prop, Phi x) ∨ (∃ x : Prop, Phi x)) → (∃ x : Prop, Phi x).
 Proof. 
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
+  set (X := Real "X").
   (* ******** *)
   assert (S1 : ∀ y, Phi X ∨ Phi y → ∃ z, Phi z).
   {
@@ -357,11 +361,12 @@ Proof.
   exact S5.
 Qed.
 
-Theorem n9_32 (Phi : Prop → Prop) (Q X : Prop) : Q → (∀ x : Prop, Phi x) ∨ Q.
+Theorem n9_32 (Phi : Prop → Prop) (Q : Prop) : Q → (∀ x : Prop, Phi x) ∨ Q.
 Proof. 
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
-  as Impl1_01a.
+    as Impl1_01a.
+  set (X := Real "x").
   (* ******** *)
   pose proof (Add1_3 (Phi X) Q) as S1.
   assert (S2 : ∀ x, Q → (Phi x) ∨ Q).
@@ -389,14 +394,17 @@ Proof.
   exact S4.
 Qed.
   
-Theorem n9_33 (Phi : Prop → Prop) (Q X : Prop) : Q → (∃ x : Prop, Phi x) ∨ Q.
+Theorem n9_33 (Phi : Prop → Prop) (Q : Prop) : Q → (∃ x : Prop, Phi x) ∨ Q.
 Proof. 
   (* Proof as above *)
 Admitted.
 
-Theorem n9_34 (Phi : Prop → Prop) (X P : Prop) : 
+Theorem n9_34 (Phi : Prop → Prop) (P : Prop) : 
   (∀ x : Prop, Phi x) → P ∨ (∀ x : Prop, Phi x).
 Proof. 
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
   pose proof (Add1_3 P (Phi X)) as S1.
   assert (S2 : ∀ x, Phi x → P ∨ Phi x).
   { 
@@ -406,7 +414,7 @@ Proof.
   }
   assert (S3 : (∀ x, Phi x) → (∀ x, P ∨ Phi x)).
   { 
-    pose proof (n9_21 X Phi (fun x => P ∨ Phi x)) as n9_21.
+    pose proof (n9_21 Phi (fun x => P ∨ Phi x)) as n9_21.
     MP n9_21 S2.
     exact n9_21.
   }
@@ -420,13 +428,16 @@ Proof.
   (* Proof as above *)
 Admitted.
 
-Theorem n9_36 (Phi : Prop → Prop) (X P : Prop) : P ∨ (∀ x : Prop, Phi x) → (∀ x : Prop, Phi x) ∨ P.
+Theorem n9_36 (Phi : Prop → Prop) (P : Prop) : P ∨ (∀ x : Prop, Phi x) → (∀ x : Prop, Phi x) ∨ P.
 Proof. 
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
   pose proof (Perm1_4 P (Phi X)) as S1.
   assert (S2 : (∀ x, (P ∨ Phi x)) → ∀ x, (Phi x ∨ P)).
   { 
     rewrite -> (n9_13 (fun x => P ∨ Phi x → Phi x ∨ P) X) in S1.
-    pose proof (n9_21 X (fun x => P ∨ Phi x) (fun x => Phi x ∨ P)) as n9_21.
+    pose proof (n9_21 (fun x => P ∨ Phi x) (fun x => Phi x ∨ P)) as n9_21.
     MP n9_21 S1.
     exact n9_21.
   }
@@ -456,7 +467,7 @@ Proof.
   assert (S1 : (∀ x, P ∨ (Q ∨ Phi x)) → (∀ x, Q ∨ (P ∨ Phi x))).
   {
     pose proof (fun x => (Assoc1_5 P Q (Phi x))) as Assoc1_5.
-    pose proof (n9_21 P (fun x => P ∨ Q ∨ Phi x) (fun x => Q ∨ P ∨ Phi x)) as n9_21.
+    pose proof (n9_21 (fun x => P ∨ Q ∨ Phi x) (fun x => Q ∨ P ∨ Phi x)) as n9_21.
     MP n9_21 Assoc1_5.
     exact n9_21.
   }
@@ -570,12 +581,13 @@ Proof.
   (* Proof as above *)
 Admitted.
 
-Theorem n9_51 (Phi : Prop → Prop) (P R : Prop) (X : Prop) : 
+Theorem n9_51 (Phi : Prop → Prop) (P R : Prop) : 
   (P → ∀ x : Prop, Phi x) → P ∨ R → (∀ x : Prop, Phi x) ∨ R.
 Proof. 
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
+  set (X := Real "x").
   (* ******** *)
   assert (S1 : (P → Phi X) → ((P ∨ R) → (Phi X ∨ R))).
   { 
@@ -623,12 +635,13 @@ Proof.
   (* Proof as above *)
 Admitted.
 
-Theorem n9_52 (Phi : Prop → Prop) (Q R : Prop) (X : Prop) :
+Theorem n9_52 (Phi : Prop → Prop) (Q R : Prop) :
   ((∀ x : Prop, Phi x) → Q) → ((∀ x : Prop, Phi x) ∨ R) → (Q ∨ R).
 Proof. 
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
+  set (X := Real "x").
   (* ******** *)
   assert (S1 : (Phi X → Q) → ((Phi X ∨ R) → (Q ∨ R))).
   { 
@@ -642,7 +655,7 @@ Proof.
   assert (S2 : (∃ x, (Phi x → Q)) → (∃ x, (Phi x ∨ R) → (Q ∨ R))).
   { 
     rewrite -> (n9_13 (fun x => (Phi x → Q) → ((Phi x ∨ R) → (Q ∨ R))) X) in S1.
-    pose proof (n9_22 X (fun x => Phi x → Q) (fun x => Phi x ∨ R → Q ∨ R)) as n9_22.
+    pose proof (n9_22 (fun x => Phi x → Q) (fun x => Phi x ∨ R → Q ∨ R)) as n9_22.
     MP n9_22 S1.
     exact n9_22.
   }
