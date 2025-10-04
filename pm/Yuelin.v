@@ -10,8 +10,8 @@ Proof.
   {
     pose (Simp3_26 (P→R) (Q→S)) as Simp3_26a. (*Yuelin's book has n2_34. This doesn't exist.*) 
     pose (Fact3_45 P R Q) as Fact3_45a. (*Yuelin's book has n2_45. Fact3_45 is meant.*)
-    replace (R∧Q) with (Q∧R) in Fact3_45a.
-    2: { apply propositional_extensionality. exact (n4_3 Q R). }
+    replace (R∧Q) with (Q∧R) in Fact3_45a
+      by (apply propositional_extensionality; exact (n4_3 Q R)).
     Syll Simp3_26a Fact3_45a Sa. (*Syll2_05*)
     exact Sa.
   }
@@ -19,8 +19,8 @@ Proof.
   {
     pose (Simp3_27 (P→R) (Q→S)) as Simp3_27a. (*Yuelin's book has n2_36. This doesn't exist.*)
     pose (Fact3_45 Q S R) as Fact3_45b. (*Yuelin's book has n2_45. Fact3_45 is meant.*)
-    replace (S∧R) with (R∧S) in Fact3_45b.
-    2: { apply propositional_extensionality. exact (n4_3 R S). }
+    replace (S∧R) with (R∧S) in Fact3_45b
+      by (apply propositional_extensionality; exact (n4_3 R S)).
     Syll Simp3_27a Fact3_45b Sb. (*Syll2_05*)
     exact Sb.
   }
