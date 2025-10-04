@@ -75,8 +75,7 @@ Proof.
   pose proof (n9_1 (fun x : Prop => ¬ Phi x ∨ Phi Y) Y) as n9_1.
   MP n2_1 n9_1.
   (** Step 3 **)
-  pose proof (n9_05 (fun x : Prop => ¬ Phi x) (Phi Y)) as n9_05. cbn in n9_05.
-  rewrite <- n9_05 in n9_1.
+  rewrite <- (n9_05 (fun x : Prop => ¬ Phi x) (Phi Y)) in n9_1.
   (** Step 4 **)
   pose proof (n9_01 Phi) as n9_01.
   rewrite <- n9_01 in n9_1.
@@ -136,9 +135,8 @@ Proof.
   {
     setoid_rewrite Impl1_01a in S5.
     setoid_rewrite Impl1_01a in S5 at 3.
-    pose proof (n9_08 (fun z1 => (∃ y0 : Prop, (¬ Phi y0) ∨ Psi z1)) 
-        (fun x1 => ¬ (Phi x1 → Psi x1))) as n9_08.
-    rewrite <- n9_08 in S5.
+    rewrite <- (n9_08 (fun z1 => (∃ y0 : Prop, (¬ Phi y0) ∨ Psi z1)) 
+      (fun x1 => ¬ (Phi x1 → Psi x1))) in S5.
     exact S5.
   }
   assert (S7 : (∃ x : Prop, ¬(Phi x → Psi x)) ∨ ((∃ y : Prop, (¬ Phi y)) ∨ (∀ z : Prop, Psi z))).
@@ -240,8 +238,7 @@ Theorem n9_25 (P : Prop) (Phi : Prop → Prop) :
   (∀ x : Prop, P ∨ Phi x) → P ∨ (∀ x : Prop, Phi x).
 Proof.
   pose proof (n9_23 (fun x => P ∨ Phi x)) as n9_23; simpl in n9_23.
-  pose proof (n9_04 Phi P) as n9_04.
-  rewrite <- n9_04 in n9_23 at 2.
+  rewrite <- (n9_04 Phi P) in n9_23 at 2.
   exact n9_23.
 Qed.
 
@@ -556,9 +553,8 @@ Proof.
   }
   assert (S3 : (P → Q) → ∀ y, ∃ x, (P ∨ Phi x) → (Q ∨ Phi y)).
   { 
-    pose proof (n9_13 (fun y => ∃ x : Prop, P ∨ Phi x → Q ∨ Phi y) Y) as n9_13.
     (* *9.04 ignored - optional *)
-    rewrite -> n9_13 in S2.
+    rewrite -> (n9_13 (fun y => ∃ x : Prop, P ∨ Phi x → Q ∨ Phi y) Y) in S2.
     exact S2.
   }
   assert (S4 : (P → Q) → (∃ x, ¬ (P ∨ Phi x)) ∨ (∀ y, Q ∨ Phi y)).
