@@ -7,18 +7,18 @@ Theorem Prod3_01 : ∀ P Q : Prop,
 Proof. intros P Q. 
   apply propositional_extensionality.
   split.
-  specialize or_not_and with (P) (Q).
-  intros or_not_and.
-  specialize Transp2_03 with (¬P ∨ ¬Q) (P ∧ Q).
-  intros Transp2_03.
-  MP Transp2_03 or_not_and.
-  exact Transp2_03.
-  specialize not_and_or with (P) (Q).
-  intros not_and_or.
-  specialize Transp2_15 with (P ∧ Q) (¬P ∨ ¬Q).
-  intros Transp2_15.
-  MP Transp2_15 not_and_or.
-  exact Transp2_15.
+  {
+    pose (or_not_and P Q) as or_not_and.
+    pose (Transp2_03 (¬P ∨ ¬Q) (P ∧ Q)) as Transp2_03.
+    MP Transp2_03 or_not_and.
+    exact Transp2_03.
+  }
+  {
+    pose (not_and_or P Q) as not_and_or.
+    pose (Transp2_15 (P ∧ Q) (¬P ∨ ¬Q)) as Transp2_15.
+    MP Transp2_15 not_and_or.
+    exact Transp2_15.
+  }
 Qed.
 (*This is a notational definition in Principia;
   it is used to switch between "∧" and "¬∨¬".*)
@@ -31,10 +31,8 @@ Qed.
 
 Theorem Conj3_03 : ∀ P Q : Prop, P → Q → (P∧Q). 
 Proof. intros P Q.
-  specialize n2_11 with (¬P∨¬Q). 
-  intros n2_11a.
-  specialize n2_32 with (¬P) (¬Q) (¬(¬P ∨ ¬Q)). 
-  intros n2_32a.
+  pose (n2_11 (¬P∨¬Q)) as n2_11a.
+  pose (n2_32 (¬P) (¬Q) (¬(¬P ∨ ¬Q))) as n2_32a. 
   MP n2_32a n2_11a.
   replace (¬(¬P∨¬Q)) with (P∧Q) in n2_32a
     by now rewrite Prod3_01.
@@ -50,8 +48,7 @@ Qed.
 Ltac Conj H1 H2 C :=
   let C := fresh C in match goal with 
     | [ H1 : ?P, H2 : ?Q |- _ ] =>  
-      (specialize Conj3_03 with P Q;
-      intros C;
+      (pose (Conj3_03 P Q) as C;
       MP Conj3_03 P; MP Conj3_03 Q)
 end. 
 
@@ -444,30 +441,21 @@ Qed.
 Theorem n3_48 : ∀ P Q R S : Prop,
   ((P → R) ∧ (Q → S)) → (P ∨ Q) → R ∨ S.
 Proof. intros P Q R S.
-  specialize Simp3_26 with (P→R) (Q→S). 
-  intros Simp3_26a.
-  specialize Sum1_6 with Q P R. 
-  intros Sum1_6a.
+  pose (Simp3_26 (P→R) (Q→S)) as Simp3_26a. 
+  pose (Sum1_6 Q P R) as Sum1_6a. 
   Syll Simp3_26a Sum1_6a Sa.
-  specialize Perm1_4 with P Q. 
-  intros Perm1_4a.
-  specialize Syll2_06 with (P∨Q) (Q∨P) (Q∨R). 
-  intros Syll2_06a.
+  pose (Perm1_4 P Q) as Perm1_4a. 
+  pose (Syll2_06 (P∨Q) (Q∨P) (Q∨R)) as Syll2_06a. 
   MP Syll2_06a Perm1_4a.
   Syll Sa Syll2_06a Sb.
-  specialize Simp3_27 with (P→R) (Q→S). 
-  intros Simp3_27a.
-  specialize Sum1_6 with R Q S. 
-  intros Sum1_6b.
+  pose (Simp3_27 (P→R) (Q→S)) as Simp3_27a. 
+  pose (Sum1_6 R Q S) as Sum1_6b. 
   Syll Simp3_27a Sum1_6b Sc.
-  specialize Perm1_4 with Q R. 
-  intros Perm1_4b.
-  specialize Syll2_06 with (Q∨R) (R∨Q) (R∨S). 
-  intros Syll2_06b.
+  pose (Perm1_4 Q R) as Perm1_4b.
+  pose (Syll2_06 (Q∨R) (R∨Q) (R∨S)) as Syll2_06b. 
   MP Syll2_06b Perm1_4b.
   Syll Sc Syll2_06a Sd.
-  specialize n2_83 with ((P→R)∧(Q→S)) (P∨Q) (Q∨R) (R∨S). 
-  intros n2_83a.
+  pose (n2_83 ((P→R)∧(Q→S)) (P∨Q) (Q∨R) (R∨S)) as n2_83a.
   MP n2_83a Sb.
   MP n2_83a Sd.
   exact n2_83a. 

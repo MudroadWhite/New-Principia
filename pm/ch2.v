@@ -6,8 +6,7 @@ Require Import PM.pm.ch1.
 Theorem Abs2_01 : ∀ P : Prop,
   (P → ¬P) → ¬P.
 Proof. intros P.
-  specialize Taut1_2 with (¬P).
-  intros Taut1_2.
+  pose (Taut1_2 (¬P)) as Taut1_2.
   replace (¬P ∨ ¬P) with (P → ¬P) in Taut1_2
     by now rewrite Impl1_01.
   exact Taut1_2.
@@ -16,8 +15,7 @@ Qed.
 Theorem Simp2_02 : ∀ P Q : Prop, 
   Q → (P → Q).
 Proof. intros P Q.
-  specialize Add1_3 with (¬P) Q.
-  intros Add1_3.
+  pose (Add1_3 (¬P) Q) as Add1_3.
   replace (¬P ∨ Q) with (P → Q) in Add1_3
     by now rewrite Impl1_01.
   exact Add1_3.
@@ -26,8 +24,7 @@ Qed.
 Theorem Transp2_03 : ∀ P Q : Prop,
   (P → ¬Q) → (Q → ¬P).
 Proof. intros P Q.
-  specialize Perm1_4 with (¬P) (¬Q).
-  intros Perm1_4.
+  pose (Perm1_4 (¬P) (¬Q)) as Perm1_4.
   replace (¬P ∨ ¬Q) with (P → ¬Q) in Perm1_4
     by now rewrite Impl1_01. 
   replace (¬Q ∨ ¬P) with (Q → ¬P) in Perm1_4
@@ -38,8 +35,7 @@ Qed.
 Theorem Comm2_04 : ∀ P Q R : Prop,
   (P → (Q → R)) → (Q → (P → R)).
 Proof. intros P Q R.
-  specialize Assoc1_5 with (¬P) (¬Q) R.
-  intros Assoc1_5.
+  pose (Assoc1_5 (¬P) (¬Q) R) as Assoc1_5.
   replace (¬Q ∨ R) with (Q → R) in Assoc1_5
     by now rewrite Impl1_01. 
   replace (¬P ∨ (Q → R)) with (P → (Q → R)) in Assoc1_5
@@ -912,8 +908,7 @@ Qed.
 Theorem n2_86 : ∀ P Q R : Prop,
   ((P → Q) → (P → R)) → (P → (Q →  R)).
 Proof. intros P Q R.
-  specialize n2_85 with (¬P) Q R. 
-  intros n2_85a.
+  pose (n2_85 (¬P) Q R) as n2_85a. 
   replace (¬P∨Q) with (P→Q) in n2_85a
     by now rewrite Impl1_01.
   replace (¬P∨R) with (P→R) in n2_85a
