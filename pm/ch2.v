@@ -6,7 +6,7 @@ Require Import PM.pm.ch1.
 Theorem Abs2_01 (P : Prop) :
   (P → ¬P) → ¬P.
 Proof.
-  pose (Taut1_2 (¬P)) as Taut1_2.
+  pose proof (Taut1_2 (¬P)) as Taut1_2.
   replace (¬P ∨ ¬P) with (P → ¬P) in Taut1_2
     by now rewrite Impl1_01.
   exact Taut1_2.
@@ -15,7 +15,7 @@ Qed.
 Theorem Simp2_02 (P Q : Prop) :
   Q → (P → Q).
 Proof.
-  pose (Add1_3 (¬P) Q) as Add1_3.
+  pose proof (Add1_3 (¬P) Q) as Add1_3.
   replace (¬P ∨ Q) with (P → Q) in Add1_3
     by now rewrite Impl1_01.
   exact Add1_3.
@@ -24,7 +24,7 @@ Qed.
 Theorem Transp2_03 (P Q : Prop) :
   (P → ¬Q) → (Q → ¬P).
 Proof.
-  pose (Perm1_4 (¬P) (¬Q)) as Perm1_4.
+  pose proof (Perm1_4 (¬P) (¬Q)) as Perm1_4.
   replace (¬P ∨ ¬Q) with (P → ¬Q) in Perm1_4
     by now rewrite Impl1_01. 
   replace (¬Q ∨ ¬P) with (Q → ¬P) in Perm1_4
@@ -35,7 +35,7 @@ Qed.
 Theorem Comm2_04 (P Q R : Prop) :
   (P → (Q → R)) → (Q → (P → R)).
 Proof.
-  pose (Assoc1_5 (¬P) (¬Q) R) as Assoc1_5.
+  pose proof (Assoc1_5 (¬P) (¬Q) R) as Assoc1_5.
   replace (¬Q ∨ R) with (Q → R) in Assoc1_5
     by now rewrite Impl1_01. 
   replace (¬P ∨ (Q → R)) with (P → (Q → R)) in Assoc1_5
@@ -50,7 +50,7 @@ Qed.
 Theorem Syll2_05 (P Q R : Prop) :
   (Q → R) → ((P  → Q) → (P → R)).
 Proof.
-  pose (Sum1_6 (¬P) Q R) as Sum1_6.
+  pose proof (Sum1_6 (¬P) Q R) as Sum1_6.
   replace (¬P ∨ Q) with (P → Q) in Sum1_6
     by now rewrite Impl1_01.  
   replace (¬P ∨ R) with (P → R) in Sum1_6
@@ -61,8 +61,8 @@ Qed.
 Theorem Syll2_06 (P Q R : Prop) :
   (P → Q) → ((Q → R) → (P → R)).
 Proof.
-  pose (Comm2_04 (Q → R) (P → Q) (P → R)) as Comm2_04. 
-  pose (Syll2_05 P Q R) as Syll2_05. 
+  pose proof (Comm2_04 (Q → R) (P → Q) (P → R)) as Comm2_04. 
+  pose proof (Syll2_05 P Q R) as Syll2_05. 
   MP Comm2_04 Syll2_05.
   exact Comm2_04.
 Qed.
@@ -73,99 +73,80 @@ Proof.
   exact (Add1_3 P P).
 Qed.
 
-Theorem Id2_08 : ∀ P : Prop,
+Theorem Id2_08 (P : Prop) :
   P → P.
-Proof. intros P.
-  specialize Syll2_05 with P (P ∨ P) P. 
-  intros Syll2_05.
-  specialize Taut1_2 with P. 
-  intros Taut1_2.
+Proof.
+  pose proof (Syll2_05 P (P ∨ P) P) as Syll2_05. 
+  pose proof (Taut1_2 P) as Taut1_2. 
   MP Syll2_05 Taut1_2.
-  specialize n2_07 with P.
-  intros n2_07.
+  pose proof (n2_07 P) as n2_07.
   MP Syll2_05 n2_07.
   exact Syll2_05.
 Qed.
 
-Theorem n2_1 : ∀ P : Prop,
+Theorem n2_1 (P : Prop) :
   (¬P) ∨ P.
-Proof. intros P.
-  specialize Id2_08 with P. 
-  intros Id2_08.
+Proof.
+  pose proof (Id2_08 P) as Id2_08.
   replace (P → P) with (¬P ∨ P) in Id2_08
     by now rewrite Impl1_01. 
   exact Id2_08.
 Qed.
 
-Theorem n2_11 : ∀ P : Prop,
+Theorem n2_11 (P : Prop) :
   P ∨ ¬P.
-Proof. intros P.
-  specialize Perm1_4 with (¬P) P. 
-  intros Perm1_4.
-  specialize n2_1 with P. 
-  intros n2_1.
+Proof.
+  pose proof (Perm1_4 (¬P) P) as Perm1_4.
+  pose proof (n2_1 P) as n2_1.
   MP Perm1_4 n2_1.
   exact Perm1_4.
 Qed.
 
-Theorem n2_12 : ∀ P : Prop,
+Theorem n2_12 (P : Prop) :
   P → ¬¬P.
-Proof. intros P.
-  specialize n2_11 with (¬P). 
-  intros n2_11.
+Proof.
+  pose proof (n2_11 (¬P)) as n2_11.
   replace (¬P ∨ ¬¬P) with (P → ¬¬P) in n2_11
     by now rewrite Impl1_01.
   exact n2_11.
 Qed.
 
-Theorem n2_13 : ∀ P : Prop,
+Theorem n2_13 (P : Prop) :
   P ∨ ¬¬¬P.
-Proof. intros P.
-  specialize Sum1_6 with P (¬P) (¬¬¬P). 
-  intros Sum1_6.
-  specialize n2_12 with (¬P). 
-  intros n2_12.
+Proof.
+  pose proof (Sum1_6 P (¬P) (¬¬¬P)) as Sum1_6.
+  pose proof (n2_12 (¬P)) as n2_12.
   MP Sum1_6 n2_12.
-  specialize n2_11 with P.
-  intros n2_11.
+  pose proof (n2_11 P) as n2_11.
   MP Sum1_6 n2_11.
   exact Sum1_6.
 Qed.
 
-Theorem n2_14 : ∀ P : Prop,
+Theorem n2_14 (P : Prop) :
   ¬¬P → P.
-Proof. intros P.
-  specialize Perm1_4 with P (¬¬¬P). 
-  intros Perm1_4.
-  specialize n2_13 with P. 
-  intros n2_13.
+Proof.
+  pose proof (Perm1_4 P (¬¬¬P)) as Perm1_4.
+  pose proof (n2_13 P) as n2_13.
   MP Perm1_4 n2_13.
   replace (¬¬¬P ∨ P) with (¬¬P → P) in Perm1_4
     by now rewrite Impl1_01.
   exact Perm1_4.
 Qed.
 
-Theorem Transp2_15 : ∀ P Q : Prop,
+Theorem Transp2_15 (P Q : Prop) :
   (¬P → Q) → (¬Q → P).
-Proof. intros P Q.
-  specialize Syll2_05 with (¬P) Q (¬¬Q). 
-  intros Syll2_05a.
-  specialize n2_12 with Q. 
-  intros n2_12.
+Proof.
+  pose proof (Syll2_05 (¬P) Q (¬¬Q)) as Syll2_05a.
+  pose proof (n2_12 Q) as n2_12.
   MP Syll2_05a n2_12.
-  specialize Transp2_03 with (¬P) (¬Q). 
-  intros Transp2_03.
-  specialize Syll2_05 with (¬Q) (¬¬P) P. 
-  intros Syll2_05b.
-  specialize n2_14 with P.
-  intros n2_14.
+  pose proof (Transp2_03 (¬P) (¬Q)) as Transp2_03.
+  pose proof (Syll2_05 (¬Q) (¬¬P) P) as Syll2_05b.
+  pose proof (n2_14 P) as n2_14.
   MP Syll2_05b n2_14.
-  specialize Syll2_05 with (¬P → Q) (¬P → ¬¬Q) (¬Q → ¬¬P). 
-  intros Syll2_05c.
+  pose proof (Syll2_05 (¬P → Q) (¬P → ¬¬Q) (¬Q → ¬¬P)) as Syll2_05c.
   MP Syll2_05c Transp2_03.
   MP Syll2_05c Syll2_05a.
-  specialize Syll2_05 with (¬P → Q) (¬Q → ¬¬P) (¬Q → P). 
-  intros Syll2_05d.
+  pose proof (Syll2_05 (¬P → Q) (¬Q → ¬¬P) (¬Q → P)) as Syll2_05d.
   MP Syll2_05d Syll2_05b.
   MP Syll2_05d Syll2_05c.
   exact Syll2_05d.
@@ -903,7 +884,7 @@ Qed.
 Theorem n2_86 : ∀ P Q R : Prop,
   ((P → Q) → (P → R)) → (P → (Q →  R)).
 Proof. intros P Q R.
-  pose (n2_85 (¬P) Q R) as n2_85a. 
+  pose proof (n2_85 (¬P) Q R) as n2_85a. 
   replace (¬P∨Q) with (P→Q) in n2_85a
     by now rewrite Impl1_01.
   replace (¬P∨R) with (P→R) in n2_85a
