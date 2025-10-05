@@ -93,6 +93,7 @@ Proof. intros P Q R.
   apply or_comm.
 Qed. *)
 
+(* TODO: redesign MP so that it poses the result as H3 *)
 Ltac MP H1 H2 :=
   match goal with 
     | [ H1 : ?P → ?Q, H2 : ?P |- _ ] => 
