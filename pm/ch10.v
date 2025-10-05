@@ -112,12 +112,8 @@ Theorem n10_253_alt (Phi : Prop -> Prop) : ~(forall x, Phi x) -> (exists x, ~Phi
 Proof.
 Admitted.
 
-Theorem n10_252 (Phi : Prop -> Prop) : ~(exists x, Phi x) <-> (forall x, Phi x).
-Proof.
-Admitted.
-
-Theorem n10_26 (Phi Psi : Prop -> Prop) : 
-  ((forall z, Phi z -> Psi z) /\ Phi x) -> Psi x.
+Theorem n10_26 (Phi Psi : Prop -> Prop) (X : Prop) : 
+  ((forall z, Phi z -> Psi z) /\ Phi X) -> Psi X.
 Proof.
 Admitted.
 
@@ -153,4 +149,111 @@ Proof.
 Admitted.
 
 Theorem n10_31 (Phi Psi Chi : Prop -> Prop) :
-  
+  (forall x, Phi x -> Psi x) -> (forall x, (Phi x /\ Chi x) -> (Psi x /\ Chi x)).
+Proof.
+Admitted.
+
+Theorem n10_311 (Phi Psi Chi : Prop -> Prop) :
+  (forall x, Phi x <-> Psi x) -> (forall x, (Phi x /\ Chi x) <-> (Psi x /\ Chi x)).
+Proof.
+Admitted.
+
+Theorem n10_32 (Phi Psi : Prop -> Prop) :
+  ((Phi x) <[- x -]> (Psi x)) <-> ((Psi x) <[- x -]> (Phi x)).
+Proof.
+Admitted.
+
+Theorem n10_321 (Phi Psi Chi : Prop -> Prop) :
+  ((Phi x) <[- x -]> (Psi x) /\ ((Phi x) <[- x -]> (Chi x))) 
+  -> ((Psi x) <[- x -]> (Chi x)).
+Proof.
+Admitted.
+
+Theorem n10_322 (Phi Psi Chi : Prop -> Prop) :
+  ((Psi x) <[- x -]> (Phi x) /\ ((Chi x) <[- x -]> (Phi x))) 
+  -> ((Psi x) <[- x -]> (Chi x)).
+Proof.
+Admitted.
+
+Theorem n10_33 (Phi : Prop -> Prop) (P : Prop) :
+  (forall x, Phi x /\ P) <-> ((forall x, Phi x) /\ P).
+Proof.
+Admitted.
+
+Theorem n10_34 (Phi : Prop -> Prop) (P : Prop) :
+  (exists x, Phi x -> P) <-> ((forall x, Phi x) -> P).
+Proof.
+Admitted.
+
+Theorem n10_35 (Phi : Prop -> Prop) (P : Prop) :
+  (exists x, P /\ Phi x) <-> P /\ (exists x, Phi x).
+Proof.
+Admitted.
+
+Theorem n10_36 (Phi : Prop -> Prop) (P : Prop) :
+  (exists x, Phi x \/ P) <-> (exists x, Phi x) \/ P.
+Proof.
+Admitted.
+
+Theorem n10_37 (Phi : Prop -> Prop) (P : Prop) :
+  (exists x, P -> Phi x) <-> (P -> exists x, Phi x).
+Proof.
+Admitted.
+
+(* TODO: figure out what does Hp mean in PM *)
+Theorem n10_39 (Phi Psi Chi Theta : Prop -> Prop) :
+  ((Phi x -[ x ]> Chi x) /\ (Psi x -[ x ]> Theta x)) 
+  -> (Phi x /\ Psi x) -[ x ]> (Chi x /\ Theta x).
+Proof.
+Admitted.
+
+Theorem n10_4 (Phi Psi Chi Theta : Prop -> Prop) :
+  ((Phi x <[- x -]> Chi x) /\ ((Psi x <[- x -]> Theta x)))
+  -> (Phi x /\ Psi x) <[- x -]> (Chi x /\ Theta x).
+Proof.
+Admitted.
+
+Theorem n10_41 (Phi Psi : Prop -> Prop) :
+  (forall x, Phi x) \/ (forall x, Psi x) -> (forall x, Phi x \/ Psi x).
+Proof.
+Admitted.
+
+Theorem n10_411 (Phi Psi Chi Theta : Prop -> Prop) :
+  ((Phi x <[- x -]> Chi x) /\ ((Psi x <[- x -]> Theta x)))
+  -> (Phi x \/ Psi x) <[- x -]> (Chi x \/ Theta x).
+Proof.
+Admitted.
+
+Theorem n10_412 (Phi Psi : Prop -> Prop) :
+  (Phi x <[- x -]> Psi x) <-> (~ Phi x <[- x -]> ~ Psi x).
+Proof.
+Admitted.
+
+Theorem n10_413 (Phi Psi Chi Theta : Prop -> Prop) :
+  ((Phi x <[- x -]> Chi x) /\ ((Psi x <[- x -]> Theta x)))
+  -> (Phi x -> Psi x) <[- x -]> (Chi x -> Theta x).
+Proof.
+Admitted.
+
+Theorem n10_414 (Phi Psi Chi Theta : Prop -> Prop) :
+  ((Phi x <[- x -]> Chi x) /\ ((Psi x <[- x -]> Theta x)))
+  -> (Phi x <-> Psi x) <[- x -]> (Chi x <-> Theta x).
+Proof.
+Admitted.
+
+Theorem n10_42 (Phi Psi : Prop -> Prop) :
+  (exists x, Phi x) \/ (exists x, Psi x) <-> (exists x, Phi x \/ Psi x).
+Proof.
+Admitted.
+
+Theorem n10_43 (Phi Psi : Prop -> Prop) (X : Prop) :
+  (Phi z <[- z -]> Psi z /\ Phi x) <->
+  (Phi z <[- z -]> Psi z /\ Psi x).
+Proof.
+Admitted.
+
+Theorem n10_5 (Phi Psi : Prop -> Prop) :
+  (exists x, Phi x /\ Psi x) -> ((exists x, Phi x) /\ (exists x, Psi x)).
+Proof. 
+Admitted.
+
