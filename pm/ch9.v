@@ -378,6 +378,11 @@ Proof.
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
+  set (λ (Phi0 : Prop → Prop) (P0 : Prop), 
+    eq_to_equiv ((∀ x : Prop, Phi0 x) ∨ P0) 
+                (∀ x : Prop, Phi0 x ∨ P0) 
+    (n9_03 Phi0 P0))
+    as n9_03a.
   set (X := Real "x").
   (* ******** *)
   pose proof (Add1_3 (Phi X) Q) as S1.
@@ -399,9 +404,8 @@ Proof.
   }
   assert (S4 : Q → (∀ x : Prop, Phi x) ∨ Q).
   { 
-    intro Q0. pose proof (S3 Q0) as S3_1.
-    rewrite <- (n9_03 Phi Q) in S3_1.
-    exact S3_1.
+    setoid_rewrite <- (n9_03a Phi Q) in S3.
+    exact S3.
   }
   exact S4.
 Qed.
