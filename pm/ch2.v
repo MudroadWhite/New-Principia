@@ -158,58 +158,46 @@ Ltac Syll H1 H2 S :=
        assert (S : P → R) by (intros p; exact (H2 (H1 p)))
 end. 
 
-Theorem Transp2_16 : ∀ P Q : Prop,
+Theorem Transp2_16 (P Q : Prop) :
   (P → Q) → (¬Q → ¬P).
-Proof. intros P Q.
-  specialize n2_12 with Q. 
-  intros n2_12a.
-  specialize Syll2_05 with P Q (¬¬Q). 
-  intros Syll2_05a.
-  specialize Transp2_03 with P (¬Q). 
-  intros Transp2_03a.
+Proof.
+  pose proof (n2_12 Q) as n2_12a.
+  pose proof (Syll2_05 P Q (¬¬Q)) as Syll2_05a.
+  pose proof (Transp2_03 P (¬Q)) as Transp2_03a.
   MP n2_12a Syll2_05a.
   Syll Syll2_05a Transp2_03a S.
   exact S.
 Qed.
 
-Theorem Transp2_17 : ∀ P Q : Prop,
+Theorem Transp2_17 (P Q : Prop) :
   (¬Q → ¬P) → (P → Q).
-Proof. intros P Q.
-  specialize Transp2_03 with (¬Q) P. 
-  intros Transp2_03a.
-  specialize n2_14 with Q. 
-  intros n2_14a.
-  specialize Syll2_05 with P (¬¬Q) Q. 
-  intros Syll2_05a.
+Proof.
+  pose proof (Transp2_03 (¬Q) P) as Transp2_03a.
+  pose proof (n2_14 Q) as n2_14a.
+  pose proof (Syll2_05 P (¬¬Q) Q) as Syll2_05a.
   MP n2_14a Syll2_05a.
   Syll Transp2_03a Syll2_05a S.
   exact S.
 Qed.
 
-Theorem n2_18 : ∀ P : Prop,
+Theorem n2_18 (P : Prop) :
   (¬P → P) → P.
-Proof. intros P.
-  specialize n2_12 with P.
-  intro n2_12a.
-  specialize Syll2_05 with (¬P) P (¬¬P). 
-  intro Syll2_05a.
+Proof.
+  pose proof (n2_12 P) as n2_12a.
+  pose proof (Syll2_05 (¬P) P (¬¬P)) as Syll2_05a.
   MP Syll2_05a n2_12.
-  specialize Abs2_01 with (¬P). 
-  intros Abs2_01a.
+  pose proof (Abs2_01 (¬P)) as Abs2_01a.
   Syll Syll2_05a Abs2_01a Sa.
-  specialize n2_14 with P. 
-  intros n2_14a.
+  pose proof (n2_14 P) as n2_14a.
   Syll H n2_14a Sb.
   exact Sb.
 Qed.
 
-Theorem n2_2 : ∀ P Q : Prop,
+Theorem n2_2 (P Q : Prop) :
   P → (P ∨ Q).
-Proof. intros P Q.
-  specialize Add1_3 with Q P. 
-  intros Add1_3a.
-  specialize Perm1_4 with Q P. 
-  intros Perm1_4a.
+Proof.
+  pose proof (Add1_3 Q P) as Add1_3a.
+  pose proof (Perm1_4 Q P) as Perm1_4a.
   Syll Add1_3a Perm1_4a S.
   exact S.
 Qed.
