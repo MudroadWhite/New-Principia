@@ -9,6 +9,8 @@ Started from chapter 9, Principia doesn't have it defined how function works for
 ## Tactics being used
 TLDR: We use a mixture of multiple tactics to implement a single functionality.
 
+TODO: extracting the functions vs inlining them while applying a theorem
+
 I haven't figured out a unified way to do it universally and right. If something simple doesn't work, below are the alternatives I might use to make the functions work:
 
 1. `set` to define a function directly. Pairs with `change` when it needs a `rewrite`. Doesn't work very well on `exists` propositions and more generally bound variables. `change` tactic doesn't even modify the underlying proof object.
