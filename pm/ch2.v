@@ -3,27 +3,27 @@ Require Import PM.pm.ch1.
 
 (*We proceed to the deductions of of Principia.*)
 
-Theorem Abs2_01 : ∀ P : Prop,
+Theorem Abs2_01 (P : Prop) :
   (P → ¬P) → ¬P.
-Proof. intros P.
+Proof.
   pose (Taut1_2 (¬P)) as Taut1_2.
   replace (¬P ∨ ¬P) with (P → ¬P) in Taut1_2
     by now rewrite Impl1_01.
   exact Taut1_2.
 Qed.
 
-Theorem Simp2_02 : ∀ P Q : Prop, 
+Theorem Simp2_02 (P Q : Prop) :
   Q → (P → Q).
-Proof. intros P Q.
+Proof.
   pose (Add1_3 (¬P) Q) as Add1_3.
   replace (¬P ∨ Q) with (P → Q) in Add1_3
     by now rewrite Impl1_01.
   exact Add1_3.
 Qed.
 
-Theorem Transp2_03 : ∀ P Q : Prop,
+Theorem Transp2_03 (P Q : Prop) :
   (P → ¬Q) → (Q → ¬P).
-Proof. intros P Q.
+Proof.
   pose (Perm1_4 (¬P) (¬Q)) as Perm1_4.
   replace (¬P ∨ ¬Q) with (P → ¬Q) in Perm1_4
     by now rewrite Impl1_01. 
@@ -32,9 +32,9 @@ Proof. intros P Q.
   exact Perm1_4.
 Qed.
 
-Theorem Comm2_04 : ∀ P Q R : Prop,
+Theorem Comm2_04 (P Q R : Prop) :
   (P → (Q → R)) → (Q → (P → R)).
-Proof. intros P Q R.
+Proof.
   pose (Assoc1_5 (¬P) (¬Q) R) as Assoc1_5.
   replace (¬Q ∨ R) with (Q → R) in Assoc1_5
     by now rewrite Impl1_01. 
@@ -47,11 +47,10 @@ Proof. intros P Q R.
   exact Assoc1_5.
 Qed.
 
-Theorem Syll2_05 : ∀ P Q R : Prop,
+Theorem Syll2_05 (P Q R : Prop) :
   (Q → R) → ((P  → Q) → (P → R)).
-Proof. intros P Q R.
-  specialize Sum1_6 with (¬P) Q R.
-  intros Sum1_6.
+Proof.
+  pose (Sum1_6 (¬P) Q R) as Sum1_6.
   replace (¬P ∨ Q) with (P → Q) in Sum1_6
     by now rewrite Impl1_01.  
   replace (¬P ∨ R) with (P → R) in Sum1_6
@@ -59,23 +58,19 @@ Proof. intros P Q R.
   exact Sum1_6.
 Qed.
 
-Theorem Syll2_06 : ∀ P Q R : Prop,
+Theorem Syll2_06 (P Q R : Prop) :
   (P → Q) → ((Q → R) → (P → R)).
-Proof. intros P Q R. 
-  specialize Comm2_04 with (Q → R) (P → Q) (P → R). 
-  intros Comm2_04.
-  specialize Syll2_05 with P Q R. 
-  intros Syll2_05.
+Proof.
+  pose (Comm2_04 (Q → R) (P → Q) (P → R)) as Comm2_04. 
+  pose (Syll2_05 P Q R) as Syll2_05. 
   MP Comm2_04 Syll2_05.
   exact Comm2_04.
 Qed.
 
-Theorem n2_07 : ∀ P : Prop,
+Theorem n2_07 (P : Prop) :
   P → (P ∨ P).
-Proof. intros P.
-  specialize Add1_3 with P P.
-  intros Add1_3.
-  exact Add1_3.
+Proof.
+  exact (Add1_3 P P).
 Qed.
 
 Theorem Id2_08 : ∀ P : Prop,
