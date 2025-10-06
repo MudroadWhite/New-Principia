@@ -347,17 +347,17 @@ Proof.
   }
   assert (S5 : ((∃ x : Prop, φ x) ∨ (∃ y : Prop, φ y)) → (∃ x : Prop, φ x)).
   {
-  (* This way is so weird *)
-    replace (∃ x, ∃ y, φ x ∨ φ y) with ((∃ x, φ x) ∨ (∃ y, φ y))
-    in S4.
+    (* n9_22?! *)
+    (* Can we use Syll with Perm1_4 here? *)
+    pose (fun x y => Perm1_4 (φ x) (φ y)) as f_Perm1_4.
+    replace (∃ x y : Prop, φ x ∨ φ y) with ((∃ x y : Prop, φ y ∨ φ x)) in S4.
     2: {
-      replace (∃ x y : Prop, φ x ∨ φ y) with ((∃ x y : Prop, φ y ∨ φ x)).
-      2: {
-        (* We should actually use Perm1_4 here. Simplified for laziness *)
-        apply propositional_extensionality.
-        setoid_rewrite <- or_comm at 1.
-        reflexivity.
-      }
+      apply propositional_extensionality.
+      setoid_rewrite <- or_comm at 1.
+      reflexivity.
+    }
+    replace (∃ x, ∃ y, φ y ∨ φ x) with ((∃ x, φ x) ∨ (∃ y, φ y)) in S4.
+    2: {
       set (λ (φ0 : Prop → Prop) (P0 : Prop), 
         eq_to_equiv ((∃ x : Prop, φ0 x) ∨ P0) (∃ x : Prop, φ0 x ∨ P0) 
                     (n9_05 φ0 P0))
