@@ -307,10 +307,10 @@ Qed.
 Theorem n2_36 (P Q R : Prop) :
   (Q → R) → ((P ∨ Q) → (R ∨ P)).
 Proof.
-  pose proof (Perm1_4 P R) as  Perm1_4a.
+  pose proof (Perm1_4 P R) as Perm1_4a.
   pose proof (Syll2_05 (P∨Q) (P∨R) (R∨P)) as Syll2_05a.
   MP Syll2_05a Perm1_4a.
-  pose proof (Sum1_6 P Q R) as  Sum1_6a.
+  pose proof (Sum1_6 P Q R) as Sum1_6a.
   Syll Sum1_6a Syll2_05a S.
   exact S.
 Qed.

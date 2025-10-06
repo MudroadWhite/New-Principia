@@ -1,7 +1,9 @@
 # New-Principia
 Continuation on [formalizing Principia Mathematica](https://github.com/LogicalAtomist/principia) by Landon Elkind.
 
-Added: Chapter 9 except the `Proof as above` theorems
+This project is planned to be limited to the following content:
+- [x] Chapter 9 (optionally with "similar as above")
+- [ ] Chapter 10 (optionally with "similar as above")
 
 ## Why working on it
 - Principia Mathematica has a stable version
@@ -9,9 +11,10 @@ Added: Chapter 9 except the `Proof as above` theorems
 - Formalizing PM feels like climbing a mountain
 
 ## Features
-- Forward style reasoning, pertaining the most flavor of original proof
-- Nice proof architecture and clean, maybe beautiful proof window
-- No 3rd party library involved so far, and instead, native and simple tactics
+This project is for demonstration as well as compatability. Future contributers should find it easy to continue for better works while keeping the style. Readability for every line of code has been a great focus:
+- Forward style reasoning, pertaining the most flavor of original Principia's proof
+- Clear proof architecture and clean, maybe beautiful proof window
+- No 3rd party library involved, and instead, minimal, native and simple tactics
 - Detailed comment to the best I can
 
 ## Running the code
