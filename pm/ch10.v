@@ -12,6 +12,7 @@ definitions in chapter 9 and develop a new way to interpret `exists`
 instead.
 *)
 
+(* TODO: extend the notation to multiple arguments *)
 Notation " P -[ x ]> Q " := (forall x, P -> Q) 
   (at level 80, x binder, right associativity,
   format " '[ ' P '/' '[ ' -[ x ]> ']' '/' Q ']' ")
@@ -32,33 +33,85 @@ Definition n10_03 (Phi Psi : Prop -> Prop) :
   Phi x <[- x -]> Psi x = forall x, (Phi x <-> Psi x). Admitted.
 
 Theorem n10_1 (Phi : Prop -> Prop) (Y : Prop) : (forall x, Phi x) -> Phi Y.
-Proof.
-  pose proof n9_2.
-Admitted.
+Proof.  exact (n9_2 Phi Y). Qed.
 
 (* Thm 10.11: If Phi y is true whatever possible argument y may be, then forall, Phi x is true. [*9.13] *)
+Theorem n10_11 (Y : Prop) (Phi : Prop -> Prop) : Phi Y -> forall x, Phi x.
+Proof.
+Admitted.
 
 Theorem n10_12 (Phi : Prop -> Prop) (P : Prop) : 
   (forall x, P \/ Phi x) -> P \/ forall x, Phi x.
-Proof.
-  pose proof n9_25.
-Admitted.
+Proof.  exact (n9_25 P Phi). Qed.
 
 (* Thm 10.121: If Phi x is significant, then if a is of the same type as x, Phi a is significant, and vice versa. [*9.14] *)
 
 (* Thm 10.122: If for some a, there is a proposition Phi a, then there is a function Phi x^, and vice versa. [*9.15] *)
 
 (* Thm 10.13: If Phi x^ and Psi x^ takes arguments of the same type, and we have |- Phi x and |- Psi x, we shall have |- Phi x /\ Psi x . *)
+(* NOTE: we didn't enforce `is_same_type` so far. Currently I decide to just leave it manually specified *)
+Theorem n10_13 (Phi Psi : Prop -> Prop) (X : Prop) :
+  Phi X -> Psi X -> (Phi X /\ Psi X).
+Proof.
+Admitted.
 
 Theorem n10_14 (Phi Psi : Prop -> Prop) (Y : Prop) : 
   (forall x, Phi x) /\ (forall x, Psi x)
   -> Phi Y /\ Psi Y.
 Proof.
-Admitted.
+  pose proof (n10_1 Phi Y) as S1.
+  pose proof (n10_1 Psi Y) as S2.
+  assert (S3 : ((forall x, Phi x)-> Phi Y) /\ ((forall x, Psi x) -> Psi Y )).
+  {
+    pose proof (n10_13 (fun x => (forall x, Phi x) -> Phi Y) 
+        (fun x => (forall x, Psi x) -> Psi Y) Y) as n10_13.
+    MP n10_13 S1.
+    MP n10_13 S2.
+    exact n10_13. 
+  }
+  assert (S4 : ((forall x, Phi x) /\ (forall x, Psi x)) -> (Phi Y /\ Psi Y)).
+  {
+    pose proof (n3_47 (∀ x : Prop, Phi x) (∀ x : Prop, Psi x)
+                (Phi Y) (Psi Y)) as n3_47.
+    MP n3_47 S3.
+    exact n3_47.
+  }
+  exact S4.
+Qed.
 
 Theorem n10_2 (Phi : Prop -> Prop) (P : Prop) :
   (forall x, P \/ Phi x) <-> P \/ (forall x, Phi x).
 Proof. 
+  (* TOOLS *)
+  set (Y := Real "y").
+  (* ******** *)
+  assert (S1 : (P \/ forall x, Phi x) -> P \/ Phi Y).
+  {
+    pose proof (n10_1 Phi Y) as n10_1.
+    pose proof (Sum1_6 P (∀ x : Prop, Phi x) (Phi Y)) as Sum1_6.
+    MP Sum1_6 n10_1.
+    exact Sum1_6.
+  }
+  assert (S2 : forall y, (P \/ (forall x, Phi x) -> P \/ Phi y)).
+  {
+    pose proof (n10_11 Y (fun y => (P \/ forall x, Phi x) -> P \/ Phi y)) as n10_11.
+    simpl in n10_11.
+    MP n10_11 S1.
+    exact n10_11.
+  }
+  assert (S3 : (P \/ (forall x, Phi x)) -> (forall y, P \/ Phi y)).
+  {
+    pose n10_12 as n10_12'.
+    pose (n10_12 (fun y => (P \/ forall x, Phi x) -> P \/ Phi y) P) as n10_12.
+    simpl in n10_12.
+    pose (n10_12 S2) as S3.
+
+  }
+  
+  (* Theorem Sum1_6 : ∀ P Q R : Prop, 
+  (Q → R) → (P ∨ Q → P ∨ R). (*Summation*) *)
+  
+  Search "1_6".
 Admitted.
 
 Theorem n10_21 (Phi : Prop -> Prop) (P : Prop) :

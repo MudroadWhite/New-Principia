@@ -12,7 +12,7 @@ Export ClassicalFacts.
 Export PropExtensionality.
 Export String.
 
-(* Experimental: A wrapper just to tag an real variable. This allows a freedom for creating them
+(* A wrapper just to tag an real variable. This allows a freedom for creating them
 throughout the proofs, as well as their easier identification *)
 Definition Real (s : string) : Prop. Admitted.
 Example var_0 := Real "x".
