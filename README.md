@@ -11,11 +11,16 @@ This project is currently focused on the following parts:
 - Formalizing PM feels like climbing a mountain
 
 ## Features
-This project is for demonstration as well as compatability. Future contributers should find it easy to continue for better works while keeping the style. Readability for every line of code has been a great focus:
+This project is for demonstration as well as compatability. Readers are supposed to read the code line by line besides technical hacks. Future contributers should find it easy to continue for better works while pertaining the style. 
 - Forward style reasoning, pertaining the most flavor of original Principia's proof
 - Clear proof architecture and clean, maybe beautiful proof window
 - No 3rd party library involved, and instead, minimal, native and simple tactics
 - Detailed comment to the best I can
+
+## Can you make sure that the code/proof is 100% correct?
+No. Here are the reasons:
+- Some of the concepts are so fundamental that either it involves a brand new architecture, or I just cannot represent it as code. As a result, there are theorems being commented out and only written in natural language.
+- The design of `Ltac` isn't good(to be more exact, `match` doesn't work as one might think), therefore you might end up with a successful `Qed` still with bad things happening under the hood. Actually, I have caught a bug in the repo from this issue.
 
 ## Running the code
 Coq version: 8.20.0, installed with the `opam` environment:
@@ -27,11 +32,10 @@ opam pin coq add 8.20.0
 Running the project:
 
 ```bash
-coq_makefile -f _CoqProject -o CoqMakefile
-make -f CoqMakefile
+make
 ```
 
-For any new files for the project, don't forget to add their paths into the `_CoqProject`.
+`make` is supposed to automatically detect all `.v` files under the `pm` folder, generate the `_CoqProject` file and compile the whole folder.
 
 ## To Contribute
 Although I have tried to organize the issues well to indicate the current progress, I am not used to collaborate with others. It's suggested to raise an issue for inquiries, and I'll see what I can give.

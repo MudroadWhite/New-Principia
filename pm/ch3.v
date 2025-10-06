@@ -46,7 +46,7 @@ Qed.
     of P and that of Q to the theoremhood of P and Q.So:*)
 
 Ltac Conj H1 H2 C :=
-  let C := fresh C in match goal with 
+  let C := fresh C in lazymatch goal with 
     | [ H1 : ?P, H2 : ?Q |- _ ] =>  
       (pose (Conj3_03 P Q) as C; simpl in C;
       MP Conj3_03 P; MP Conj3_03 Q)
