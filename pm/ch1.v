@@ -93,9 +93,12 @@ Proof. intros P Q R.
   apply or_comm.
 Qed. *)
 
-(* TODO: redesign MP so that it poses the result as H3 *)
+(* TODO: redesign MP so that it poses the result as H3
+For the current design, sometimes H1 will be changed, while
+some other times H2 will be changed. This should be investigated.
+Same for the Syll, Conj tactics in later chapters *)
 Ltac MP H1 H2 :=
-  match goal with 
+  lazymatch goal with 
     | [ H1 : ?P → ?Q, H2 : ?P |- _ ] => 
       specialize (H1 H2); simpl in H1
   end.

@@ -25,7 +25,7 @@ automatically associates to the right, we leave
 this notational axiom commented out.*)
 
 Ltac Equiv H1 :=
-  match goal with 
+  lazymatch goal with 
     | [ H1 : (?P→?Q) ∧ (?Q→?P) |- _ ] => 
       replace ((P→Q) ∧ (Q→P)) with (P↔Q) in H1
       by now rewrite Equiv4_01
