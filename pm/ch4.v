@@ -3,11 +3,11 @@ Require Import PM.pm.ch1.
 Require Import PM.pm.ch2.
 Require Import PM.pm.ch3.
 
-Theorem Equiv4_01 : ∀ P Q : Prop, 
+Theorem Equiv4_01 : forall P Q : Prop, 
   (P ↔ Q) = ((P → Q) ∧ (Q → P)).
 Proof. intros. reflexivity. Qed.
 
-(* Theorem Equiv4_01 : ∀ P Q : Prop, 
+(* Theorem Equiv4_01 () : P Q : Prop, 
 (P ↔ Q) = ((P → Q) ∧ (Q → P)).
 Proof.) as P Q.
 apply propositional_extensionality.
@@ -18,7 +18,7 @@ Qed.*)
 (*This is a notational definition in Principia;
 it is used to switch between "↔" and "→∧←".*)
 
-(*Axiom Abb4_02 : ∀ P Q R : Prop,
+(*Axiom Abb4_02 () : P Q R : Prop,
 (P ↔ Q ↔ R) = ((P ↔ Q) ∧ (Q ↔ R)).*)
 (*Since Coq forbids ill-formed strings, or else 
 automatically associates to the right, we leave 
@@ -79,7 +79,7 @@ Proof.
   exact Cc.
 Qed.
 
-Theorem n4_12_1 : ∀ P Q : Prop,
+Theorem n4_12_1 (P Q : Prop) : 
   (P ↔ ¬Q) ↔ (Q ↔ ¬P).
 Proof.
   specialize Transp2_03 with P Q. 
@@ -318,7 +318,7 @@ Proof.
   exact C.
 Qed.
 
-Theorem n4_31 : ∀ P Q : Prop,
+Theorem n4_31 (P Q : Prop) :
   (P ∨ Q) ↔ (Q ∨ P).
 Proof.
   pose proof (Perm1_4 P Q) as Perm1_4a.
@@ -537,301 +537,259 @@ Proof.
   exact n3_47a.
 Qed.
 
-Theorem n4_4 : ∀ P Q R : Prop,
+Theorem n4_4 (P Q R : Prop) :
   (P ∧ (Q ∨ R)) ↔ ((P ∧ Q) ∨ (P ∧ R)).
 Proof.
-  pose proof (n3_2 with P Q.
-  ) as n3_2a.
-  pose proof (n3_2 with P R.
-  ) as n3_2b.
-  Conj n3_2a n3_2b Ca.
-  pose proof (Comp3_43 with P (Q→P∧Q) (R→P∧R).
-  ) as Comp3_43a.
+  assert (Ca: (P → Q → P ∧ Q) ∧ (P → R → P ∧ R)).
+  {
+    pose proof (n3_2 P Q) as n3_2a.
+    pose proof (n3_2 P R) as n3_2b.
+    Conj n3_2a n3_2b Ca.
+    exact Ca.
+  }
+  pose proof (Comp3_43 P (Q→P∧Q) (R→P∧R)) as Comp3_43a.
   MP Comp3_43a Ca.
-  pose proof (n3_48 with Q R (P∧Q) (P∧R).
-  ) as n3_48a.
+  pose proof (n3_48 Q R (P∧Q) (P∧R)) as n3_48a.
   Syll Comp3_43a n3_48a Sa.
-  pose proof (Imp3_31 with P (Q∨R) ((P∧ Q) ∨ (P ∧ R)).
-  ) as Imp3_31a.
+  pose proof (Imp3_31 P (Q∨R) ((P∧ Q) ∨ (P ∧ R))) as Imp3_31a.
   MP Imp3_31a Sa.
-  pose proof (Simp3_26 with P Q.
-  ) as Simp3_26a.
-  pose proof (Simp3_26 with P R.
-  ) as Simp3_26b.
-  Conj Simp3_26a Simp3_26b Cb.
-  pose proof (n3_44 with P (P∧Q) (P∧R).
-  ) as n3_44a.
+  assert (Cb: (P ∧ Q → P) ∧ (P ∧ R → P)).
+  {
+    pose proof (Simp3_26 P Q) as Simp3_26a.
+    pose proof (Simp3_26 P R) as Simp3_26b.
+    Conj Simp3_26a Simp3_26b Cb.
+    exact Cb.
+  }
+  pose proof (n3_44 P (P∧Q) (P∧R)) as n3_44a.
   MP n3_44a Cb.
-  pose proof (Simp3_27 with P Q.
-  ) as Simp3_27a.
-  pose proof (Simp3_27 with P R.
-  ) as Simp3_27b.
-  Conj Simp3_27a Simp3_27b Cc.
-  pose proof (n3_48 with (P∧Q) (P∧R) Q R.
-  ) as n3_48b.
+  assert (Cc: (P ∧ Q → Q) ∧ (P ∧ R → R)).
+  {
+    pose proof (Simp3_27 P Q) as Simp3_27a.
+    pose proof (Simp3_27 P R) as Simp3_27b.
+    Conj Simp3_27a Simp3_27b Cc.
+    exact Cc.
+  }
+  pose proof (n3_48 (P∧Q) (P∧R) Q R) as n3_48b.
   MP n3_48b Cc.
-  clear Cc.clear Simp3_27a.clear Simp3_27b.
-  Conj n3_44a n3_48b Cdd.(*Cd is reserved*)
-  pose proof (Comp3_43 with (P ∧ Q ∨ P ∧ R) P (Q∨R).
-  ) as Comp3_43b.
+  clear Ca Cb Cc Comp3_43a Sa.
+  Conj n3_44a n3_48b Cdd. (*Cd is reserved*)
+  pose proof (Comp3_43 (P ∧ Q ∨ P ∧ R) P (Q∨R)) as Comp3_43b.
   MP Comp3_43b Cdd.
-  clear Cdd.clear Cb.clear n3_44a.clear n3_48b.
-      clear Simp3_26a.clear Simp3_26b.
+  clear n3_48a n3_44a n3_48b Cdd.
   Conj Imp3_31a Comp3_43b Ce.
   Equiv Ce.
   exact Ce.
 Qed.
 
-Theorem n4_41 : ∀ P Q R : Prop,
+Theorem n4_41 (P Q R : Prop) :
   (P ∨ (Q ∧ R)) ↔ ((P ∨ Q) ∧ (P ∨ R)).
 Proof.
-  pose proof (Simp3_26 with Q R.
-  ) as Simp3_26a.
-  pose proof (Sum1_6 with P (Q ∧ R) Q.
-  ) as Sum1_6a.
-  MP Simp3_26a Sum1_6a.
-  pose proof (Simp3_27 with Q R.
-  ) as Simp3_27a.
-  pose proof (Sum1_6 with P (Q ∧ R) R.
-  ) as Sum1_6b.
-  MP Simp3_27a Sum1_6b.
-  clear Simp3_26a.clear Simp3_27a.
-  Conj Sum1_6a Sum1_6a Ca.
-  pose proof (Comp3_43 with (P ∨ Q ∧ R) (P ∨ Q) (P ∨ R).
-  ) as Comp3_43a.
+  assert (Sum1_6a: P ∨ Q ∧ R → P ∨ Q).
+  {
+    pose proof (Simp3_26 Q R) as Simp3_26a.
+    pose proof (Sum1_6 P (Q ∧ R) Q) as Sum1_6a.
+    MP Simp3_26a Sum1_6a.
+    exact Sum1_6a.
+  }
+  assert (Sum1_6b: P ∨ Q ∧ R → P ∨ R).
+  {
+    pose proof (Simp3_27 Q R) as Simp3_27a.
+    pose proof (Sum1_6 P (Q ∧ R) R) as Sum1_6b.
+    MP Simp3_27a Sum1_6b.
+    exact Sum1_6b.
+  }
+  (* ??? *)
+  Conj Sum1_6a Sum1_6b Ca.
+  pose proof (Comp3_43 (P ∨ Q ∧ R) (P ∨ Q) (P ∨ R)) as Comp3_43a.
   MP Comp3_43a Ca.
-  pose proof (n2_53 with P Q.
-  ) as n2_53a.
-  pose proof (n2_53 with P R.
-  ) as n2_53b.
+  pose proof (n2_53 P Q) as n2_53a.
+  pose proof (n2_53 P R) as n2_53b.
   Conj n2_53a n2_53b Cb.
-  pose proof (n3_47 with (P ∨ Q) (P ∨ R) (¬P → Q) (¬P → R).
-  ) as n3_47a.
+  pose proof (n3_47 (P ∨ Q) (P ∨ R) (¬P → Q) (¬P → R)) as n3_47a.
   MP n3_47a Cb.
-  pose proof (Comp3_43 with (¬P) Q R.
-  ) as Comp3_43b.
+  pose proof (Comp3_43 (¬P) Q R) as Comp3_43b.
   Syll n3_47a Comp3_43b Sa.
-  pose proof (n2_54 with P (Q∧R).
-  ) as n2_54a.
+  pose proof (n2_54 P (Q∧R)) as n2_54a.
   Syll Sa n2_54a Sb.
-  clear Sum1_6a.clear Sum1_6b.clear Ca.clear n2_53a.
-      clear n2_53b.clear Cb.clear n3_47a.clear Sa.
-      clear Comp3_43b.clear n2_54a.
+  clear Sum1_6a. clear Sum1_6b. clear Ca. clear n2_53a.
+      clear n2_53b. clear Cb. clear n3_47a. clear Sa.
+      clear Comp3_43b. clear n2_54a.
   Conj Comp3_43a Sb Cc.
   Equiv Cc.
   exact Cc.
 Qed.
 
-Theorem n4_42 : ∀ P Q : Prop,
+Theorem n4_42 (P Q : Prop) :
   P ↔ ((P ∧ Q) ∨ (P ∧ ¬Q)).
 Proof.
-  pose proof (n3_21 with P (Q ∨ ¬Q).
-  ) as n3_21a.
-  pose proof (n2_11 with Q.
-  ) as n2_11a.
+  pose proof (n3_21 P (Q ∨ ¬Q)) as n3_21a.
+  pose proof (n2_11 Q) as n2_11a.
   MP n3_21a n2_11a.
-  pose proof (Simp3_26 with P (Q ∨ ¬Q).
-  ) as Simp3_26a.clear n2_11a.
+  pose proof (Simp3_26 P (Q ∨ ¬Q)) as Simp3_26a. clear n2_11a.
   Conj n3_21a Simp3_26a C.
   Equiv C.
-  pose proof (n4_4 with P Q (¬Q).
-  ) as n4_4a.
+  pose proof (n4_4 P Q (¬Q)) as n4_4a.
   apply propositional_extensionality in C.
   replace (P ∧ (Q ∨ ¬Q)) with P in n4_4a
     by now apply C.
   exact n4_4a.
 Qed.
 
-Theorem n4_43 : ∀ P Q : Prop,
+Theorem n4_43 (P Q : Prop) :
   P ↔ ((P ∨ Q) ∧ (P ∨ ¬Q)).
 Proof.
-  pose proof (n2_2 with P Q.
-  ) as n2_2a.
-  pose proof (n2_2 with P (¬Q).
-  ) as n2_2b.
+  pose proof (n2_2 P Q) as n2_2a.
+  pose proof (n2_2 P (¬Q)) as n2_2b.
   Conj n2_2a n2_2b Ca.
-  pose proof (Comp3_43 with P (P∨Q) (P∨¬Q).
-  ) as Comp3_43a.
+  pose proof (Comp3_43 P (P∨Q) (P∨¬Q)) as Comp3_43a.
   MP Comp3_43a Ca.
-  pose proof (n2_53 with P Q.
-  ) as n2_53a.
-  pose proof (n2_53 with P (¬Q).
-  ) as n2_53b.
+  pose proof (n2_53 P Q) as n2_53a.
+  pose proof (n2_53 P (¬Q)) as n2_53b.
   Conj n2_53a n2_53b Cb.
-  pose proof (n3_47 with (P∨Q) (P∨¬Q) (¬P→Q) (¬P→¬Q).
-  ) as n3_47a.
+  pose proof (n3_47 (P∨Q) (P∨¬Q) (¬P→Q) (¬P→¬Q)) as n3_47a.
   MP n3_47a Cb.
-  pose proof (n2_65 with (¬P) Q.
-  ) as n2_65a.
-  pose proof (n4_13 with P.
-  ) as n4_13a.
+  pose proof (n2_65 (¬P) Q) as n2_65a.
+  pose proof (n4_13 P) as n4_13a.
   apply propositional_extensionality in n4_13a.
   replace (¬¬P) with P in n2_65a by now apply n4_13a.
-  pose proof (Imp3_31 with (¬P → Q) (¬P → ¬Q) (P).
-  ) as Imp3_31a.
+  pose proof (Imp3_31 (¬P → Q) (¬P → ¬Q) (P)) as Imp3_31a.
   MP Imp3_31a n2_65a.
   Syll n3_47a Imp3_31a Sa.
-  clear n2_2a.clear n2_2b.clear Ca.clear n2_53a.
-    clear n2_53b.clear Cb.clear n2_65a.
-    clear n3_47a.clear Imp3_31a.clear n4_13a.
+  clear n2_2a. clear n2_2b. clear Ca. clear n2_53a.
+    clear n2_53b. clear Cb. clear n2_65a.
+    clear n3_47a. clear Imp3_31a. clear n4_13a.
   Conj Comp3_43a Sa Cc.
   Equiv Cc.
   exact Cc.
 Qed.
 
-Theorem n4_44 : ∀ P Q : Prop,
+Theorem n4_44 (P Q : Prop) :
   P ↔ (P ∨ (P ∧ Q)).
 Proof.
-  pose proof (n2_2 with P (P∧Q).
-  ) as n2_2a.
-  pose proof (Id2_08 with P.
-  ) as Id2_08a.
-  pose proof (Simp3_26 with P Q.
-  ) as Simp3_26a.
+  pose proof (n2_2 P (P∧Q)) as n2_2a.
+  pose proof (Id2_08 P) as Id2_08a.
+  pose proof (Simp3_26 P Q) as Simp3_26a.
   Conj Id2_08a Simp3_26a Ca.
-  pose proof (n3_44 with P P (P ∧ Q).
-  ) as n3_44a.
+  pose proof (n3_44 P P (P ∧ Q)) as n3_44a.
   MP n3_44a Ca.
-  clear Ca.clear Id2_08a.clear Simp3_26a.
+  clear Ca. clear Id2_08a. clear Simp3_26a.
   Conj n2_2a n3_44a Cb.
   Equiv Cb.
   exact Cb.
 Qed.
 
-Theorem n4_45 : ∀ P Q : Prop,
+Theorem n4_45 (P Q : Prop) :
   P ↔ (P ∧ (P ∨ Q)).
 Proof.
-  pose proof (n2_2 with (P ∧ P) (P ∧ Q).
-  ) as n2_2a.
-  pose proof (n4_4 with P P Q.
-  ) as n4_4a.
+  pose proof (n2_2 (P ∧ P) (P ∧ Q)) as n2_2a.
+  pose proof (n4_4 P P Q) as n4_4a.
   apply propositional_extensionality in n4_4a.
   replace (P∧P∨P∧Q) with (P∧(P∨Q)) in n2_2a
     by now apply n4_4a.
-  pose proof (n4_24 with P.
-  ) as n4_24a.
+  pose proof (n4_24 P) as n4_24a.
   apply propositional_extensionality in n4_24a.
   replace (P ∧ P) with P in n2_2a 
     by now apply n4_24a.
-  pose proof (Simp3_26 with P (P ∨ Q).
-  ) as Simp3_26a.
-  clear n4_4a.clear n4_24a.
+  pose proof (Simp3_26 P (P ∨ Q)) as Simp3_26a.
+  clear n4_4a. clear n4_24a.
   Conj n2_2a Simp3_26a C.
   Equiv C.
   exact C.
 Qed.
 
-Theorem n4_5 : ∀ P Q : Prop,
+Theorem n4_5 (P Q : Prop) :
   P ∧ Q ↔ ¬(¬P ∨ ¬Q).
 Proof.
-  pose proof (n4_2 with (P ∧ Q).
-  ) as n4_2a.
+  pose proof (n4_2 (P ∧ Q)) as n4_2a.
   replace ((P ∧ Q)↔(P ∧ Q)) with 
     ((P ∧ Q)↔¬(¬P ∨ ¬Q)) in n4_2a 
     by now rewrite Prod3_01.
   exact n4_2a.
 Qed.
 
-Theorem n4_51 : ∀ P Q : Prop,
+Theorem n4_51 (P Q : Prop) :
   ¬(P ∧ Q) ↔ (¬P ∨ ¬Q).
 Proof.
-  pose proof (n4_5 with P Q.
-  ) as n4_5a.
-  pose proof (n4_12 with (P ∧ Q) (¬P ∨ ¬Q).
-  ) as n4_12a.
-  pose proof (Simp3_26 with 
+  pose proof (n4_5 P Q) as n4_5a.
+  pose proof (n4_12 (P ∧ Q) (¬P ∨ ¬Q)) as n4_12a.
+  pose proof (Simp3_26 
     ((P ∧ Q ↔ ¬(¬P ∨ ¬Q)) → (¬P ∨ ¬Q ↔ ¬(P ∧ Q)))
-    ((¬P ∨ ¬Q ↔ ¬(P ∧ Q)) → ((P ∧ Q ↔ ¬(¬P ∨ ¬Q)))).
-  ) as Simp3_26a.
+    ((¬P ∨ ¬Q ↔ ¬(P ∧ Q)) → ((P ∧ Q ↔ ¬(¬P ∨ ¬Q))))) as Simp3_26a.
   replace ((P ∧ Q ↔ ¬(¬P ∨ ¬Q)) ↔ (¬P ∨ ¬Q ↔ ¬(P ∧ Q)))
     with (((P ∧ Q ↔ ¬(¬P ∨ ¬Q)) → (¬P ∨ ¬Q ↔ ¬(P ∧ Q)))
     ∧ ((¬P ∨ ¬Q ↔ ¬(P ∧ Q)) → ((P ∧ Q ↔ ¬(¬P ∨ ¬Q)))))
     in n4_12a by now rewrite Equiv4_01.
   MP Simp3_26a n4_12a.
   MP Simp3_26a n4_5a.
-  pose proof (n4_21 with (¬(P ∧ Q)) (¬P ∨ ¬Q).
-  ) as n4_21a.
-  pose proof (Simp3_27 with 
+  pose proof (n4_21 (¬(P ∧ Q)) (¬P ∨ ¬Q)) as n4_21a.
+  pose proof (Simp3_27 
   (((¬(P ∧ Q) ↔ ¬P ∨ ¬Q)) → ((¬P ∨ ¬Q ↔ ¬(P ∧ Q))))
-  (((¬P ∨ ¬Q ↔ ¬(P ∧ Q))) → ((¬(P ∧ Q) ↔ ¬P ∨ ¬Q))).
-  ) as Simp3_27a.
+  (((¬P ∨ ¬Q ↔ ¬(P ∧ Q))) → ((¬(P ∧ Q) ↔ ¬P ∨ ¬Q)))) as Simp3_27a.
   MP Simp3_27a n4_21a.
   MP Simp3_27a Simp3_26a.
   exact Simp3_27a.
 Qed.
 
-Theorem n4_52 : ∀ P Q : Prop,
+Theorem n4_52 (P Q : Prop) :
   (P ∧ ¬Q) ↔ ¬(¬P ∨ Q).
 Proof.
-  pose proof (n4_5 with P (¬Q).
-  ) as n4_5a.
-  pose proof (n4_13 with Q.
-  ) as n4_13a.
+  pose proof (n4_5 P (¬Q)) as n4_5a.
+  pose proof (n4_13 Q) as n4_13a.
   apply propositional_extensionality in n4_13a.
   replace (¬¬Q) with Q in n4_5a 
     by now apply n4_13a.
   exact n4_5a.
 Qed.
 
-Theorem n4_53 : ∀ P Q : Prop,
+Theorem n4_53 (P Q : Prop) :
   ¬(P ∧ ¬Q) ↔ (¬P ∨ Q).
 Proof.
-  pose proof (n4_52 with P Q.
-  ) as n4_52a.
-  pose proof (n4_12 with (P ∧ ¬Q) ((¬P ∨ Q)).
-  ) as n4_12a.
+  pose proof (n4_52 P Q) as n4_52a.
+  pose proof (n4_12 (P ∧ ¬Q) ((¬P ∨ Q))) as n4_12a.
   replace ((P ∧ ¬Q ↔ ¬(¬P ∨ Q)) ↔ (¬P ∨ Q ↔ ¬(P ∧ ¬Q)))
     with (((P ∧ ¬Q ↔ ¬(¬P ∨ Q)) → (¬P ∨ Q ↔ ¬(P ∧ ¬Q)))
     ∧ ((¬P ∨ Q ↔ ¬(P ∧ ¬Q)) → (P ∧ ¬Q ↔ ¬(¬P ∨ Q))))
     in n4_12a by now rewrite Equiv4_01.
-  pose proof (Simp3_26 with 
+  pose proof (Simp3_26 
     ((P ∧ ¬Q ↔ ¬(¬P ∨ Q)) → (¬P ∨ Q ↔ ¬(P ∧ ¬Q)))
-    ((¬P ∨ Q ↔ ¬(P ∧ ¬Q)) → (P ∧ ¬Q ↔ ¬(¬P ∨ Q))).
-  ) as Simp3_26a.
+    ((¬P ∨ Q ↔ ¬(P ∧ ¬Q)) → (P ∧ ¬Q ↔ ¬(¬P ∨ Q)))) as Simp3_26a.
   MP Simp3_26a n4_12a.
   MP Simp3_26a n4_52a.
-  pose proof (n4_21 with (¬(P ∧ ¬Q)) (¬P ∨ Q).
-  ) as n4_21a.
+  pose proof (n4_21 (¬(P ∧ ¬Q)) (¬P ∨ Q)) as n4_21a.
   replace ((¬(P ∧ ¬ Q) ↔ ¬P ∨ Q) ↔ (¬P ∨ Q ↔ ¬(P ∧ ¬Q)))
     with (((¬(P ∧ ¬ Q) ↔ ¬P ∨ Q) → (¬P ∨ Q ↔ ¬(P ∧ ¬Q)))
     ∧ ((¬P ∨ Q ↔ ¬(P ∧ ¬Q)) → (¬(P ∧ ¬ Q) ↔ ¬P ∨ Q)))
     in n4_21a by now rewrite Equiv4_01.
-  pose proof (Simp3_27 with 
+  pose proof (Simp3_27 
     ((¬(P ∧ ¬ Q) ↔ ¬P ∨ Q) → (¬P ∨ Q ↔ ¬(P ∧ ¬Q)))
-    ((¬P ∨ Q ↔ ¬(P ∧ ¬Q)) → (¬(P ∧ ¬ Q) ↔ ¬P ∨ Q)).
-  ) as Simp3_27a.
+    ((¬P ∨ Q ↔ ¬(P ∧ ¬Q)) → (¬(P ∧ ¬ Q) ↔ ¬P ∨ Q))) as Simp3_27a.
   MP Simp3_27a n4_21a.
   MP Simp3_27a Simp3_26a.
   exact Simp3_27a.
 Qed.
 
-Theorem n4_54 : ∀ P Q : Prop,
+Theorem n4_54 (P Q : Prop) :
   (¬P ∧ Q) ↔ ¬(P ∨ ¬Q).
 Proof.
-  pose proof (n4_5 with (¬P) Q.
-  ) as n4_5a.
-  pose proof (n4_13 with P.
-  ) as n4_13a.
+  pose proof (n4_5 (¬P) Q) as n4_5a.
+  pose proof (n4_13 P) as n4_13a.
   apply propositional_extensionality in n4_13a.
   replace (¬¬P) with P in n4_5a
    by now apply n4_13a.
   exact n4_5a.
 Qed.
 
-Theorem n4_55 : ∀ P Q : Prop,
+Theorem n4_55 (P Q : Prop) :
   ¬(¬P ∧ Q) ↔ (P ∨ ¬Q).
 Proof.
-  pose proof (n4_54 with P Q.
-  ) as n4_54a.
-  pose proof (n4_12 with (¬P ∧ Q) (P ∨ ¬Q).
-  ) as n4_12a.
+  pose proof (n4_54 P Q) as n4_54a.
+  pose proof (n4_12 (¬P ∧ Q) (P ∨ ¬Q)) as n4_12a.
   apply propositional_extensionality in n4_12a.
   symmetry in n4_12a.
   replace (¬P ∧ Q ↔ ¬(P ∨ ¬Q)) with 
       (P ∨ ¬Q ↔ ¬(¬P ∧ Q)) in n4_54a 
       by now apply n4_12a.
-  pose proof (n4_21 with (¬(¬P ∧ Q)) (P ∨ ¬Q).
-  ) as n4_21a.(*Not cited*)
+  pose proof (n4_21 (¬(¬P ∧ Q)) (P ∨ ¬Q)) as n4_21a. (*Not cited*)
   apply propositional_extensionality in n4_21a.
   replace (P ∨ ¬Q ↔ ¬(¬P ∧ Q)) with 
       (¬(¬P ∧ Q) ↔ (P ∨ ¬Q)) in n4_54a
@@ -839,33 +797,28 @@ Proof.
   exact n4_54a.
 Qed.
 
-Theorem n4_56 : ∀ P Q : Prop,
+Theorem n4_56 (P Q : Prop) :
   (¬P ∧ ¬Q) ↔ ¬(P ∨ Q).
 Proof.
-  pose proof (n4_54 with P (¬Q).
-  ) as n4_54a.
-  pose proof (n4_13 with Q.
-  ) as n4_13a.
+  pose proof (n4_54 P (¬Q)) as n4_54a.
+  pose proof (n4_13 Q) as n4_13a.
   apply propositional_extensionality in n4_13a.
   replace (¬¬Q) with Q in n4_54a 
     by now apply n4_13a.
   exact n4_54a.
 Qed.
 
-Theorem n4_57 : ∀ P Q : Prop,
+Theorem n4_57 (P Q : Prop) :
   ¬(¬P ∧ ¬Q) ↔ (P ∨ Q).
 Proof.
-  pose proof (n4_56 with P Q.
-  ) as n4_56a.
-  pose proof (n4_12 with (¬P ∧ ¬Q) (P ∨ Q).
-  ) as n4_12a.
+  pose proof (n4_56 P Q) as n4_56a.
+  pose proof (n4_12 (¬P ∧ ¬Q) (P ∨ Q)) as n4_12a.
   apply propositional_extensionality in n4_12a.
   symmetry in n4_12a.
   replace (¬P ∧ ¬Q ↔ ¬(P ∨ Q)) with 
       (P ∨ Q ↔ ¬(¬P ∧ ¬Q)) in n4_56a
       by now apply n4_12a.
-  pose proof (n4_21 with (¬(¬P ∧ ¬Q)) (P ∨ Q).
-  ) as n4_21a.
+  pose proof (n4_21 (¬(¬P ∧ ¬Q)) (P ∨ Q)) as n4_21a.
   apply propositional_extensionality in n4_21a.
   replace (P ∨ Q ↔ ¬(¬P ∧ ¬Q)) with 
       (¬(¬P ∧ ¬Q) ↔ P ∨ Q) in n4_56a
@@ -873,52 +826,44 @@ Proof.
   exact n4_56a.
 Qed.
   
-Theorem n4_6 : ∀ P Q : Prop,
+Theorem n4_6 (P Q : Prop) :
   (P → Q) ↔ (¬P ∨ Q).
 Proof.
-  pose proof (n4_2 with (¬P∨ Q).
-  ) as n4_2a.
+  pose proof (n4_2 (¬P∨ Q)) as n4_2a.
   rewrite Impl1_01.
   exact n4_2a.
 Qed.
 
-Theorem n4_61 : ∀ P Q : Prop,
+Theorem n4_61 (P Q : Prop) :
   ¬(P → Q) ↔ (P ∧ ¬Q).
 Proof.
-  pose proof (n4_6 with P Q.
-  ) as n4_6a.
-  pose proof (Transp4_11 with (P→Q) (¬P∨Q).
-  ) as Transp4_11a.
+  pose proof (n4_6 P Q) as n4_6a.
+  pose proof (Transp4_11 (P→Q) (¬P∨Q)) as Transp4_11a.
   apply propositional_extensionality in Transp4_11a.
   symmetry in Transp4_11a.
   replace ((P → Q) ↔ ¬P ∨ Q) with 
       (¬(P → Q) ↔ ¬(¬P ∨ Q)) in n4_6a
       by now apply Transp4_11a.
-  pose proof (n4_52 with P Q.
-  ) as n4_52a.
+  pose proof (n4_52 P Q) as n4_52a.
   apply propositional_extensionality in n4_52a.
   replace (¬(¬P ∨ Q)) with (P ∧ ¬Q) in n4_6a
     by now apply n4_52a.
   exact n4_6a.
 Qed.
 
-Theorem n4_62 : ∀ P Q : Prop,
+Theorem n4_62 (P Q : Prop) :
   (P → ¬Q) ↔ (¬P ∨ ¬Q).
 Proof.
-  pose proof (n4_6 with P (¬Q).
-  ) as n4_6a.
+  pose proof (n4_6 P (¬Q)) as n4_6a.
   exact n4_6a.
 Qed.
 
-Theorem n4_63 : ∀ P Q : Prop,
+Theorem n4_63 (P Q : Prop) :
   ¬(P → ¬Q) ↔ (P ∧ Q).
 Proof.
-  pose proof (n4_62 with P Q.
-  ) as n4_62a.
-  pose proof (Transp4_11 with (P → ¬Q) (¬P ∨ ¬Q).
-  ) as Transp4_11a.
-  pose proof (n4_5 with P Q.
-  ) as n4_5a.
+  pose proof (n4_62 P Q) as n4_62a.
+  pose proof (Transp4_11 (P → ¬Q) (¬P ∨ ¬Q)) as Transp4_11a.
+  pose proof (n4_5 P Q) as n4_5a.
   apply propositional_extensionality in n4_5a.
   replace (¬(¬P ∨ ¬Q)) with (P ∧ Q) in Transp4_11a
     by now apply n4_5a.
@@ -931,28 +876,23 @@ Proof.
 Qed.
 (*One could use Prod3_01 in lieu of n4_5.*)
 
-Theorem n4_64 : ∀ P Q : Prop,
+Theorem n4_64 (P Q : Prop) :
   (¬P → Q) ↔ (P ∨ Q).
 Proof.
-  pose proof (n2_54 with P Q.
-  ) as n2_54a.
-  pose proof (n2_53 with P Q.
-  ) as n2_53a.
+  pose proof (n2_54 P Q) as n2_54a.
+  pose proof (n2_53 P Q) as n2_53a.
   Conj n2_54a n2_53a C.
   Equiv C.
   exact C.
 Qed.
 
-Theorem n4_65 : ∀ P Q : Prop,
+Theorem n4_65 (P Q : Prop) :
   ¬(¬P → Q) ↔ (¬P ∧ ¬Q).
 Proof.
-  pose proof (n4_64 with P Q.
-  ) as n4_64a.
-  pose proof (Transp4_11 with(¬P → Q) (P ∨ Q).
-  ) as Transp4_11a.
-  pose proof (n4_21 with (¬(¬P → Q)↔¬(P ∨ Q))
-      ((¬P → Q)↔(P ∨ Q)).
-  ) as n4_21a.
+  pose proof (n4_64 P Q) as n4_64a.
+  pose proof (Transp4_11(¬P → Q) (P ∨ Q)) as Transp4_11a.
+  pose proof (n4_21 (¬(¬P → Q)↔¬(P ∨ Q))
+      ((¬P → Q)↔(P ∨ Q))) as n4_21a.
   apply propositional_extensionality in n4_21a.
   replace (((¬P→Q)↔P∨Q)↔(¬(¬P→Q)↔¬(P∨Q))) with 
       ((¬(¬P→Q)↔¬(P∨Q))↔((¬P→Q)↔P∨Q)) in Transp4_11a
@@ -961,126 +901,100 @@ Proof.
   replace ((¬P → Q) ↔ P ∨ Q) with 
       (¬(¬P → Q) ↔ ¬(P ∨ Q)) in n4_64a
       by now apply Transp4_11a.
-  pose proof (n4_56 with P Q.
-  ) as n4_56a.
+  pose proof (n4_56 P Q) as n4_56a.
   apply propositional_extensionality in n4_56a.
   replace (¬(P ∨ Q)) with (¬P ∧ ¬Q) in n4_64a
     by now apply n4_56a.
   exact n4_64a.
 Qed.
 
-Theorem n4_66 : ∀ P Q : Prop,
+Theorem n4_66 (P Q : Prop) :
   (¬P → ¬Q) ↔ (P ∨ ¬Q).
 Proof.
-  pose proof (n4_64 with P (¬Q).
-  ) as n4_64a.
+  pose proof (n4_64 P (¬Q)) as n4_64a.
   exact n4_64a.
 Qed.
 
-Theorem n4_67 : ∀ P Q : Prop,
+Theorem n4_67 (P Q : Prop) :
   ¬(¬P → ¬Q) ↔ (¬P ∧ Q).
 Proof.
-  pose proof (n4_66 with P Q.
-  ) as n4_66a.
-  pose proof (Transp4_11 with (¬P → ¬Q) (P ∨ ¬Q).
-  ) as Transp4_11a.
+  pose proof (n4_66 P Q) as n4_66a.
+  pose proof (Transp4_11 (¬P → ¬Q) (P ∨ ¬Q)) as Transp4_11a.
   apply propositional_extensionality in Transp4_11a.
   symmetry in Transp4_11a.
   replace ((¬P → ¬Q) ↔ P ∨ ¬Q) with 
       (¬(¬P → ¬Q) ↔ ¬(P ∨ ¬Q)) in n4_66a
       by now apply Transp4_11a.
-  pose proof (n4_54 with P Q.
-  ) as n4_54a.
+  pose proof (n4_54 P Q) as n4_54a.
   apply propositional_extensionality in n4_54a.
   replace (¬(P ∨ ¬Q)) with (¬P ∧ Q) in n4_66a
     by now apply n4_54a.
   exact n4_66a.
 Qed.
 
-Theorem n4_7 : ∀ P Q : Prop,
+Theorem n4_7 (P Q : Prop) :
   (P → Q) ↔ (P → (P ∧ Q)).
 Proof.
-  pose proof (Comp3_43 with P P Q.
-  ) as Comp3_43a.
-  pose proof (Exp3_3 with 
-      (P → P) (P → Q) (P → P ∧ Q).
-  ) as Exp3_3a.
+  pose proof (Comp3_43 P P Q) as Comp3_43a.
+  pose proof (Exp3_3 (P → P) (P → Q) (P → P ∧ Q)) as Exp3_3a.
   MP Exp3_3a Comp3_43a.
-  pose proof (Id2_08 with P.
-  ) as Id2_08a.
+  pose proof (Id2_08 P) as Id2_08a.
   MP Exp3_3a Id2_08a.
-  pose proof (Simp3_27 with P Q.
-  ) as Simp3_27a.
-  pose proof (Syll2_05 with P (P ∧ Q) Q.
-  ) as Syll2_05a.
+  pose proof (Simp3_27 P Q) as Simp3_27a.
+  pose proof (Syll2_05 P (P ∧ Q) Q) as Syll2_05a.
   MP Syll2_05a Simp3_27a.
-  clear Id2_08a.clear Comp3_43a.clear Simp3_27a.
+  clear Id2_08a. clear Comp3_43a. clear Simp3_27a.
   Conj Syll2_05a Exp3_3a C.
   Equiv C.
   exact C.
 Qed.
 
-Theorem n4_71 : ∀ P Q : Prop,
+Theorem n4_71 (P Q : Prop) :
   (P → Q) ↔ (P ↔ (P ∧ Q)).
 Proof.
-  pose proof (n4_7 with P Q.
-  ) as n4_7a.
-  pose proof (n3_21 with (P→(P∧Q)) ((P∧Q)→P).
-  ) as n3_21a.
+  pose proof (n4_7 P Q) as n4_7a.
+  pose proof (n3_21 (P→(P∧Q)) ((P∧Q)→P)) as n3_21a.
   replace ((P→P∧Q)∧(P∧Q→P)) with (P↔(P∧Q)) 
       in n3_21a by now rewrite Equiv4_01.
-  pose proof (Simp3_26 with P Q.
-  ) as Simp3_26a.
+  pose proof (Simp3_26 P Q) as Simp3_26a.
   MP n3_21a Simp3_26a.
-  pose proof (Simp3_26 with (P→(P∧Q)) ((P∧Q)→P).
-  ) as Simp3_26b.
+  pose proof (Simp3_26 (P→(P∧Q)) ((P∧Q)→P)) as Simp3_26b.
   replace ((P→P∧Q)∧(P∧Q→P)) with (P↔(P∧Q)) 
     in Simp3_26b by now rewrite Equiv4_01.
   clear Simp3_26a.
   Conj n3_21a Simp3_26b Ca.
   Equiv Ca.
-  clear n3_21a.clear Simp3_26b.
+  clear n3_21a. clear Simp3_26b.
   Conj n4_7a Ca Cb.
-  pose proof (n4_22 with (P → Q) (P → P ∧ Q) (P ↔ P ∧ Q).
-  ) as n4_22a.
+  pose proof (n4_22 (P → Q) (P → P ∧ Q) (P ↔ P ∧ Q)) as n4_22a.
   MP n4_22a Cb.
   exact n4_22a.
 Qed.
 
-Theorem n4_72 : ∀ P Q : Prop,
+Theorem n4_72 (P Q : Prop) :
   (P → Q) ↔ (Q ↔ (P ∨ Q)).
 Proof.
-  pose proof (Transp4_1 with P Q.
-  ) as Transp4_1a.
-  pose proof (n4_71 with (¬Q) (¬P).
-  ) as n4_71a.
+  pose proof (Transp4_1 P Q) as Transp4_1a.
+  pose proof (n4_71 (¬Q) (¬P)) as n4_71a.
   Conj Transp4_1a n4_71a Ca.
-  pose proof (n4_22 with 
-      (P→Q) (¬Q→¬P) (¬Q↔¬Q ∧ ¬P).
-  ) as n4_22a.
+  pose proof (n4_22 (P→Q) (¬Q→¬P) (¬Q↔¬Q ∧ ¬P)) as n4_22a.
   MP n4_22a Ca.
-  pose proof (n4_21 with (¬Q) (¬Q ∧ ¬P).
-  ) as n4_21a.
+  pose proof (n4_21 (¬Q) (¬Q ∧ ¬P)) as n4_21a.
   Conj n4_22a n4_21a Cb.
-  pose proof (n4_22 with 
-      (P→Q) (¬Q ↔ ¬Q ∧ ¬P) (¬Q ∧ ¬P ↔ ¬Q).
-  ) as n4_22b.
+  pose proof (n4_22 (P→Q) (¬Q ↔ ¬Q ∧ ¬P) 
+    (¬Q ∧ ¬P ↔ ¬Q)) as n4_22b.
   MP n4_22b Cb.
-  pose proof (n4_12 with (¬Q ∧ ¬P) (Q).
-  ) as n4_12a.
+  pose proof (n4_12 (¬Q ∧ ¬P) (Q)) as n4_12a.
   Conj n4_22b n4_12a Cc.
-  pose proof (n4_22 with 
-      (P → Q) ((¬Q ∧ ¬P) ↔ ¬Q) (Q ↔ ¬(¬Q ∧ ¬P)).
-  ) as n4_22c.
+  pose proof (n4_22 (P → Q) ((¬Q ∧ ¬P) ↔ ¬Q) 
+    (Q ↔ ¬(¬Q ∧ ¬P))) as n4_22c.
   MP n4_22b Cc.
-  pose proof (n4_57 with Q P.
-  ) as n4_57a.
+  pose proof (n4_57 Q P) as n4_57a.
   apply propositional_extensionality in n4_57a.
   symmetry in n4_57a.
   replace (¬(¬Q ∧ ¬P)) with (Q ∨ P) in n4_22c
     by now apply n4_57a.
-  pose proof (n4_31 with P Q.
-  ) as n4_31a.
+  pose proof (n4_31 P Q) as n4_31a.
   apply propositional_extensionality in n4_31a.
   replace (Q ∨ P) with (P ∨ Q) in n4_22c
     by now apply n4_31a.
@@ -1088,31 +1002,26 @@ Proof.
 Qed.
 (*One could use Prod3_01 in lieu of n4_57.*)
 
-Theorem n4_73 : ∀ P Q : Prop,
+Theorem n4_73 (P Q : Prop) :
   Q → (P ↔ (P ∧ Q)).
 Proof.
-  pose proof (Simp2_02 with P Q.
-  ) as Simp2_02a.
-  pose proof (n4_71 with P Q.
-  ) as n4_71a.
+  pose proof (Simp2_02 P Q) as Simp2_02a.
+  pose proof (n4_71 P Q) as n4_71a.
   replace ((P → Q) ↔ (P ↔ P ∧ Q)) with 
       (((P→Q)→(P↔P∧Q))∧((P↔P∧Q)→(P→Q))) 
       in n4_71a by now rewrite Equiv4_01.
-  pose proof (Simp3_26 with 
-      ((P → Q) → P ↔ P ∧ Q) (P ↔ P ∧ Q → P → Q).
-  ) as Simp3_26a.
+  pose proof (Simp3_26 ((P → Q) → P ↔ P ∧ Q) 
+    (P ↔ P ∧ Q → P → Q)) as Simp3_26a.
   MP Simp3_26a n4_71a.
   Syll Simp2_02a Simp3_26a Sa.
   exact Sa.
 Qed.
 
-Theorem n4_74 : ∀ P Q : Prop,
+Theorem n4_74 (P Q : Prop) :
   ¬P → (Q ↔ (P ∨ Q)).
 Proof.
-  pose proof (n2_21 with P Q.
-  ) as n2_21a.
-  pose proof (n4_72 with P Q.
-  ) as n4_72a.
+  pose proof (n2_21 P Q) as n2_21a.
+  pose proof (n4_72 P Q) as n4_72a.
   apply propositional_extensionality in n4_72a.
   symmetry in n4_72a.
   replace (P → Q) with (Q ↔ P ∨ Q) in n2_21a
@@ -1120,19 +1029,17 @@ Proof.
   exact n2_21a.
 Qed.
 
-Theorem n4_76 : ∀ P Q R : Prop,
+Theorem n4_76 (P Q R : Prop) :
   ((P → Q) ∧ (P → R)) ↔ (P → (Q ∧ R)).
 Proof.
-  pose proof (n4_41 with (¬P) Q R.
-  ) as n4_41a.
+  pose proof (n4_41 (¬P) Q R) as n4_41a.
   replace (¬P ∨ Q) with (P→Q) in n4_41a
     by now rewrite Impl1_01.
   replace (¬P ∨ R) with (P→R) in n4_41a
     by now rewrite Impl1_01.
   replace (¬P ∨ Q ∧ R) with (P → Q ∧ R) in n4_41a
     by now rewrite Impl1_01.
-  pose proof (n4_21 with ((P → Q) ∧ (P → R)) (P → Q ∧ R).
-  ) as n4_21a.
+  pose proof (n4_21 ((P → Q) ∧ (P → R)) (P → Q ∧ R)) as n4_21a.
   apply propositional_extensionality in n4_21a.
   replace ((P → Q ∧ R) ↔ (P → Q) ∧ (P → R)) with 
       ((P → Q) ∧ (P → R) ↔ (P → Q ∧ R)) in n4_41a
@@ -1140,91 +1047,74 @@ Proof.
   exact n4_41a.
 Qed.
 
-Theorem n4_77 : ∀ P Q R : Prop,
+Theorem n4_77 (P Q R : Prop) :
   ((Q → P) ∧ (R → P)) ↔ ((Q ∨ R) → P).
 Proof.
-  pose proof (n3_44 with P Q R.
-  ) as n3_44a.
-  pose proof (n2_2 with Q R.
-  ) as n2_2a.
-  pose proof (Add1_3 with Q R.
-  ) as Add1_3a.
-  pose proof (Syll2_06 with Q (Q ∨ R) P.
-  ) as Syll2_06a.
+  pose proof (n3_44 P Q R) as n3_44a.
+  pose proof (n2_2 Q R) as n2_2a.
+  pose proof (Add1_3 Q R) as Add1_3a.
+  pose proof (Syll2_06 Q (Q ∨ R) P) as Syll2_06a.
   MP Syll2_06a n2_2a.
-  pose proof (Syll2_06 with R (Q ∨ R) P.
-  ) as Syll2_06b.
+  pose proof (Syll2_06 R (Q ∨ R) P) as Syll2_06b.
   MP Syll2_06b Add1_3a.
   Conj Syll2_06a Syll2_06b Ca.
-  pose proof (Comp3_43 with ((Q ∨ R)→P)
-    (Q→P) (R→P).
-  ) as Comp3_43a.
+  pose proof (Comp3_43  ((Q ∨ R)→P)
+    (Q→P) (R→P)) as Comp3_43a.
   MP Comp3_43a Ca.
-  clear n2_2a.clear Add1_3a.clear Ca.
-    clear Syll2_06a.clear Syll2_06b.
+  clear n2_2a. clear Add1_3a. clear Ca.
+    clear Syll2_06a. clear Syll2_06b.
   Conj n3_44a Comp3_43a Cb.
   Equiv Cb.
   exact Cb.
 Qed.
 
-Theorem n4_78 : ∀ P Q R : Prop,
+Theorem n4_78 (P Q R : Prop) :
   ((P → Q) ∨ (P → R)) ↔ (P → (Q ∨ R)).
 Proof.
-  pose proof (n4_2 with ((P→Q) ∨ (P → R)).
-  ) as n4_2a.
+  pose proof (n4_2 ((P→Q) ∨ (P → R))) as n4_2a.
   replace (((P→Q)∨(P→R))↔((P→Q)∨(P→R))) with 
       (((P → Q) ∨ (P → R))↔((P → Q) ∨ ¬P ∨ R)) in n4_2a
       by now rewrite <- Impl1_01.
   replace (((P → Q) ∨ (P → R))↔((P → Q) ∨ ¬P ∨ R)) with 
       (((P → Q) ∨ (P → R))↔((¬P ∨ Q) ∨ ¬P ∨ R)) in n4_2a
       by now rewrite <- Impl1_01.
-  pose proof (n4_33 with (¬P) Q (¬P ∨ R).
-  ) as n4_33a.
+  pose proof (n4_33 (¬P) Q (¬P ∨ R)) as n4_33a.
   apply propositional_extensionality in n4_33a.
   replace ((¬P ∨ Q) ∨ ¬P ∨ R) with 
       (¬P ∨ Q ∨ ¬P ∨ R) in n4_2a 
       by now apply n4_33a.
-  pose proof (n4_33 with Q (¬P) R.
-  ) as n4_33b.
+  pose proof (n4_33 Q (¬P) R) as n4_33b.
   apply propositional_extensionality in n4_33b.
   symmetry in n4_33b.
   replace (Q ∨ ¬P ∨ R) with 
       ((Q ∨ ¬P) ∨ R) in n4_2a
       by now apply n4_33b.
-  pose proof (n4_31 with (¬P) Q.
-  ) as n4_31a.
-  pose proof (n4_37 with (¬P∨Q) (Q ∨ ¬P) R.
-  ) as n4_37a.
+  pose proof (n4_31 (¬P) Q) as n4_31a.
+  pose proof (n4_37 (¬P∨Q) (Q ∨ ¬P) R) as n4_37a.
   MP n4_37a n4_31a.
   apply propositional_extensionality in n4_37a.
   replace ((Q ∨ ¬P) ∨ R) with 
       ((¬P ∨ Q) ∨ R) in n4_2a
       by now apply n4_37a.
-  pose proof (n4_33 with (¬P) (¬P∨Q) R.
-  ) as n4_33c.
+  pose proof (n4_33 (¬P) (¬P∨Q) R) as n4_33c.
   apply propositional_extensionality in n4_33c.
   symmetry in n4_33c.
   replace (¬P ∨ (¬P ∨ Q) ∨ R) with 
       ((¬P ∨ (¬P ∨ Q)) ∨ R) in n4_2a
       by now apply n4_33c.
-  pose proof (n4_33 with (¬P) (¬P) Q.
-  ) as n4_33d.
+  pose proof (n4_33 (¬P) (¬P) Q) as n4_33d.
   apply propositional_extensionality in n4_33d.
   symmetry in n4_33d.
   replace (¬P ∨ ¬P ∨ Q) with 
       ((¬P ∨ ¬P) ∨ Q) in n4_2a
       by now apply n4_33d.
-  pose proof (n4_33 with (¬P ∨ ¬P) Q R.
-  ) as n4_33e.
+  pose proof (n4_33 (¬P ∨ ¬P) Q R) as n4_33e.
   apply propositional_extensionality in n4_33e.
   replace (((¬P ∨ ¬P) ∨ Q) ∨ R) with 
       ((¬P ∨ ¬P) ∨ Q ∨ R) in n4_2a
       by now apply n4_33e.
-  pose proof (n4_25 with (¬P).
-  ) as n4_25a.
-  pose proof (n4_37 with 
-      (¬P) (¬P ∨ ¬P) (Q ∨ R).
-  ) as n4_37b.
+  pose proof (n4_25 (¬P)) as n4_25a.
+  pose proof (n4_37 (¬P) (¬P ∨ ¬P) (Q ∨ R)) as n4_37b.
   MP n4_37b n4_25a.
   apply propositional_extensionality in n4_25a.
   replace ((¬P ∨ ¬P) ∨ Q ∨ R) with 
@@ -1236,156 +1126,125 @@ Proof.
   exact n4_2a.
 Qed.
 
-Theorem n4_79 : ∀ P Q R : Prop,
+Theorem n4_79 (P Q R : Prop) :
   ((Q → P) ∨ (R → P)) ↔ ((Q ∧ R) → P).
 Proof.
-  pose proof (Transp4_1 with Q P.
-  ) as Transp4_1a.
-  pose proof (Transp4_1 with R P.
-  ) as Transp4_1b.
+  pose proof (Transp4_1 Q P) as Transp4_1a.
+  pose proof (Transp4_1 R P) as Transp4_1b.
   Conj Transp4_1a Transp4_1b Ca.
-  pose proof (n4_39 with 
-      (Q→P) (R→P) (¬P→¬Q) (¬P→¬R).
-  ) as n4_39a.
+  pose proof (n4_39 
+      (Q→P) (R→P) (¬P→¬Q) (¬P→¬R)) as n4_39a.
   MP n4_39a Ca.
-  pose proof (n4_78 with (¬P) (¬Q) (¬R).
-  ) as n4_78a.
+  pose proof (n4_78 (¬P) (¬Q) (¬R)) as n4_78a.
   rewrite Equiv4_01 in n4_78a.
-  pose proof (Simp3_26 with 
+  pose proof (Simp3_26 
     (((¬P→¬Q)∨(¬P→¬R))→(¬P→(¬Q∨¬R)))
-    ((¬P→(¬Q∨¬R))→((¬P→¬Q)∨(¬P→¬R))).
-  ) as Simp3_26a.
+    ((¬P→(¬Q∨¬R))→((¬P→¬Q)∨(¬P→¬R)))) as Simp3_26a.
   MP Simp3_26a n4_78a.
-  pose proof (Transp2_15 with P (¬Q∨¬R).
-  ) as Transp2_15a.
-  pose proof (Simp3_27 with 
+  pose proof (Transp2_15 P (¬Q∨¬R)) as Transp2_15a.
+  pose proof (Simp3_27 
     (((¬P→¬Q)∨(¬P→¬R))→(¬P→(¬Q∨¬R)))
-    ((¬P→(¬Q∨¬R))→((¬P→¬Q)∨(¬P→¬R))).
-  ) as Simp3_27a.
+    ((¬P→(¬Q∨¬R))→((¬P→¬Q)∨(¬P→¬R)))) as Simp3_27a.
   MP Simp3_27a n4_78a.
-  pose proof (Transp2_15 with (¬Q∨¬R) P.
-  ) as Transp2_15b.
-  pose proof (Syll2_06 with ((¬P→¬Q)∨(¬P→¬R))
-    (¬P→(¬Q∨¬R)) (¬(¬Q∨¬R)→P).
-  ) as Syll2_06a.
+  pose proof (Transp2_15 (¬Q∨¬R) P) as Transp2_15b.
+  pose proof (Syll2_06 ((¬P→¬Q)∨(¬P→¬R))
+    (¬P→(¬Q∨¬R)) (¬(¬Q∨¬R)→P)) as Syll2_06a.
   MP Syll2_06a Simp3_26a.
   MP Syll2_06a Transp2_15a.
-  pose proof (Syll2_06 with (¬(¬Q∨¬R)→P)
-    (¬P→(¬Q∨¬R)) ((¬P→¬Q)∨(¬P→¬R)).
-  ) as Syll2_06b.
+  pose proof (Syll2_06 (¬(¬Q∨¬R)→P)
+    (¬P→(¬Q∨¬R)) ((¬P→¬Q)∨(¬P→¬R))) as Syll2_06b.
   MP Syll2_06b Trans2_15b.
   MP Syll2_06b Simp3_27a.
   Conj Syll2_06a Syll2_06b Cb.
   Equiv Cb.
-  clear Transp4_1a.clear Transp4_1b.clear Ca.
-    clear Simp3_26a.clear Syll2_06b.clear n4_78a.
-    clear Transp2_15a.clear Simp3_27a.
-    clear Transp2_15b.clear Syll2_06a.
+  clear Transp4_1a. clear Transp4_1b. clear Ca.
+    clear Simp3_26a. clear Syll2_06b. clear n4_78a.
+    clear Transp2_15a. clear Simp3_27a.
+    clear Transp2_15b. clear Syll2_06a.
   Conj n4_39a Cb Cc.
-  pose proof (n4_22 with ((Q→P)∨(R→P))
-    ((¬P→¬Q)∨(¬P→¬R)) (¬(¬Q∨¬R)→P).
-  ) as n4_22a.
+  pose proof (n4_22 ((Q→P)∨(R→P))
+    ((¬P→¬Q)∨(¬P→¬R)) (¬(¬Q∨¬R)→P)) as n4_22a.
   MP n4_22a Cc.
-  pose proof (n4_2 with (¬(¬Q∨¬R)→P).
-  ) as n4_2a.
+  pose proof (n4_2 (¬(¬Q∨¬R)→P)) as n4_2a.
   Conj n4_22a n4_2a Cdd.
-  pose proof (n4_22 with ((Q→P)∨(R→P))
-  (¬(¬Q∨¬R)→P) (¬(¬Q∨¬R)→P).
-  ) as n4_22b.
+  pose proof (n4_22 ((Q→P)∨(R→P))
+  (¬(¬Q∨¬R)→P) (¬(¬Q∨¬R)→P)) as n4_22b.
   MP n4_22b Cdd.
   rewrite <- Prod3_01 in n4_22b.
   exact n4_22b.
 Qed.
 
-Theorem n4_8 : ∀ P : Prop,
+Theorem n_8 (P : Prop) :
   (P → ¬P) ↔ ¬P.
 Proof.
-  pose proof (Abs2_01 with P.
-  ) as Abs2_01a.
-  pose proof ( Simp2_02 with P (¬P).
-  ) as Simp2_02a.
+  pose proof (Abs2_01 P) as Abs2_01a.
+  pose proof (Simp2_02 P (¬P)) as Simp2_02a.
   Conj Abs2_01a Simp2_02a C.
   Equiv C.
   exact C.
 Qed.
 
-Theorem n4_81 : ∀ P : Prop,
+Theorem n_81 (P : Prop) :
   (¬P → P) ↔ P.
 Proof.
-  pose proof (n2_18 with P.
-  ) as n2_18a.
-  pose proof ( Simp2_02 with (¬P) P.
-  ) as Simp2_02a.
+  pose proof (n2_18 P) as n2_18a.
+  pose proof (Simp2_02 (¬P) P) as Simp2_02a.
   Conj n2_18a Simp2_02a C.
   Equiv C.
   exact C.
 Qed.
 
-Theorem n4_82 : ∀ P Q : Prop,
+Theorem n4_82 (P Q : Prop) :
   ((P → Q) ∧ (P → ¬Q)) ↔ ¬P.
 Proof.
-  pose proof (n2_65 with P Q.
-  ) as n2_65a.
-  pose proof (Imp3_31 with (P→Q) (P→¬Q) (¬P).
-  ) as Imp3_31a.
+  pose proof (n2_65 P Q) as n2_65a.
+  pose proof (Imp3_31 (P→Q) (P→¬Q) (¬P)) as Imp3_31a.
   MP Imp3_31a n2_65a.
-  pose proof (n2_21 with P Q.
-  ) as n2_21a.
-  pose proof (n2_21 with P (¬Q).
-  ) as n2_21b.
+  pose proof (n2_21 P Q) as n2_21a.
+  pose proof (n2_21 P (¬Q)) as n2_21b.
   Conj n2_21a n2_21b Ca.
-  pose proof (Comp3_43 with (¬P) (P→Q) (P→¬Q).
-  ) as Comp3_43a.
+  pose proof (Comp3_43 (¬P) (P→Q) (P→¬Q)) as Comp3_43a.
   MP Comp3_43a Ca.
-  clear n2_65a.clear n2_21a.
-    clear n2_21b.clear Ca.
+  clear n2_65a. clear n2_21a.
+    clear n2_21b. clear Ca.
   Conj Imp3_31a Comp3_43a Cb.
   Equiv Cb.
   exact Cb.
 Qed.
 
-Theorem n4_83 : ∀ P Q : Prop,
+Theorem n4_83 (P Q : Prop) :
   ((P → Q) ∧ (¬P → Q)) ↔ Q.
 Proof.
-  pose proof (n2_61 with P Q.
-  ) as n2_61a.
-  pose proof (Imp3_31 with (P→Q) (¬P→Q) (Q).
-  ) as Imp3_31a.
+  pose proof (n2_61 P Q) as n2_61a.
+  pose proof (Imp3_31 (P→Q) (¬P→Q) (Q)) as Imp3_31a.
   MP Imp3_31a n2_61a.
-  pose proof (Simp2_02 with P Q.
-  ) as Simp2_02a.
-  pose proof (Simp2_02 with (¬P) Q.
-  ) as Simp2_02b.
+  pose proof (Simp2_02 P Q) as Simp2_02a.
+  pose proof (Simp2_02 (¬P) Q) as Simp2_02b.
   Conj Simp2_02a Simp2_02b Ca.
-  pose proof (Comp3_43 with Q (P→Q) (¬P→Q).
-  ) as Comp3_43a.
+  pose proof (Comp3_43 Q (P→Q) (¬P→Q)) as Comp3_43a.
   MP Comp3_43a H.
-  clear n2_61a.clear Simp2_02a.
-  clear Simp2_02b.clear Ca.
+  clear n2_61a. clear Simp2_02a.
+  clear Simp2_02b. clear Ca.
   Conj Imp3_31a Comp3_43a Cb.
   Equiv Cb.
   exact Cb.
 Qed.
 
-Theorem n4_84 : ∀ P Q R : Prop,
+Theorem n4_84 (P Q R : Prop) :
   (P ↔ Q) → ((P → R) ↔ (Q → R)).
 Proof.
-  pose proof (Syll2_06 with P Q R.
-  ) as Syll2_06a.
-  pose proof (Syll2_06 with Q P R.
-  ) as Syll2_06b.
+  pose proof (Syll2_06 P Q R) as Syll2_06a.
+  pose proof (Syll2_06 Q P R) as Syll2_06b.
   Conj Syll2_06a Syll2_06b Ca.
-  pose proof (n3_47 with 
-      (P→Q) (Q→P) ((Q→R)→P→R) ((P→R)→Q→R).
-  ) as n3_47a.
+  pose proof (n3_47 (P→Q) (Q→P) ((Q→R)→P→R) 
+    ((P→R)→Q→R)) as n3_47a.
   MP n3_47a Ca.
   replace ((P→Q) ∧ (Q → P)) with (P↔Q) 
       in n3_47a by now rewrite Equiv4_01.
   replace (((Q→R)→P→R)∧((P→R)→Q→R)) with 
     ((Q→R)↔(P→R)) in n3_47a by 
     now rewrite Equiv4_01.
-  pose proof (n4_21 with (P→R) (Q→R).
-  ) as n4_21a.
+  pose proof (n4_21 (P→R) (Q→R)) as n4_21a.
   apply propositional_extensionality in n4_21a.
   replace ((Q → R) ↔ (P → R)) with 
       ((P→ R) ↔ (Q → R)) in n3_47a
@@ -1393,17 +1252,14 @@ Proof.
   exact n3_47a.
 Qed.
 
-Theorem n4_85 : ∀ P Q R : Prop,
+Theorem n4_85 (P Q R : Prop) :
   (P ↔ Q) → ((R → P) ↔ (R → Q)).
 Proof.
-  pose proof (Syll2_05 with R P Q.
-  ) as Syll2_05a.
-  pose proof (Syll2_05 with R Q P.
-  ) as Syll2_05b.
+  pose proof (Syll2_05 R P Q) as Syll2_05a.
+  pose proof (Syll2_05 R Q P) as Syll2_05b.
   Conj Syll2_05a Syll2_05b Ca.
-  pose proof (n3_47 with 
-      (P→Q) (Q→P) ((R→P)→R→Q) ((R→Q)→R→P).
-  ) as n3_47a.
+  pose proof (n3_47 (P→Q) (Q→P) ((R→P)→R→Q) 
+    ((R→Q)→R→P)) as n3_47a.
   MP n3_47a Ca.
   replace ((P→Q) ∧ (Q → P)) with (P↔Q) in n3_47a
   by now rewrite Equiv4_01.
@@ -1413,29 +1269,23 @@ Proof.
   exact n3_47a.
 Qed.
 
-Theorem n4_86 : ∀ P Q R : Prop,
+Theorem n4_86 (P Q R : Prop) :
   (P ↔ Q) → ((P ↔ R) ↔ (Q ↔ R)).
 Proof.
-  pose proof (n4_22 with  Q P R.
-  ) as n4_22a.
-  pose proof (Exp3_3 with (Q↔P) (P↔R) (Q↔R).
-  ) as Exp3_3a.(*Not cited*)
+  pose proof (n4_22  Q P R) as n4_22a.
+  pose proof (Exp3_3 (Q↔P) (P↔R) (Q↔R)) as Exp3_3a. (*Not cited*)
   MP Exp3_3a n4_22a.
-  pose proof (n4_22 with  P Q R.
-  ) as n4_22b.
-  pose proof (Exp3_3 with (P↔Q) (Q↔R) (P↔R).
-  ) as Exp3_3b.
+  pose proof (n4_22  P Q R) as n4_22b.
+  pose proof (Exp3_3 (P↔Q) (Q↔R) (P↔R)) as Exp3_3b.
   MP Exp3_3b n4_22b.
-  pose proof (n4_21 with P Q.
-  ) as n4_21a.
+  pose proof (n4_21 P Q) as n4_21a.
   apply propositional_extensionality in n4_21a.
   replace (Q↔P) with (P↔Q) in Exp3_3a
     by now apply n4_21a.
-  clear n4_22a.clear n4_22b.clear n4_21a.
+  clear n4_22a. clear n4_22b. clear n4_21a.
   Conj Exp3_3a Exp3_3b Ca.
-  pose proof (Comp3_43 with (P↔Q)
-      ((P↔R)→(Q↔R)) ((Q↔R)→(P↔R)).
-  ) as Comp3_43a.(*Not cited*)
+  pose proof (Comp3_43 (P↔Q)
+      ((P↔R)→(Q↔R)) ((Q↔R)→(P↔R))) as Comp3_43a. (*Not cited*)
   MP Comp3_43a Ca.
   replace (((P↔R)→(Q↔R))∧((Q↔R)→(P↔R)))
     with ((P↔R)↔(Q↔R)) in Comp3_43a 
@@ -1443,35 +1293,28 @@ Proof.
   exact Comp3_43a.
 Qed.
 
-Theorem n4_87 : ∀ P Q R : Prop,
+Theorem n4_87 (P Q R : Prop) :
   (((P ∧ Q) → R) ↔ (P → Q → R)) ↔ 
       ((Q → (P → R)) ↔ (Q ∧ P → R)).
 Proof.
-  pose proof (Exp3_3 with P Q R.
-  ) as Exp3_3a.
-  pose proof (Imp3_31 with P Q R.
-  ) as Imp3_31a.
+  pose proof (Exp3_3 P Q R) as Exp3_3a.
+  pose proof (Imp3_31 P Q R) as Imp3_31a.
   Conj Exp3_3a Imp3_31a Ca.
   Equiv Ca.
-  pose proof (Exp3_3 with Q P R.
-  ) as Exp3_3b.
-  pose proof (Imp3_31 with Q P R.
-  ) as Imp3_31b.
+  pose proof (Exp3_3 Q P R) as Exp3_3b.
+  pose proof (Imp3_31 Q P R) as Imp3_31b.
   Conj Exp3_3b Imp3_31b Cb.
   Equiv Cb.
-  pose proof (n4_21 with (Q→P→R) (Q∧P→R).
-  ) as n4_21a.
+  pose proof (n4_21 (Q→P→R) (Q∧P→R)) as n4_21a.
   apply propositional_extensionality in n4_21a.
   replace ((Q∧P→R)↔(Q→P→R)) with 
     ((Q→P→R)↔(Q∧P→R)) in Cb
     by now apply n4_21a.
-  pose proof (Simp2_02 with ((P∧Q→R)↔(P→Q→R))
-    ((Q→P→R)↔(Q∧P→R)).
-  ) as Simp2_02a.
+  pose proof (Simp2_02 ((P∧Q→R)↔(P→Q→R))
+    ((Q→P→R)↔(Q∧P→R))) as Simp2_02a.
   MP Simp2_02a Cb.
-  pose proof (Simp2_02 with ((Q→P→R)↔(Q∧P→R)) 
-    ((P∧Q→R)↔(P→Q→R)).
-  ) as Simp2_02b.
+  pose proof (Simp2_02 ((Q→P→R)↔(Q∧P→R)) 
+    ((P∧Q→R)↔(P→Q→R))) as Simp2_02b.
   MP Simp2_02b Ca.
   Conj Simp2_02a Simp2_02b Cc.
   Equiv Cc.
