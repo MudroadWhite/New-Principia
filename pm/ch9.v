@@ -15,9 +15,8 @@ At the end of the chapter, Russell proved that the definition of a function P ca
 extended to sentences involving `forall`s, and moreover, multiple param functions with 
 `forall`s within, or several `forall`s being concated with some binary logic operators.
 
-In the beginning of chapter 10, Russell wrote that the implications in this chapter is 
-called "material implication"s, and the results here will be extended to "formal 
-implication"s.
+In the beginning of chapter 10, Russell wrote that the implications in chapter 9 is 
+called "material implication"s, and the results will be extended to "formal implication"s.
 *)
 
 Definition n9_01 (φ : Prop → Prop) :
