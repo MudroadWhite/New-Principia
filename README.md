@@ -32,11 +32,10 @@ opam pin coq add 8.20.0
 Running the project:
 
 ```bash
-coq_makefile -f _CoqProject -o CoqMakefile
-make -f CoqMakefile
+make
 ```
 
-For any new files for the project, don't forget to add their paths into the `_CoqProject`.
+`make` is supposed to automatically detect all `.v` files under the `pm` folder, generate the `_CoqProject` file and compile the whole folder.
 
 ## To Contribute
 Although I have tried to organize the issues well to indicate the current progress, I am not used to collaborate with others. It's suggested to raise an issue for inquiries, and I'll see what I can give.
