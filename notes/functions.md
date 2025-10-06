@@ -9,13 +9,12 @@ Started from chapter 9, Principia doesn't have it defined how function works for
 ## Tactics being used
 TLDR: We use a mixture of multiple tactics to implement a single functionality.
 
-TODO: extracting the functions vs inlining them while applying a theorem
+Although the tactics might not be appearing in the proofs, but these alternatives are what might help you while developing the proof when you don't have a single clue! 
 
-I haven't figured out a unified way to do it universally and right. If something simple doesn't work, below are the alternatives I might use to make the functions work:
-
-1. `set` to define a function directly. Pairs with `change` when it needs a `rewrite`. Doesn't work very well on `exists` propositions and more generally bound variables. `change` tactic doesn't even modify the underlying proof object.
-2. `remember` that generates a equation of `f = P x` to use. Will be blocked by `exists` proposition and more generally bound variables, but better than `set` in general.
-3. `setoid_rewrite`. For every axioms defined in the form of `f = P x`, we need to change them into the form of `f <-> P x`. After this tedious manual work, it seems to work very well to "penetrate" through all the quantifiers.
+1. Inlining the application. rather than directly define a function, we just apply a theorem with a function instance provided, like `n9_000 (fun x => x)`. Alternatively, the belows involves independently introducing a new function into the hypothesis:
+2. `set` to define a function directly. Pairs with `change` when it needs a `rewrite`. Doesn't work very well on `exists` propositions and more generally bound variables. `change` tactic doesn't even modify the underlying proof object.
+3. `remember` that generates a equation of `f = P x` to use. Will be blocked by `exists` proposition and more generally bound variables, but better than `set` in general.
+4. `setoid_rewrite`. For every axioms defined in the form of `f = P x`, we need to change them into the form of `f <-> P x` with `pm.lib.eq_to_equiv`. After this tedious manual work, it seems to work very well to "penetrate" through quantifiers in most case.
 
 ## Destructing and constructing quantifiers
 Without `setoid_rewrite`, for a function to be defined for quantifiers, I feel that equations and functions flavor locality, while rewritting flavors globality. We want the variables to be as global as you can to perform the rewrite, the best being the whole proposition. Equations and functions on the other hand, the smaller the better. In practice, the "best" way to just make the proof run is
@@ -24,4 +23,4 @@ Without `setoid_rewrite`, for a function to be defined for quantifiers, I feel t
 3. Either wrap back everything up to proceed, or match the goal `exact`ly
 
 ## Partial evaluation for theorems, for function rewrites
-TODO: finish this section
+It happens sometimes in the proof where we don't `rewrite -> X` on any of the hypothesis, but instead directly `rewrite` on the goal. This is when I mean by "partially evaluate" the theorems. You might find `rewrite <- X in H` doesn't work, but `rewrite -> X; exact H` works.

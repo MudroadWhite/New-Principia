@@ -23,10 +23,10 @@ It sometimes happens though, even if the theorem itself doesn't involve any real
 
 There are 4 types of tactics we use.
 
-The first type is `MP` in chapter 1. It exposes the occurences where we need to perform such application.
+The first type is `MP` in chapter 1. It exposes the occurences where we need to perform a modus ponens.
 
 The second type is `pose proof`. It instantiates a theorem to be deducted.
 
-The third type is `rewrite`, for implementing the substitutions in the formal system of Principia. Unfortunately sometimes it doesn't work - and only in this case will all kinds of more complicated tactics, like `replace`, `change`, `setoid_rewrite`, etc..
+The third type is `rewrite`, for implementing the substitutions in the formal system of Principia. Unfortunately sometimes it doesn't work - and only in this case should more complicated tactics be appeared, like `replace`, `change`, `setoid_rewrite`, etc..
 
 And last, `assert` is being useful for organizing the proofs, and providing much better readability for all the intermediate steps.
