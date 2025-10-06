@@ -1,7 +1,7 @@
 # New-Principia
 Continuation on [formalizing Principia Mathematica](https://github.com/LogicalAtomist/principia) by Landon Elkind.
 
-This project is planned to be limited to the following content:
+This project is currently focused on the following parts:
 - [x] Chapter 9 (optionally with "similar as above")
 - [ ] Chapter 10 (optionally with "similar as above")
 
