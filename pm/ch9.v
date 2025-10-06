@@ -501,6 +501,7 @@ Proof.
       intros H x; pose proof (H x) as H0; [ apply n2_32 | apply n2_31 ]; exact H0.
     }
     rewrite <- (n9_04 φ (P ∨ Q)), <- (n9_04 φ (Q ∨ P)) in S1.
+    (* TODO: rewrite with Syll *)
     replace ((P ∨ Q) ∨ (∀ x : Prop, φ x)) with (P ∨ Q ∨ ∀ x : Prop, φ x) in S1
       by (apply propositional_extensionality; split; [ apply n2_31 | apply n2_32 ]; exact H0 ).
     replace ((Q ∨ P) ∨ ∀ x : Prop, φ x) with (Q ∨ P ∨ ∀ x : Prop, φ x) in S1
@@ -559,17 +560,10 @@ Proof.
     exact Sum1_6.
   }
   assert (S2 : (P → Q) → ∃ x, (P ∨ φ x) → (Q ∨ φ Y)).
-  { 
-    replace (P ∨ φ Y → Q ∨ φ Y) with (∃ x, P ∨ φ x → Q ∨ φ Y) in S1.
-    2: {
-      pose proof (n9_1 (fun x => P ∨ φ x → Q ∨ φ Y) Y) as n9_1; simpl in n9_1.
-      apply propositional_extensionality.
-      split.
-      (* I don't think this can be proven *)
-      { admit. }
-      { exact n9_1. }
-    }
-    exact S1.
+  {
+    pose proof (n9_1 (fun x => P ∨ φ x → Q ∨ φ Y) Y) as n9_1.
+    Syll S1 n9_1 S1_1.
+    exact S1_1.
   }
   assert (S3 : (P → Q) → ∀ y, ∃ x, (P ∨ φ x) → (Q ∨ φ y)).
   { 
