@@ -15,6 +15,7 @@ Although the tactics might not be appearing in the proofs, but these alternative
 2. `set` to define a function directly. Pairs with `change` when it needs a `rewrite`. Doesn't work very well on `exists` propositions and more generally bound variables. `change` tactic doesn't even modify the underlying proof object.
 3. `remember` that generates a equation of `f = P x` to use. Will be blocked by `exists` proposition and more generally bound variables, but better than `set` in general.
 4. `setoid_rewrite`. For every axioms defined in the form of `f = P x`, we need to change them into the form of `f <-> P x` with `pm.lib.eq_to_equiv`. After this tedious manual work, it seems to work very well to "penetrate" through quantifiers in most case.
+5. Rewriting using `Syll` for one-direction-arrow propositions is, currently, a totally failure whenever there's a quantifier.
 
 ## Destructing and constructing quantifiers
 Without `setoid_rewrite`, for a function to be defined for quantifiers, I feel that equations and functions flavor locality, while rewritting flavors globality. We want the variables to be as global as you can to perform the rewrite, the best being the whole proposition. Equations and functions on the other hand, the smaller the better. In practice, the "best" way to just make the proof run is
