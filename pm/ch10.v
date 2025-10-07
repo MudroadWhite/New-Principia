@@ -13,14 +13,24 @@ instead.
 *)
 
 (* TODO: extend the notation to multiple arguments *)
-Notation " P -[ x ]> Q " := (forall x, P -> Q) 
-  (at level 80, x binder, right associativity,
-  format " '[ ' P '/' '[ ' -[ x ]> ']' '/' Q ']' ")
+Notation " A -[ x : P ]> B " := (forall (x : P), A -> B)
+  (at level 85, x name, right associativity,
+  format " '[ ' A '/' '[ ' -[ x : P ]> ']' '/' B ']' ")
   : type_scope.
 
-Notation " P <[- x -]> Q " := (forall x, P <-> Q)
-  (at level 80, x binder, right associativity,
-  format " '[ ' P '/' '[ ' <[- x -]> ']' '/' Q ']' ")
+Notation " A -[ x ]> B " := (forall (x : Prop), A -> B)
+  (at level 80, x name, right associativity,
+  format " '[ ' A '/' '[ ' -[ x ]> ']' '/' B ']' ")
+  : type_scope.
+
+Notation " A <[- x : P -]> B " := (forall (x : P), A <-> B)
+  (at level 85, x name, right associativity,
+  format " '[ ' A '/' '[ ' <[- x : P -]> ']' '/' B ']' ")
+  : type_scope.
+
+Notation " A <[- x -]> B " := (forall x, A <-> B)
+  (at level 80, x name, right associativity,
+  format " '[ ' A '/' '[ ' <[- x -]> ']' '/' B ']' ")
   : type_scope.
 
 Definition n10_01 (Phi : Prop -> Prop) : 
