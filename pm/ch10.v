@@ -15,22 +15,22 @@ instead.
 (* TODO: extend the notation to multiple arguments *)
 Notation " A -[ x : P ]> B " := (forall (x : P), A -> B)
   (at level 85, x name, right associativity,
-  format " '[ ' A '/' '[ ' -[ x : P ]> ']' '/' B ']' ")
+  format " '[' A '/' '[ ' -[ x : P ]> ']' '/' B ']' ")
   : type_scope.
 
 Notation " A -[ x ]> B " := (( A -[ x : Prop ]> B ))
   (at level 80, x name, right associativity,
-  format " '[ ' A '/' '[ ' -[ x ]> ']' '/' B ']' ")
+  format " A '/' '[ ' -[ x ]> ']' '/' B ")
   : type_scope.
 
 Notation " A <[- x : P -]> B " := (forall (x : P), A <-> B)
   (at level 85, x name, right associativity,
-  format " '[ ' A '/' '[ ' <[- x : P -]> ']' '/' B ']' ")
+  format " '[' A '/' '[ ' <[- x : P -]> ']' '/' B ']' ")
   : type_scope.
 
 Notation " A <[- x -]> B " := (A <[- x : Prop -]> B)
   (at level 80, x name, right associativity,
-  format " '[ ' A '/' '[ ' <[- x -]> ']' '/' B ']' ")
+  format " A '/' '[ ' <[- x -]> ']' '/' B ")
   : type_scope.
 
 Definition n10_01 (Phi : Prop -> Prop) : 
@@ -146,20 +146,89 @@ Proof.
   assert (S2 : (forall x, Phi x /\ Psi x) -> Phi Y).
   { 
     (* TODO: examine the format of the original proof *)
-    pose (Simp3_26 (Phi Y) (Psi Y)) as Simp3_26.
+    pose proof (Simp3_26 (Phi Y) (Psi Y)) as Simp3_26.
     Syll Simp3_26 S1 S2.
     exact S2.
   }
   assert (S3 : (forall y, (forall x, Phi x /\ Psi x) -> Phi y)).
-  { admit. }
-
-Admitted.
+  {
+    pose proof (n10_11 Y (fun y => (forall x, Phi x /\ Psi x) -> Phi y)) as n10_11.
+    MP n10_11 S2.
+    exact n10_11.
+  }
+  assert (S4 : (forall x, Phi x /\ Psi x) -> forall y, Phi y).
+  {
+    destruct (n10_21 Phi (forall x, Phi x /\ Psi x)) as [n10_21l n10_21r].
+    MP n10_21l S3.
+    exact n10_21l.
+  }
+  assert (S5 : (forall x, Phi x /\ Psi x) -> Psi Y).
+  {
+    pose proof (Simp3_27 (Phi Y) (Psi Y)) as Simp3_27.
+    Syll Simp3_27 S1 S5.
+    exact S5.
+  }
+  assert (S6 : (forall y, (forall x, Phi x /\ Psi x) -> Psi y)).
+  {
+    pose proof (n10_11 Y (fun y => (forall x, Phi x /\ Psi x) -> Psi y)) as n10_11.
+    MP n10_11 S5.
+    exact n10_11.
+  }
+  assert (S7 : (forall x, Phi x /\ Psi x) -> forall y, Psi y).
+  {
+    destruct (n10_21 Psi (forall x, Phi x /\ Psi x)) as [n10_21l n10_21r].
+    MP n10_21l S6.
+    exact n10_21l.
+  }
+  assert (S8 : (forall x, Phi x /\ Psi x) -> ((forall y, Phi y) /\ forall z, Psi z)).
+  {
+    pose proof (Comp3_43 (forall x, Phi x /\ Psi x) (forall y, Phi y) (forall z, Psi z)) as Comp3_43.
+    pose proof (n3_2 
+      ((∀ x : Prop, Phi x ∧ Psi x) → ∀ y : Prop, Phi y)
+      ((∀ x : Prop, Phi x ∧ Psi x) → ∀ y : Prop, Psi y)) as n3_2.
+    MP n3_2 S4.
+    MP n3_2 S7.
+    MP Comp3_43 n3_2.
+    exact Comp3_43.
+  }
+  assert (S9 : forall y, (forall x, Phi x) /\ (forall x, Psi x) -> (Phi y /\ Psi y)).
+  {
+    pose proof (n10_14 Phi Psi Y) as n10_14.
+    pose proof (n10_11 Y (fun y => 
+      (forall x, Phi x) /\ (forall x, Psi x) -> (Phi y /\ Psi y))) as n10_11.
+    MP n10_11 n10_14.
+    exact n10_11.
+  }
+  assert (S10 : (forall x, Phi x) /\ (forall x, Psi x) -> forall y, (Phi y /\ Psi y)).
+  {
+    pose proof n10_21 as n10_21.
+    pose proof (n10_21 (fun y => (Phi y /\ Psi y)) 
+      ((forall x, Phi x) /\ (forall x, Psi x))) as n10_21.
+    destruct n10_21 as [n10_21l n10_21r].
+    MP n10_21l S9.
+    exact n10_21l.
+  }
+  assert (S11 : (forall x, Phi x /\ Psi x) <-> (forall x, Phi x) /\ (forall x, Psi x)).
+  {
+    pose proof (n3_2 
+      ((forall x, Phi x /\ Psi x) -> ((forall y, Phi y) /\ forall z, Psi z))
+      ((forall x, Phi x) /\ (forall x, Psi x) -> forall y, (Phi y /\ Psi y))
+      ) as n3_2.
+    MP n3_2 S8.
+    MP n3_2 S10.
+    Equiv n3_2.
+    exact n3_2.
+  }
+  exact S11.
+Qed.
 
 (* Thm *10.221: omitted *)
 
 Theorem n10_23 (Phi : Prop -> Prop) (P : Prop) :
   (forall x, Phi x -> P) <-> (exists x, Phi x) -> P.
 Proof.
+  
+
 Admitted.
 
 Theorem n10_23_alt (Phi : Prop -> Prop) (P : Prop) :
