@@ -150,7 +150,8 @@ Proof.
     Syll Simp3_26 S1 S2.
     exact S2.
   }
-  assert (S3 : )
+  assert (S3 : (forall y, (forall x, Phi x /\ Psi x) -> Phi y)).
+  { admit. }
 
 Admitted.
 
