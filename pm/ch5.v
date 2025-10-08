@@ -1018,63 +1018,60 @@ Proof.
   exact Cdd.
 Qed.
 
+(* pdf, p156, p177 *)
 Theorem n5_71 (P Q R : Prop) :
   (Q → ¬R) → (((P ∨ Q) ∧ R) ↔ (P ∧ R)).
 Proof.
-  pose proof (n4_62 Q R) as n4_62a.
-  pose proof (n4_51 Q R) as n4_51a.
-  pose proof (n4_21 (¬(Q∧R)) (¬Q∨¬R)) as n4_21a.
-  rewrite Equiv4_01 in n4_21a.
-  pose proof (Simp3_26 
-    ((¬(Q∧R)↔(¬Q∨¬R))→((¬Q∨¬R)↔¬(Q∧R)))
-    (((¬Q∨¬R)↔¬(Q∧R))→(¬(Q∧R)↔(¬Q∨¬R)))) as Simp3_26a.
-  MP Simp3_26a n4_21a.
-  MP Simp3_26a n4_51a.
-  clear n4_21a. clear n4_51a.
-  Conj n4_62a Simp3_26a C.
-  pose proof (n4_22 
-    (Q→¬R) (¬Q∨¬R) (¬(Q∧R))) as n4_22a.
-  MP n4_22a C.
-  replace ((Q→¬R)↔¬(Q∧R)) with 
-      (((Q→¬R)→¬(Q∧R))
-      ∧
-      (¬(Q∧R)→(Q→¬R))) in n4_22a
-      by now rewrite Equiv4_01.
-  pose proof (Simp3_26 
-      ((Q→¬R)→¬(Q∧R)) (¬(Q∧R)→(Q→¬R))) as Simp3_26b.
-  MP Simp3_26b n4_22a.
-  pose proof (n4_74 (Q∧R) (P∧R)) as n4_74a.
-  Syll Simp3_26a n4_74a Sa.
-  pose proof (n4_31 (Q∧R) (P∧R)) as n4_31a. (*Not cited*)
-  apply propositional_extensionality in n4_31a.
-  replace ((P∧R)∨(Q∧R)) with ((Q∧R)∨(P∧R))
-       in Sa by now rewrite n4_31a.
-  pose proof (n4_31 (R∧Q) (R∧P)) as n4_31b. (*Not cited*)
-  apply propositional_extensionality in n4_31b.
-  pose proof (n4_21 ((P∨Q)∧R) (P∧R)) as n4_21a. (*Not cited*)
-  apply propositional_extensionality in n4_21a.
-  pose proof (n4_4 R P Q) as n4_4a.
-  replace (R ∧ P ∨ R ∧ Q) with (R ∧ Q ∨ R ∧ P) 
-    in n4_4a by now apply n4_31b.
-  pose proof (n4_3 P R) as n4_3a.
-  apply propositional_extensionality in n4_3a.
-  replace (R ∧ P) with (P ∧ R) in n4_4a 
-    by now apply n4_3a.
-  pose proof (n4_3 Q R) as n4_3b.
-  apply propositional_extensionality in n4_3b.
-  replace (R ∧ Q) with (Q ∧ R) in n4_4a 
-    by now apply n4_3b.
-  apply propositional_extensionality in n4_4a.
-  replace ((Q∧R)∨(P∧R)) with (R∧(P∨Q)) in Sa
-    by now apply n4_4a.
-  pose proof (n4_3 (P∨Q) R) as n4_3c. (*Not cited*)
-  apply propositional_extensionality in n4_3c. 
-  replace (R∧(P∨Q)) with ((P∨Q)∧R) in Sa
-    by now apply n4_3c.
-  replace ((P∧R)↔((P∨Q)∧R)) with 
-      (((P∨Q)∧R)↔(P∧R)) in Sa
-      by now apply n4_21a.
-  exact Sa.
+  assert (S1 : (P ∨ Q) ∧ R ↔ P ∧ R ∨ Q ∧ R).
+  {
+    pose proof (n4_4 R P Q) as n4_4.
+    replace (R ∧ (P ∨ Q)) with ((P ∨ Q) ∧ R) in n4_4
+      by (apply propositional_extensionality; split; apply n3_22).
+    replace (R ∧ P) with (P ∧ R) in n4_4 
+      by (apply propositional_extensionality; split; apply n3_22).
+    replace (R ∧ Q) with (Q ∧ R) in n4_4
+      by (apply propositional_extensionality; split; apply n3_22).
+    exact n4_4.
+  }
+  assert (S2 : (Q → ¬R) -> ~(Q ∧ R)).
+  {
+    pose proof (n4_62 Q R) as n4_62.
+    destruct n4_62 as [n4_62l n4_62r].
+    pose proof (n4_51 Q R) as n4_51.
+    destruct n4_51 as [n4_51l n4_51r].
+    clear n4_62r n4_51l.
+    Syll n4_62l n4_51r S2.
+    exact S2.
+  }
+  assert (S3 : (Q → ¬R) -> ((P ∧ R ∨ Q ∧ R) ↔ P ∧ R)).
+  {
+    pose proof (n4_74 (Q ∧ R) (P ∧ R)) as n4_74.
+    symmetry in n4_74.
+    replace (Q ∧ R ∨ P ∧ R) with (P ∧ R ∨ Q ∧ R) in n4_74
+      by (apply propositional_extensionality; split; apply Perm1_4).
+    Syll S2 n4_74 S3.
+    exact S3.
+  }
+  assert (S4 : (Q → ¬R) → (((P ∨ Q) ∧ R) ↔ (P ∧ R))).
+  {
+    (* pose n4_22 as n4_22'. *)
+    pose (n3_2 
+      ((P ∨ Q) ∧ R ↔ P ∧ R ∨ Q ∧ R)
+      (P ∧ R ∨ Q ∧ R ↔ P ∧ R)
+    ) as n3_2.
+    (* This has been very confusing and unrigorous for the proof: the 
+      substitution is not done on the whole proposition *)
+    intro H.
+    pose proof (S3 H) as S3_1.
+    (* MP doesn't work well here *)
+    pose proof (n3_2 S1) as MPn3_2.
+    pose proof (MPn3_2 S3_1) as MPn3_2_1.
+    pose proof (n4_22 ((P ∨ Q) ∧ R) (P ∧ R ∨ Q ∧ R)
+        (P ∧ R)) as n4_22.
+    MP n4_22 MPn3_2_1.
+    exact n4_22.
+  }
+  exact S4.
 Qed.
 
 Theorem n5_74 (P Q R : Prop) :
