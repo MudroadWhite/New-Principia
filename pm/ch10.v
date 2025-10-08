@@ -12,7 +12,6 @@ definitions in chapter 9 and develop a new way to interpret `exists`
 instead.
 *)
 
-(* TODO: extend the notation to multiple arguments *)
 Notation " A -[ x : P ]> B " := (forall (x : P), A -> B)
   (at level 85, x name, right associativity,
   format " '[' A '/' '[ ' -[ x : P ]> ']' '/' B ']' ")
@@ -145,7 +144,6 @@ Proof.
   { exact (n10_1 (fun x => Phi x /\ Psi x) Y). }
   assert (S2 : (forall x, Phi x /\ Psi x) -> Phi Y).
   { 
-    (* TODO: examine the format of the original proof *)
     pose proof (Simp3_26 (Phi Y) (Psi Y)) as Simp3_26.
     Syll Simp3_26 S1 S2.
     exact S2.
@@ -257,8 +255,6 @@ Proof.
   (* ******** *)
   assert (S1 : ((exists x, Phi x) -> P) <-> ((~ P) -> (forall x, ~ Phi x))).
   {
-  (* exists x, ~~ Phi x *)
-  (* ~forall x, ~Phi x  -> p <->  ~p -> forall x, ~Phi x*)
     pose proof (Transp2_16 (exists x, Phi x) P) as Transp2_16.
     rewrite -> n10_01 in Transp2_16 at 2.
     replace (¬ ¬ ∀ x : Prop, ¬ Phi x) with (∀ x : Prop, ¬ Phi x)
@@ -373,10 +369,26 @@ Qed.
 Theorem n10_24 (Phi : Prop -> Prop) (Y : Prop) :
   Phi Y -> exists x, Phi x.
 Proof.
-Admitted.
+  assert (S1 : (forall x, ~ Phi x) -> ~ Phi Y).
+  { exact (n10_1 (fun x => ~ Phi x) Y). }
+  assert (S2 : Phi Y -> (~ forall x, ~ Phi x)).
+  {
+    pose proof (Transp2_03 (forall x, ~ Phi x) (Phi Y)) as Transp2_03.
+    MP Transp2_03 S1.
+    exact Transp2_03.
+  }
+  assert (S3 : Phi Y -> exists x, Phi x).
+  {
+    rewrite <- n10_01 in S2.
+    exact S2.
+  }
+  exact S3.
+Qed.
 
 Theorem n10_25 (Phi : Prop -> Prop) : (forall x, Phi x) -> (exists x, Phi x).
 Proof.
+  
+
 Admitted.
 
 Theorem n10_251 (Phi : Prop -> Prop) : (forall x, ~Phi x) -> ~(forall x, Phi x).
