@@ -31,4 +31,4 @@ To perform *substitutions* on the propositions, we have another class of tactic 
 
 And last, `assert` is being useful for organizing the proofs, and providing much better readability for all the intermediate steps.
 
-`substitutions.md` will dive a deeper level down into how these tactics are being used.
+`tactics.md` will dive a deeper level down into how these tactics are being used.
