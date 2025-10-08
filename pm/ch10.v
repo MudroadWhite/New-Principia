@@ -510,8 +510,12 @@ Qed.
 Theorem n10_26 (Phi Psi : Prop -> Prop) (X : Prop) : 
   ((forall z, Phi z -> Psi z) /\ Phi X) -> Psi X.
 Proof.
-
-Admitted.
+  pose (n10_1 (fun z => Phi z -> Psi z) X) as n10_1.
+  simpl in n10_1.
+  pose (Imp3_31 (forall z, Phi z -> Psi z) (Phi X) (Psi X)) as Imp3_31.
+  MP Imp3_31 n10_1.
+  exact Imp3_31.
+Qed.
 
 Theorem n10_27 (Phi Psi : Prop -> Prop) : 
   (forall z, Phi z -> Psi z) -> ((forall z, Phi z) -> (forall z, Psi z)).
