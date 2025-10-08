@@ -225,16 +225,150 @@ Qed.
 (* Thm *10.221: omitted *)
 
 Theorem n10_23 (Phi : Prop -> Prop) (P : Prop) :
-  (forall x, Phi x -> P) <-> (exists x, Phi x) -> P.
+  (forall x, Phi x -> P) <-> ((exists x, Phi x) -> P).
 Proof.
-  
-
-Admitted.
+  assert (S1 : (forall x, ~ Phi x \/ P) <-> ((forall x, ~ Phi x) \/ P)).
+  {
+    pose proof (n4_2 (forall x, ~ Phi x \/ P)) as n4_2.
+    rewrite <- n9_03 in n4_2 at 2.
+    exact n4_2.
+  }
+  assert (S2 : (forall x, (~ Phi x) \/ P) <-> ((exists x, Phi x) -> P)).
+  {
+    rewrite <- n9_02 in S1.
+    rewrite <- Impl1_01 in S1.
+    exact S1.
+  }
+  assert (S3 : (forall x, Phi x -> P) <-> ((exists x, Phi x) -> P)).
+  {
+    set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
+      as Impl1_01a.
+    setoid_rewrite <- Impl1_01a in S2.
+    exact S2.
+  }
+  exact S3.
+Qed.
 
 Theorem n10_23_alt (Phi : Prop -> Prop) (P : Prop) :
-  (forall x, Phi x -> P) <-> (exists x, Phi x) -> P.
+  (forall x, Phi x -> P) <-> ((exists x, Phi x) -> P).
 Proof.
-Admitted.
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
+  assert (S1 : ((exists x, Phi x) -> P) <-> ((~ P) -> (forall x, ~ Phi x))).
+  {
+  (* exists x, ~~ Phi x *)
+  (* ~forall x, ~Phi x  -> p <->  ~p -> forall x, ~Phi x*)
+    pose proof (Transp2_16 (exists x, Phi x) P) as Transp2_16.
+    rewrite -> n10_01 in Transp2_16 at 2.
+    replace (¬ ¬ ∀ x : Prop, ¬ Phi x) with (∀ x : Prop, ¬ Phi x)
+      in Transp2_16.
+    2: {
+      apply propositional_extensionality.
+      split; [ apply n2_12 | apply (n2_14 (∀ x : Prop, ¬ Phi x)) ].
+    }
+    pose proof (Transp2_17 (exists x, Phi x) P) as Transp2_17.
+    rewrite -> n10_01 in Transp2_17 at 1.
+    replace (¬ ¬ ∀ x : Prop, ¬ Phi x) with (∀ x : Prop, ¬ Phi x)
+      in Transp2_17.
+    2: {
+      apply propositional_extensionality.
+      split; [ apply n2_12 | apply (n2_14 (∀ x : Prop, ¬ Phi x)) ].
+    }
+    pose proof (n3_2 
+      (((∃ x : Prop, Phi x) → P) -> (¬ P → ∀ x : Prop, ¬ Phi x))
+      ((¬ P → ∀ x : Prop, ¬ Phi x) -> ((∃ x : Prop, Phi x) → P))
+      ) as n3_2.
+    MP n3_2 Transp2_17.
+    MP n3_2 Transp2_16.
+    Equiv n3_2.
+    exact n3_2.
+  }
+  assert (S2 : ((exists x, Phi x) -> P) <-> (forall x, (~ P) -> ~ Phi x)).
+  {
+    replace ((¬ P → ∀ x : Prop, ¬ Phi x)) with ((forall x, (~ P) -> ~ Phi x))
+    in S1.
+    2: {
+      apply propositional_extensionality.
+      apply n10_21.
+    }
+    exact S1.
+  }
+  (* WTF???? *)
+  assert (S3 : ((exists x, Phi x) -> P) -> ((~ P) -> ~ Phi X)).
+  {
+    pose proof (n10_1 (fun x => (~ P) -> ~ Phi x) X) as n10_1; 
+    simpl in n10_1.
+    destruct S2 as [S2_l S2_r].
+    Syll S2_l n10_1 S3.
+    exact S3.
+  }
+  assert (S4 : ((exists x, Phi x) -> P) -> (Phi X -> P)).
+  {
+    pose proof (Transp2_17 (Phi X) P) as Transp2_17.
+    Syll S3 Transp2_17 S4.
+    exact S4.
+  }
+  (* The variable naming here is so wild *)
+  assert (S5 : forall x0, ((exists x, Phi x) -> P) -> (Phi x0 -> P)).
+  {
+    pose proof (n10_11 X (fun x0 => ((exists x, Phi x) -> P) -> (Phi x0 -> P))) 
+      as n10_11.
+    MP n10_11 S4.
+    exact n10_11.
+  }
+  assert (S6 : ((exists x, Phi x) -> P) -> forall x, (Phi x -> P)).
+  {
+    pose proof (n10_21 (fun x0 => (Phi x0 -> P)) ((exists x, Phi x) -> P))
+      as n10_21.
+    destruct n10_21 as [n10_21l n10_21r].
+    MP n10_21l S5.
+    exact n10_21l.
+  }
+  assert (S7 : (forall x, (Phi x -> P)) -> (Phi X -> P)).
+  { exact (n10_1 (fun x => Phi x -> P) X). }
+  assert (S8 : (forall x, (Phi x -> P)) -> ((~ P) -> ~ Phi X)).
+  {
+    pose (Transp2_16 (Phi X) P) as Transp2_16.
+    Syll S7 Transp2_16 S8.
+    exact S8.
+  }
+  assert (S9 : (forall x, (Phi x -> P)) -> (forall x, (~ P) -> ~ Phi x)).
+  {
+    pose proof (n10_11 X (fun x => ~ Phi x)) as n10_11. simpl in n10_11.
+    assert (S8_1 : ((~ P) -> ~ Phi X) -> ((~ P) -> forall x, (~ Phi x))).
+    (* The recursive syll is so wild here *)
+    {
+      intro.
+      Syll H n10_11 H0.
+      exact H0.
+    }
+    Syll S8 S8_1 S8_2.
+    pose proof (n10_21 (fun x => ~ Phi x) (~ P)) as n10_21.
+    destruct n10_21 as [n10_21l n10_21r].
+    clear S1 S2 S3 S4 S5 S6 S7 n10_11 n10_21l S8 S8_1.
+    Syll S8_2 n10_21r S9.
+    exact S9.
+  }
+  assert (S10 : (forall x, (Phi x -> P)) -> (exists x, Phi x) -> P).
+  {
+    destruct S2 as [S2_l S2_r].
+    clear S1 S3 S4 S5 S6 S7 S8 S2_l.
+    Syll S9 S2_r S10.
+    exact S10.
+  }
+  assert (S11 : (forall x, Phi x -> P) <-> ((exists x, Phi x) -> P)).
+  {
+    pose proof (n3_2 
+      ((forall x, (Phi x -> P)) -> (exists x, Phi x) -> P)
+      (((exists x, Phi x) -> P) -> forall x, (Phi x -> P))) as n3_2.
+    MP n3_2 S10.
+    MP n3_2 S6.
+    Equiv n3_2.
+    exact n3_2.
+  }
+  exact S11.
+Qed.
 
 Theorem n10_24 (Phi : Prop -> Prop) (Y : Prop) :
   Phi Y -> exists x, Phi x.
