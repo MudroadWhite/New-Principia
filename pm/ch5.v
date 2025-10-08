@@ -1025,6 +1025,7 @@ Proof.
   assert (S1 : (P ∨ Q) ∧ R ↔ P ∧ R ∨ Q ∧ R).
   {
     pose proof (n4_4 R P Q) as n4_4.
+    (* We simplify the process to split the bidirectional arrows... *)
     replace (R ∧ (P ∨ Q)) with ((P ∨ Q) ∧ R) in n4_4
       by (apply propositional_extensionality; split; apply n3_22).
     replace (R ∧ P) with (P ∧ R) in n4_4 
@@ -1054,21 +1055,20 @@ Proof.
   }
   assert (S4 : (Q → ¬R) → (((P ∨ Q) ∧ R) ↔ (P ∧ R))).
   {
-    (* pose n4_22 as n4_22'. *)
-    pose (n3_2 
-      ((P ∨ Q) ∧ R ↔ P ∧ R ∨ Q ∧ R)
-      (P ∧ R ∨ Q ∧ R ↔ P ∧ R)
-    ) as n3_2.
     (* This has been very confusing and unrigorous for the proof: the 
       substitution is not done on the whole proposition *)
     intro Hp.
-    pose proof (S3 Hp) as S3_1.
-    (* MP doesn't pick the right instance here, so we manually perform the MP *)
-    pose proof (n3_2 S1) as MPn3_2.
-    pose proof (MPn3_2 S3_1) as MPn3_2_1.
+    (* We have to clear everything else just to do the right `Conj` *)
+    assert (C1 : ((P ∨ Q) ∧ R ↔ P ∧ R ∨ Q ∧ R) ∧ (P ∧ R ∨ Q ∧ R ↔ P ∧ R)).
+    {
+      pose proof (S3 Hp) as S3_1.
+      clear Hp S2 S3.
+      Conj S3_1 S1 C1.
+      exact C1.
+    }
     pose proof (n4_22 ((P ∨ Q) ∧ R) (P ∧ R ∨ Q ∧ R)
         (P ∧ R)) as n4_22.
-    MP n4_22 MPn3_2_1.
+    MP n4_22 C1.
     exact n4_22.
   }
   exact S4.
