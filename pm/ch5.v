@@ -1061,9 +1061,9 @@ Proof.
     ) as n3_2.
     (* This has been very confusing and unrigorous for the proof: the 
       substitution is not done on the whole proposition *)
-    intro H.
-    pose proof (S3 H) as S3_1.
-    (* MP doesn't work well here *)
+    intro Hp.
+    pose proof (S3 Hp) as S3_1.
+    (* MP doesn't pick the right instance here, so we manually perform the MP *)
     pose proof (n3_2 S1) as MPn3_2.
     pose proof (MPn3_2 S3_1) as MPn3_2_1.
     pose proof (n4_22 ((P ∨ Q) ∧ R) (P ∧ R ∨ Q ∧ R)
