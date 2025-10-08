@@ -491,20 +491,17 @@ Proof.
   assert (S2 : P ∨ Q ∨ (∀ x : Prop, φ x) → Q ∨ P ∨ (∀ x : Prop, φ x)).
   { 
     replace (∀ x : Prop, P ∨ Q ∨ φ x) with (∀ x : Prop, (P ∨ Q) ∨ φ x) in S1.
-    2: {
-      apply propositional_extensionality; split;
-      intros H x; pose proof (H x) as H0; [ apply n2_32 | apply n2_31 ]; exact H0.
-    }
     replace (∀ x : Prop, Q ∨ P ∨ φ x) with (∀ x : Prop, (Q ∨ P) ∨ φ x) in S1.
-    2: {
+    2, 3: (
       apply propositional_extensionality; split;
-      intros H x; pose proof (H x) as H0; [ apply n2_32 | apply n2_31 ]; exact H0.
-    }
+      intros H x; pose proof (H x) as H0; [ apply n2_32 | apply n2_31 ]; exact H0
+    ).
     rewrite <- (n9_04 φ (P ∨ Q)), <- (n9_04 φ (Q ∨ P)) in S1.
-    replace ((P ∨ Q) ∨ (∀ x : Prop, φ x)) with (P ∨ Q ∨ ∀ x : Prop, φ x) in S1
-      by (apply propositional_extensionality; split; [ apply n2_31 | apply n2_32 ]; exact H0 ).
-    replace ((Q ∨ P) ∨ ∀ x : Prop, φ x) with (Q ∨ P ∨ ∀ x : Prop, φ x) in S1
-      by (apply propositional_extensionality; split; [ apply n2_31 | apply n2_32 ]; exact H0).
+    replace ((P ∨ Q) ∨ (∀ x : Prop, φ x)) with (P ∨ Q ∨ ∀ x : Prop, φ x) in S1.
+    replace ((Q ∨ P) ∨ ∀ x : Prop, φ x) with (Q ∨ P ∨ ∀ x : Prop, φ x) in S1.
+    2, 3: (
+      apply propositional_extensionality; split; [ apply n2_31 | apply n2_32 ]; exact H0
+    ).
     exact S1.
   }
   exact S2.
@@ -552,10 +549,9 @@ Proof.
   { 
     (* *9.21 ignored *)
     pose proof (Sum1_6 (φ Y) P Q) as Sum1_6.
-    replace (φ Y ∨ P) with (P ∨ φ Y) in Sum1_6
-      by (apply propositional_extensionality; split; apply Perm1_4).
-    replace (φ Y ∨ Q) with (Q ∨ φ Y) in Sum1_6 
-      by (apply propositional_extensionality; split; apply Perm1_4).
+    replace (φ Y ∨ P) with (P ∨ φ Y) in Sum1_6.
+    replace (φ Y ∨ Q) with (Q ∨ φ Y) in Sum1_6.
+      2, 3: (apply propositional_extensionality; split; apply Perm1_4).
     exact Sum1_6.
   }
   assert (S2 : (P → Q) → ∃ x, (P ∨ φ x) → (Q ∨ φ Y)).
