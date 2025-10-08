@@ -286,7 +286,7 @@ Qed.
 
 (* Theorem Abb2_33 : ∀ P Q R : Prop,
   (P ∨ Q ∨ R) = ((P ∨ Q) ∨ R).
-Proof.as P Q R.rewrite → n2_32.*)
+Proof. intros P Q R. rewrite → n2_32. *)
 
 Theorem Abb2_33 (P Q R : Prop) :
   (P ∨ Q ∨ R) = ((P ∨ Q) ∨ R).
