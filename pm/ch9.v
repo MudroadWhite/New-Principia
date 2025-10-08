@@ -103,9 +103,9 @@ Theorem n9_21 (φ ψ : Prop → Prop) :
   → ∀ z, ψ z.
 Proof.
   (** Necessary tools to be used globally **)
-  (* Manually set up a `↔` relation from `=` relation to utilize
-  `setoid_rewrite`. This enables substitution outside of the
-  `∀`s and `∃`. Can we automate this with Ltac? *)
+  (* Manually set up a `↔` variant from `=` relation so that we can
+  `setoid_rewrite`. This enables substitution where `∀`s and `∃` are
+  involved. Can we automate this with Ltac? *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
   set (λ (φ0 : Prop → Prop) (P0 : Prop), 
@@ -223,12 +223,14 @@ Proof.
   assert (S8 : (∀ x, φ x → ψ x) → (∃ x, φ x) → (∃ x, ψ x)).
   { 
     rewrite <- n9_01, <- Impl1_01 in S7.
+    (* TODO: replace with `Syll` *)
     replace (∀ y : Prop, ¬ φ y) with (¬ ¬ (∀ y : Prop, ¬ φ y)) in S7.
     2: {
       symmetry. apply propositional_extensionality. 
       exact (n4_13 (∀ y : Prop, ¬ φ y)).
     }
     rewrite <- n9_02, <- Impl1_01 in S7.
+    (* TODO: replace with `Syll` *)
     replace (¬ ¬ ∃ x : Prop, φ x) with (∃ x : Prop, φ x) in S7.
     2: {
       apply propositional_extensionality. 
