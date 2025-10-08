@@ -182,11 +182,8 @@ Proof.
   assert (S8 : (∀ x, Phi x ∧ Psi x) -> ((∀ y, Phi y) ∧ ∀ z, Psi z)).
   {
     pose proof (Comp3_43 (∀ x, Phi x ∧ Psi x) (∀ y, Phi y) (∀ z, Psi z)) as Comp3_43.
-    assert (C1 : 
-      ((∀ x : Prop, Phi x ∧ Psi x) → ∀ y : Prop, Phi y)
-      /\
-      ((∀ x : Prop, Phi x ∧ Psi x) → ∀ y : Prop, Psi y)
-    ).
+    assert (C1 : ((∀ x : Prop, Phi x ∧ Psi x) → ∀ y : Prop, Phi y)
+      ∧ ((∀ x : Prop, Phi x ∧ Psi x) → ∀ y : Prop, Psi y)).
     { clear S1 S2 S3 S5 S6 Comp3_43. Conj S4 S7 C1. exact C1. }
     MP Comp3_43 C1.
     exact Comp3_43.
@@ -211,7 +208,7 @@ Proof.
   assert (S11 : (∀ x, Phi x ∧ Psi x) ↔ (∀ x, Phi x) ∧ (∀ x, Psi x)).
   {
     assert (C1 : ((∀ x, Phi x ∧ Psi x) -> ((∀ y, Phi y) ∧ ∀ z, Psi z))
-      /\ ((∀ x, Phi x) ∧ (∀ x, Psi x) -> ∀ y, (Phi y ∧ Psi y))).
+      ∧ ((∀ x, Phi x) ∧ (∀ x, Psi x) -> ∀ y, (Phi y ∧ Psi y))).
     {
       clear S1 S2 S3 S4 S5 S6 S7 S9.
       Conj S8 S10 C1. exact C1.
@@ -277,7 +274,7 @@ Proof.
       split; [ apply n2_12 | apply (n2_14 (∀ x : Prop, ¬ Phi x)) ].
     }
     assert (C1 : (((∃ x : Prop, Phi x) → P) -> (¬ P → ∀ x : Prop, ¬ Phi x))
-      /\ ((¬ P → ∀ x : Prop, ¬ Phi x) -> ((∃ x : Prop, Phi x) → P))).
+      ∧ ((¬ P → ∀ x : Prop, ¬ Phi x) -> ((∃ x : Prop, Phi x) → P))).
     { Conj Transp2_16 Transp2_17 C1. exact C1. }
     Equiv C1.
     exact C1.
@@ -356,7 +353,7 @@ Proof.
   assert (S11 : (∀ x, Phi x -> P) ↔ ((exists x, Phi x) -> P)).
   {
     assert (C1 : ((∀ x, (Phi x -> P)) -> (exists x, Phi x) -> P)
-      /\ (((exists x, Phi x) -> P) -> ∀ x, (Phi x -> P))).
+      ∧ (((exists x, Phi x) -> P) -> ∀ x, (Phi x -> P))).
     {
       clear S1 S2 S3 S4 S5 S7 S8 S9.
       move S10 after S6.
@@ -495,7 +492,7 @@ Proof.
   assert (S11 : (~(∀ x, Phi x)) ↔ exists x, ~ Phi x).
   {
     assert (C1 : ((~(∀ x, Phi x)) -> exists x, ~ Phi x)
-      /\ ((exists x, ~ Phi x) -> ~(∀ x, Phi x))).
+      ∧ ((exists x, ~ Phi x) -> ~(∀ x, Phi x))).
     {
       clear S1 S2 S3 S4 S6 S7 S8 S9.
       move S10 after S5.
@@ -616,7 +613,7 @@ Proof.
   assert (S5 : (∀ z, Phi z ↔ Psi z) -> ((∀ z, Phi z) ↔ (∀ z, Psi z))).
   {
     assert (C1 : ((∀ z, Phi z ↔ Psi z) -> ((∀ z, Phi z) -> (∀ z, Psi z)))
-      /\ ((∀ z, Phi z ↔ Psi z) -> ((∀ z, Psi z) -> (∀ z, Phi z)))).
+      ∧ ((∀ z, Phi z ↔ Psi z) -> ((∀ z, Psi z) -> (∀ z, Phi z)))).
     { clear n10_22l S1 S3. Conj S2 S4 C1. exact C1. }
     pose (Comp3_43 (∀ z, Phi z ↔ Psi z)
       ((∀ z, Phi z) -> (∀ z, Psi z))
@@ -708,7 +705,7 @@ Proof.
     ((∃ x : Prop, Psi x) -> (∃ x : Prop, Phi x))
   ) as Comp3_43.
   assert (C1 : ((∀ x, Phi x ↔ Psi x) -> (∃ x : Prop, Phi x) -> (∃ x : Prop, Psi x))
-    /\ ((∀ x, Phi x ↔ Psi x) -> (∃ x : Prop, Psi x) -> (∃ x : Prop, Phi x))).
+    ∧ ((∀ x, Phi x ↔ Psi x) -> (∃ x : Prop, Psi x) -> (∃ x : Prop, Phi x))).
   {
     clear Equiv4_01a n10_22l n10_22r Comp3_43.
     Conj Sa Sb C1.
@@ -762,10 +759,8 @@ Proof.
     assert (C1 : 
       (((∀ x, Phi x -> Psi x) ∧ (∀ x, Phi x -> Chi x)) 
         ↔ (∀ x, (Phi x -> Psi x) ∧ (Phi x -> Chi x)))
-      /\
-      ((∀ x, (Phi x -> Psi x) ∧ (Phi x -> Chi x))
-        ↔ (∀ x, Phi x -> (Psi x ∧ Chi x)))
-    ).
+      ∧ ((∀ x, (Phi x -> Psi x) ∧ (Phi x -> Chi x))
+         ↔ (∀ x, Phi x -> (Psi x ∧ Chi x)))).
     { clear S2 S3. Conj S1 S4 C1. exact C1. }
     pose proof (n4_22
       ((∀ x, Phi x -> Psi x) ∧ (∀ x, Phi x -> Chi x))
@@ -841,7 +836,6 @@ Theorem n10_37 (Phi : Prop -> Prop) (P : Prop) :
 Proof.
 Admitted.
 
-(* TODO: figure out what does Hp mean in PM *)
 Theorem n10_39 (Phi Psi Chi Theta : Prop -> Prop) :
   ((Phi x -[ x ]> Chi x) ∧ (Psi x -[ x ]> Theta x)) 
   -> (Phi x ∧ Psi x) -[ x ]> (Chi x ∧ Theta x).
