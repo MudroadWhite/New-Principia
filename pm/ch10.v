@@ -505,7 +505,7 @@ Proof.
   exact S11.
 Qed.
 
-(* Barbara's syllogism  1st form *)
+(* Barbara's syllogism 1st form *)
 Theorem n10_26 (Phi Psi : Prop -> Prop) (X : Prop) : 
   ((∀ z, Phi z -> Psi z) ∧ Phi X) -> Psi X.
 Proof.
@@ -615,7 +615,7 @@ Proof.
     assert (C1 : ((∀ z, Phi z ↔ Psi z) -> ((∀ z, Phi z) -> (∀ z, Psi z)))
       ∧ ((∀ z, Phi z ↔ Psi z) -> ((∀ z, Psi z) -> (∀ z, Phi z)))).
     { clear n10_22l S1 S3. Conj S2 S4 C1. exact C1. }
-    pose (Comp3_43 (∀ z, Phi z ↔ Psi z)
+    pose proof (Comp3_43 (∀ z, Phi z ↔ Psi z)
       ((∀ z, Phi z) -> (∀ z, Psi z))
       ((∀ z, Psi z) -> (∀ z, Phi z))
     ) as Comp3_43.
@@ -659,7 +659,7 @@ Proof.
   }
   assert (S5 : (∀ x, Phi x -> Psi x) -> ((exists y, Phi y) -> (exists y, Psi y))).
   {
-    pose (Transp2_16 (∀ y, ~ Psi y) (∀ y, ~ Phi y)) as Transp2_16.
+    pose proof (Transp2_16 (∀ y, ~ Psi y) (∀ y, ~ Phi y)) as Transp2_16.
     Syll S4 Transp2_16 S5.
     repeat rewrite <- n10_01 in S5.
     exact S5.
@@ -686,7 +686,7 @@ Proof.
     pose proof (Simp3_26 (∀ x, Phi x -> Psi x) (∀ x, Psi x -> Phi x))
       as Simp3_26.
     Syll n10_22l Simp3_26 n10_22l1.
-    pose (n10_28 Phi Psi) as n10_28a.
+    pose proof (n10_28 Phi Psi) as n10_28a.
     Syll n10_22l1 n10_28a Sa.
     exact Sa.
   }
@@ -696,7 +696,7 @@ Proof.
     pose proof (Simp3_27 (∀ x, Phi x -> Psi x) (∀ x, Psi x -> Phi x))
       as Simp3_27.
     Syll n10_22l Simp3_27 n10_22l2.
-    pose (n10_28 Psi Phi) as n10_28b.
+    pose proof (n10_28 Psi Phi) as n10_28b.
     Syll n10_22l2 n10_28b Sb.
     exact Sb.
   }
@@ -747,7 +747,7 @@ Proof.
   assert (S4 : (∀ x, (Phi x -> Psi x) ∧ (Phi x -> Chi x))
     ↔ (∀ x, Phi x -> (Psi x ∧ Chi x))).
   {
-    pose (n10_271
+    pose proof (n10_271
       (fun x => (Phi x -> Psi x) ∧ (Phi x -> Chi x))
       (fun x => Phi x -> (Psi x ∧ Chi x))
     ) as n10_271.
