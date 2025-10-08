@@ -556,6 +556,78 @@ Proof.
   exact S5.
 Qed.
 
+Theorem n10_271 (Phi Psi : Prop -> Prop) : 
+  (∀ z, Phi z ↔ Psi z) -> ((∀ z, Phi z) ↔ (∀ z, Psi z)).
+Proof.
+  (* TOOLS *)
+  set (λ P0 Q0 : Prop, eq_to_equiv (P0 ↔ Q0) ((P0 → Q0) ∧ (Q0 → P0)) 
+    (Equiv4_01 P0 Q0))
+  as Equiv4_01a.
+  (* ******** *)
+  (* Whenever a proof involves `Hp`, this proof becomes a little special. 
+    It seems that all deductions are given the context to only deduce with
+    `Hp` being introduced, as followed... *)
+  pose proof (n10_22 (fun z => Phi z -> Psi z) (fun z => Psi z -> Phi z)) 
+    as n10_22.
+  simpl in n10_22.
+  setoid_rewrite <- Equiv4_01a in n10_22.
+  destruct n10_22 as [n10_22l n10_22r].
+  clear n10_22r.
+  assert (S1 : (∀ z, Phi z ↔ Psi z) -> (∀ z, Phi z -> Psi z)).
+  {
+    pose proof (Simp3_26 (∀ x, Phi x -> Psi x) (∀ x, Psi x -> Phi x)) 
+      as Simp3_26.
+    Syll n10_22l Simp3_26 S1.
+    exact S1.
+  }
+  assert (S2 : (∀ z, Phi z ↔ Psi z) -> ((∀ z, Phi z) -> (∀ z, Psi z))).
+  {
+    (* `Hp` always have to be after the line where `Hp` is declared. I 
+      believe this is the only way to deal with the proof: actually, all
+      theorems involved are supposed to be match directly on the conclusion 
+      part of the proposition, with `Hp` removed from the goal.
+      As usual, we can proceed with `Syll`s, but a slight intro of `Hp` adds
+      a tiny spice aligned with original proof, without harming it too much *)
+    intro Hp.
+    pose proof (n10_27 Phi Psi) as n10_27.
+    pose proof (S1 Hp) as S1_1.
+    MP n10_27 S1_1.
+    exact n10_27.
+  }
+  assert (S3 : (∀ z, Phi z ↔ Psi z) -> (∀ z, Psi z -> Phi z)).
+  {
+    pose proof (Simp3_27 (∀ x, Phi x -> Psi x) (∀ x, Psi x -> Phi x)) 
+      as Simp3_27.
+    Syll n10_22l Simp3_27 S3.
+    exact S3.
+  }
+  assert (S4 : (∀ z, Phi z ↔ Psi z) -> ((∀ z, Psi z) -> (∀ z, Phi z))).
+  {
+    intro Hp.
+    pose proof (n10_27 Psi Phi) as n10_27.
+    pose proof (S3 Hp) as S3_1.
+    MP n10_27 S3_1.
+    exact n10_27.
+  }
+  assert (S5 : (∀ z, Phi z ↔ Psi z) -> ((∀ z, Phi z) ↔ (∀ z, Psi z))).
+  {
+    pose (n3_2
+      ((∀ z, Phi z ↔ Psi z) -> ((∀ z, Phi z) -> (∀ z, Psi z)))
+      ((∀ z, Phi z ↔ Psi z) -> ((∀ z, Psi z) -> (∀ z, Phi z)))
+    ) as n3_2.
+    MP n3_2 S2.
+    MP n3_2 S4.
+    pose (Comp3_43 (∀ z, Phi z ↔ Psi z)
+      ((∀ z, Phi z) -> (∀ z, Psi z))
+      ((∀ z, Psi z) -> (∀ z, Phi z))
+    ) as Comp3_43.
+    MP Comp3_43 n3_2.
+    rewrite <- Equiv4_01 in Comp3_43.
+    exact Comp3_43.
+  }
+  exact S5.
+Qed.
+
 Theorem n10_28 (Phi Psi : Prop -> Prop) :
   (∀ x, Phi x -> Psi x) -> ((exists x, Phi x) -> (exists x, Psi x)).
 Proof.
@@ -634,7 +706,7 @@ Proof.
     ((∃ x : Prop, Phi x) -> (∃ x : Prop, Psi x))
     ((∃ x : Prop, Psi x) -> (∃ x : Prop, Phi x))
   ) as Comp3_43.
-  (* Notice how rigorous here that we have to form `Sa /\ Sb` via n3_2 *)
+  (* Notice how rigorous here that we have to form `Sa ∧ Sb` via n3_2 *)
   pose (n3_2 
     ((∀ x, Phi x ↔ Psi x) -> (∃ x : Prop, Phi x) -> (∃ x : Prop, Psi x))
     ((∀ x, Phi x ↔ Psi x) -> (∃ x : Prop, Psi x) -> (∃ x : Prop, Phi x))
@@ -649,10 +721,61 @@ Proof.
 Qed.
 
 Theorem n10_29 (Phi Psi Chi : Prop -> Prop) :
-  (∀ x, Phi x -> Psi x) ∧ (∀ x, Phi x ∧ Chi x) 
-  ↔ ∀ x, Phi x -> (Psi x ∧ Chi x).
+  ((∀ x, Phi x -> Psi x) ∧ (∀ x, Phi x -> Chi x)) ↔ (∀ x, Phi x -> (Psi x ∧ Chi x)).
 Proof.
-Admitted.
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
+  assert (S1 : ((∀ x, Phi x -> Psi x) ∧ (∀ x, Phi x -> Chi x)) 
+    ↔ (∀ x, (Phi x -> Psi x) ∧ (Phi x -> Chi x))).
+  {
+    pose proof (n10_22 (fun x => Phi x -> Psi x) 
+      (fun x => Phi x -> Chi x)) as n10_22.
+    simpl in n10_22.
+    symmetry in n10_22.
+    exact n10_22.
+  }
+  assert (S2 : ((Phi X -> Psi X) ∧ (Phi X -> Chi X)) 
+    ↔ (Phi X -> (Psi X ∧ Chi X))).
+  { exact (n4_76 (Phi X) (Psi X) (Chi X)). }
+  assert (S3 : ∀ x, ((Phi x -> Psi x) ∧ (Phi x -> Chi x)) 
+    ↔ (Phi x -> (Psi x ∧ Chi x))).
+  {
+    pose proof (n10_11 X (fun x => ((Phi x -> Psi x) ∧ (Phi x -> Chi x)) 
+      ↔ (Phi x -> (Psi x ∧ Chi x)))) as n10_11.
+    MP n10_11 S3.
+    exact n10_11.
+  }
+  assert (S4 : (∀ x, (Phi x -> Psi x) ∧ (Phi x -> Chi x))
+    ↔ (∀ x, Phi x -> (Psi x ∧ Chi x))).
+  {
+    pose (n10_271
+      (fun x => (Phi x -> Psi x) ∧ (Phi x -> Chi x))
+      (fun x => Phi x -> (Psi x ∧ Chi x))
+    ) as n10_271.
+    MP n10_271 S3.
+    exact n10_271.
+  }
+  assert (S5 : ((∀ x, Phi x -> Psi x) ∧ (∀ x, Phi x -> Chi x)) ↔ (∀ x, Phi x -> (Psi x ∧ Chi x))).
+  {
+    pose proof (n3_2
+      (((∀ x, Phi x -> Psi x) ∧ (∀ x, Phi x -> Chi x)) 
+        ↔ (∀ x, (Phi x -> Psi x) ∧ (Phi x -> Chi x)))
+      ((∀ x, (Phi x -> Psi x) ∧ (Phi x -> Chi x))
+        ↔ (∀ x, Phi x -> (Psi x ∧ Chi x)))
+    ) as n3_2.
+    MP n3_2 S1.
+    MP n3_2 S4.
+    pose proof (n4_22
+      ((∀ x, Phi x -> Psi x) ∧ (∀ x, Phi x -> Chi x))
+      (∀ x, (Phi x -> Psi x) ∧ (Phi x -> Chi x))
+      (∀ x, Phi x -> (Psi x ∧ Chi x))
+    ) as n4_22.
+    MP n4_22 n3_2.
+    exact n4_22.
+  }
+  exact S5.
+Qed.
 
 (* Barbara's syllogism 2nd form *)
 Theorem n10_3 (Phi Psi Chi : Prop -> Prop) :
