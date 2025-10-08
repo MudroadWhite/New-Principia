@@ -182,12 +182,13 @@ Proof.
   assert (S8 : (∀ x, Phi x ∧ Psi x) -> ((∀ y, Phi y) ∧ ∀ z, Psi z)).
   {
     pose proof (Comp3_43 (∀ x, Phi x ∧ Psi x) (∀ y, Phi y) (∀ z, Psi z)) as Comp3_43.
-    pose proof (n3_2 
+    assert (C1 : 
       ((∀ x : Prop, Phi x ∧ Psi x) → ∀ y : Prop, Phi y)
-      ((∀ x : Prop, Phi x ∧ Psi x) → ∀ y : Prop, Psi y)) as n3_2.
-    MP n3_2 S4.
-    MP n3_2 S7.
-    MP Comp3_43 n3_2.
+      /\
+      ((∀ x : Prop, Phi x ∧ Psi x) → ∀ y : Prop, Psi y)
+    ).
+    { clear S1 S2 S3 S5 S6 Comp3_43. Conj S4 S7 C1. exact C1. }
+    MP Comp3_43 C1.
     exact Comp3_43.
   }
   assert (S9 : ∀ y, (∀ x, Phi x) ∧ (∀ x, Psi x) -> (Phi y ∧ Psi y)).
@@ -209,14 +210,14 @@ Proof.
   }
   assert (S11 : (∀ x, Phi x ∧ Psi x) ↔ (∀ x, Phi x) ∧ (∀ x, Psi x)).
   {
-    pose proof (n3_2 
-      ((∀ x, Phi x ∧ Psi x) -> ((∀ y, Phi y) ∧ ∀ z, Psi z))
-      ((∀ x, Phi x) ∧ (∀ x, Psi x) -> ∀ y, (Phi y ∧ Psi y))
-      ) as n3_2.
-    MP n3_2 S8.
-    MP n3_2 S10.
-    Equiv n3_2.
-    exact n3_2.
+    assert (C1 : ((∀ x, Phi x ∧ Psi x) -> ((∀ y, Phi y) ∧ ∀ z, Psi z))
+      /\ ((∀ x, Phi x) ∧ (∀ x, Psi x) -> ∀ y, (Phi y ∧ Psi y))).
+    {
+      clear S1 S2 S3 S4 S5 S6 S7 S9.
+      Conj S8 S10 C1. exact C1.
+    }
+    Equiv C1.
+    exact C1.
   }
   exact S11.
 Qed.
@@ -275,14 +276,11 @@ Proof.
       apply propositional_extensionality.
       split; [ apply n2_12 | apply (n2_14 (∀ x : Prop, ¬ Phi x)) ].
     }
-    pose proof (n3_2 
-      (((∃ x : Prop, Phi x) → P) -> (¬ P → ∀ x : Prop, ¬ Phi x))
-      ((¬ P → ∀ x : Prop, ¬ Phi x) -> ((∃ x : Prop, Phi x) → P))
-      ) as n3_2.
-    MP n3_2 Transp2_17.
-    MP n3_2 Transp2_16.
-    Equiv n3_2.
-    exact n3_2.
+    assert (C1 : (((∃ x : Prop, Phi x) → P) -> (¬ P → ∀ x : Prop, ¬ Phi x))
+      /\ ((¬ P → ∀ x : Prop, ¬ Phi x) -> ((∃ x : Prop, Phi x) → P))).
+    { Conj Transp2_16 Transp2_17 C1. exact C1. }
+    Equiv C1.
+    exact C1.
   }
   assert (S2 : ((exists x, Phi x) -> P) ↔ (∀ x, (~ P) -> ~ Phi x)).
   {
@@ -357,13 +355,16 @@ Proof.
   }
   assert (S11 : (∀ x, Phi x -> P) ↔ ((exists x, Phi x) -> P)).
   {
-    pose proof (n3_2 
-      ((∀ x, (Phi x -> P)) -> (exists x, Phi x) -> P)
-      (((exists x, Phi x) -> P) -> ∀ x, (Phi x -> P))) as n3_2.
-    MP n3_2 S10.
-    MP n3_2 S6.
-    Equiv n3_2.
-    exact n3_2.
+    assert (C1 : ((∀ x, (Phi x -> P)) -> (exists x, Phi x) -> P)
+      /\ (((exists x, Phi x) -> P) -> ∀ x, (Phi x -> P))).
+    {
+      clear S1 S2 S3 S4 S5 S7 S8 S9.
+      move S10 after S6.
+      Conj S10 S6 C1.
+      exact C1.
+    }
+    Equiv C1.
+    exact C1.
   }
   exact S11.
 Qed.
@@ -493,13 +494,16 @@ Proof.
   }
   assert (S11 : (~(∀ x, Phi x)) ↔ exists x, ~ Phi x).
   {
-    pose proof (n3_2 
-      ((~(∀ x, Phi x)) -> exists x, ~ Phi x)
-      ((exists x, ~ Phi x) -> ~(∀ x, Phi x))) as n3_2.
-    MP n3_2 S10.
-    MP n3_2 S5.
-    Equiv n3_2.
-    exact n3_2.
+    assert (C1 : ((~(∀ x, Phi x)) -> exists x, ~ Phi x)
+      /\ ((exists x, ~ Phi x) -> ~(∀ x, Phi x))).
+    {
+      clear S1 S2 S3 S4 S6 S7 S8 S9.
+      move S10 after S5.
+      Conj S10 S5 C1.
+      exact C1.
+    }
+    Equiv C1.
+    exact C1.
   }
   exact S11.
 Qed.
@@ -611,17 +615,14 @@ Proof.
   }
   assert (S5 : (∀ z, Phi z ↔ Psi z) -> ((∀ z, Phi z) ↔ (∀ z, Psi z))).
   {
-    pose (n3_2
-      ((∀ z, Phi z ↔ Psi z) -> ((∀ z, Phi z) -> (∀ z, Psi z)))
-      ((∀ z, Phi z ↔ Psi z) -> ((∀ z, Psi z) -> (∀ z, Phi z)))
-    ) as n3_2.
-    MP n3_2 S2.
-    MP n3_2 S4.
+    assert (C1 : ((∀ z, Phi z ↔ Psi z) -> ((∀ z, Phi z) -> (∀ z, Psi z)))
+      /\ ((∀ z, Phi z ↔ Psi z) -> ((∀ z, Psi z) -> (∀ z, Phi z)))).
+    { clear n10_22l S1 S3. Conj S2 S4 C1. exact C1. }
     pose (Comp3_43 (∀ z, Phi z ↔ Psi z)
       ((∀ z, Phi z) -> (∀ z, Psi z))
       ((∀ z, Psi z) -> (∀ z, Phi z))
     ) as Comp3_43.
-    MP Comp3_43 n3_2.
+    MP Comp3_43 C1.
     rewrite <- Equiv4_01 in Comp3_43.
     exact Comp3_43.
   }
@@ -706,14 +707,14 @@ Proof.
     ((∃ x : Prop, Phi x) -> (∃ x : Prop, Psi x))
     ((∃ x : Prop, Psi x) -> (∃ x : Prop, Phi x))
   ) as Comp3_43.
-  (* Notice how rigorous here that we have to form `Sa ∧ Sb` via n3_2 *)
-  pose (n3_2 
-    ((∀ x, Phi x ↔ Psi x) -> (∃ x : Prop, Phi x) -> (∃ x : Prop, Psi x))
-    ((∀ x, Phi x ↔ Psi x) -> (∃ x : Prop, Psi x) -> (∃ x : Prop, Phi x))
-    ) as n3_2.
-  MP n3_2 Sa.
-  MP n3_2 Sb.
-  MP Comp3_43 n3_2.
+  assert (C1 : ((∀ x, Phi x ↔ Psi x) -> (∃ x : Prop, Phi x) -> (∃ x : Prop, Psi x))
+    /\ ((∀ x, Phi x ↔ Psi x) -> (∃ x : Prop, Psi x) -> (∃ x : Prop, Phi x))).
+  {
+    clear Equiv4_01a n10_22l n10_22r Comp3_43.
+    Conj Sa Sb C1.
+    exact C1.
+  }
+  MP Comp3_43 C1.
   Syll n10_22l Comp3_43 Sc.
   setoid_rewrite <- Equiv4_01a in Sc.
   Syll n10_22l Sc Sd.
@@ -758,20 +759,20 @@ Proof.
   }
   assert (S5 : ((∀ x, Phi x -> Psi x) ∧ (∀ x, Phi x -> Chi x)) ↔ (∀ x, Phi x -> (Psi x ∧ Chi x))).
   {
-    pose proof (n3_2
+    assert (C1 : 
       (((∀ x, Phi x -> Psi x) ∧ (∀ x, Phi x -> Chi x)) 
         ↔ (∀ x, (Phi x -> Psi x) ∧ (Phi x -> Chi x)))
+      /\
       ((∀ x, (Phi x -> Psi x) ∧ (Phi x -> Chi x))
         ↔ (∀ x, Phi x -> (Psi x ∧ Chi x)))
-    ) as n3_2.
-    MP n3_2 S1.
-    MP n3_2 S4.
+    ).
+    { clear S2 S3. Conj S1 S4 C1. exact C1. }
     pose proof (n4_22
       ((∀ x, Phi x -> Psi x) ∧ (∀ x, Phi x -> Chi x))
       (∀ x, (Phi x -> Psi x) ∧ (Phi x -> Chi x))
       (∀ x, Phi x -> (Psi x ∧ Chi x))
     ) as n4_22.
-    MP n4_22 n3_2.
+    MP n4_22 C1.
     exact n4_22.
   }
   exact S5.
