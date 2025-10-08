@@ -23,10 +23,12 @@ It sometimes happens though, even if the theorem itself doesn't involve any real
 
 There are 4 types of tactics we use.
 
-The first type is `MP` in chapter 1. It exposes the occurences where we need to perform a modus ponens.
+The first type is `MP` in chapter 1, `Syll` in chapter 2, *occasionally* with other `Ltac`s defined in chapter 3-5, directly inherited from the [old repository](https://github.com/LogicalAtomist/principia). They expose the occurences where we need to perform specific ways to *deduce* the propositions.
 
-The second type is `pose proof`. It instantiates a theorem to be deducted.
+The second type is `pose proof`. It instantiates a theorem to be use. Sole `pose` should be *strictly forbidden*, as `pose proof` simplifies the proof window with no tradeoffs.
 
-The third type is `rewrite`, for implementing the substitutions in the formal system of Principia. Unfortunately sometimes it doesn't work - and only in this case should more complicated tactics be appeared, like `replace`, `change`, `setoid_rewrite`, etc..
+To perform *substitutions* on the propositions, we have another class of tactic to use. Usually this is `rewrite`, but unfortunately sometimes it doesn't work - and only in this case should more complicated tactics be appeared, like `replace`, `change`, `setoid_rewrite`, etc..
 
 And last, `assert` is being useful for organizing the proofs, and providing much better readability for all the intermediate steps.
+
+`substitutions.md` will dive a deeper level down into how these tactics are being used.
