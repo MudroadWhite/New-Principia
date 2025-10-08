@@ -129,7 +129,7 @@ Theorem n10_21 (Phi : Prop -> Prop) (P : Prop) :
 Proof. 
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
-  pose (n10_2 Phi (~P)) as n10_2.
+  pose proof (n10_2 Phi (~P)) as n10_2.
   repeat setoid_rewrite <- Impl1_01a in n10_2.
   exact n10_2.
 Qed.
@@ -257,6 +257,8 @@ Proof.
   {
     pose proof (Transp2_16 (exists x, Phi x) P) as Transp2_16.
     rewrite -> n10_01 in Transp2_16 at 2.
+    (* This can be able to be broken down into nests of `Syll`s. See S9
+      Here for simplicity *)
     replace (¬ ¬ ∀ x : Prop, ¬ Phi x) with (∀ x : Prop, ¬ Phi x)
       in Transp2_16.
     2: {
@@ -325,7 +327,7 @@ Proof.
   { exact (n10_1 (fun x => Phi x -> P) X). }
   assert (S8 : (forall x, (Phi x -> P)) -> ((~ P) -> ~ Phi X)).
   {
-    pose (Transp2_16 (Phi X) P) as Transp2_16.
+    pose proof (Transp2_16 (Phi X) P) as Transp2_16.
     Syll S7 Transp2_16 S8.
     exact S8.
   }
@@ -333,7 +335,8 @@ Proof.
   {
     pose proof (n10_11 X (fun x => ~ Phi x)) as n10_11. simpl in n10_11.
     assert (S8_1 : ((~ P) -> ~ Phi X) -> ((~ P) -> forall x, (~ Phi x))).
-    (* The recursive syll is so wild here *)
+    (* A demonstration of recursive `Syll`
+    maybe there's even better and more natural way to handle this *)
     {
       intro.
       Syll H n10_11 H0.
@@ -387,33 +390,127 @@ Qed.
 
 Theorem n10_25 (Phi : Prop -> Prop) : (forall x, Phi x) -> (exists x, Phi x).
 Proof.
-  
-
-Admitted.
+  set (Y := Real "y").
+  pose proof (n10_1 Phi Y) as n10_1.
+  pose proof (n10_24 Phi Y) as n10_24.
+  Syll n10_1 n10_24 S1.
+  exact S1.
+Qed.
 
 Theorem n10_251 (Phi : Prop -> Prop) : (forall x, ~Phi x) -> ~(forall x, Phi x).
 Proof.
-Admitted.
+  pose proof (n10_25 Phi) as n10_25.
+  pose proof (Transp2_16 (∀ x : Prop, Phi x) (∃ x : Prop, Phi x)) 
+    as Transp2_16.
+  MP Transp2_16 n10_25.
+  rewrite -> n10_01 in Transp2_16.
+  pose proof (n2_12 ((∀ x : Prop, ¬ Phi x))) as n2_12.
+  Syll n2_12 Transp2_16 S1.
+  exact S1.
+Qed.
 
-Theorem n10_252 (Phi : Prop -> Prop) : ~(exists x, Phi x) <-> (forall x, Phi x).
+Theorem n10_252 (Phi : Prop -> Prop) : ~(exists x, Phi x) <-> (forall x, ~ Phi x).
 Proof.
-Admitted.
+  pose proof (n4_2 (∀ x : Prop, ~ Phi x)) as n4_2.
+  rewrite <- n9_02 in n4_2 at 1.
+  exact n4_2.
+Qed.
 
 Theorem n10_253 (Phi : Prop -> Prop) : ~(forall x, Phi x) -> (exists x, ~Phi x).
 Proof.
-Admitted.
+  pose proof (n4_2 (~ ∀ x : Prop, Phi x)) as n4_2.
+  rewrite -> n9_01 in n4_2 at 2.
+  destruct n4_2 as [n4_2l n4_2r].
+  exact n4_2l.
+Qed.
 
-Theorem n10_252_alt (Phi : Prop -> Prop) : ~(exists x, Phi x) <-> (forall x, Phi x).
+Theorem n10_252_alt (Phi : Prop -> Prop) : ~(exists x, Phi x) <-> (forall x, ~ Phi x).
 Proof.
-Admitted.
+  pose proof (n4_13 (∀ x : Prop, ~ Phi x)) as n4_13.
+  rewrite <- n10_01 in n4_13 at 1.
+  symmetry in n4_13.
+  exact n4_13.
+Qed.
 
-Theorem n10_253_alt (Phi : Prop -> Prop) : ~(forall x, Phi x) -> (exists x, ~Phi x).
+Theorem n10_253_alt (Phi : Prop -> Prop) : (~(forall x, Phi x)) <-> (exists x, ~Phi x).
 Proof.
-Admitted.
+  (* TOOLS *)
+  set (Y := Real "y").
+  set (X := Real "x").
+  (* ******** *)
+  assert (S1 : (forall x, Phi x) -> Phi Y).
+  { exact (n10_1 Phi Y). }
+  assert (S2 : (forall x, Phi x) -> ~ ~ Phi Y).
+  {
+    pose proof (n2_12 (Phi Y)) as n2_12.
+    Syll S1 n2_12 S2.
+    exact S2.
+  }
+  assert (S3 : (forall x, Phi x) -> forall y, ~ ~ Phi y).
+  {
+    (* n10_21 is unused *)
+    pose proof (n10_11 Y (fun y => ~~ Phi y)) as n10_11.
+    simpl in n10_11.
+    Syll S2 n10_21 S3.
+    exact S3.
+  }
+  assert (S4 : (~(forall y, ~ ~ Phi y)) -> ~(forall x, Phi x)).
+  {
+    pose proof (Transp2_16 (forall x, Phi x) (forall y, ~ ~ Phi y)) as Transp2_16.
+    MP Transp2_16 S3.
+    exact Transp2_16.
+  }
+  assert (S5 : (exists y, ~ Phi y) -> ~(forall x, Phi x)).
+  {
+    rewrite <- n10_01 in S4.
+    exact S4.
+  }
+  assert (S6 : (forall y, ~ ~ Phi y) -> ~ ~ Phi X).
+  {
+    exact (n10_1 (fun x => ~ ~ Phi x) X).
+  }
+  assert (S7 : (forall y, ~ ~ Phi y) -> Phi X).
+  {
+    pose proof (n2_14 (Phi X)) as n2_14.
+    Syll S6 n2_14 S7.
+    exact S7.
+  }
+  assert (S8 : (forall y, ~ ~ Phi y) -> (forall x, Phi x)).
+  {
+    (* n10_21 is ignored *)
+    pose proof (n10_11 X Phi) as n10_11.
+    Syll S7 n10_11 S8.
+    exact S8.
+  }
+  assert (S9 : (~(forall x, Phi x)) -> ~(forall y, ~ ~ Phi y)).
+  {
+    pose proof (Transp2_16  (forall y, ~ ~ Phi y) (forall x, Phi x) ) as Transp2_16.
+    MP Transp2_16 S8.
+    exact Transp2_16.
+  }
+  assert (S10 : (~(forall x, Phi x)) -> exists y, ~(Phi y)).
+  {
+    rewrite <- n10_01 in S9.
+    exact S9.
+  }
+  assert (S11 : (~(forall x, Phi x)) <-> exists x, ~ Phi x).
+  {
+    pose proof (n3_2 
+      ((~(forall x, Phi x)) -> exists x, ~ Phi x)
+      ((exists x, ~ Phi x) -> ~(forall x, Phi x))) as n3_2.
+    MP n3_2 S10.
+    MP n3_2 S5.
+    Equiv n3_2.
+    exact n3_2.
+  }
+  exact S11.
+Qed.
 
+(* Barbara's syllogism  1st form *)
 Theorem n10_26 (Phi Psi : Prop -> Prop) (X : Prop) : 
   ((forall z, Phi z -> Psi z) /\ Phi X) -> Psi X.
 Proof.
+
 Admitted.
 
 Theorem n10_27 (Phi Psi : Prop -> Prop) : 
@@ -437,6 +534,7 @@ Theorem n10_29 (Phi Psi Chi : Prop -> Prop) :
 Proof.
 Admitted.
 
+(* Barbara's syllogism 2nd form *)
 Theorem n10_3 (Phi Psi Chi : Prop -> Prop) :
   ((forall x, Phi x -> Psi x) /\ (forall x, Psi x -> Chi x)) -> forall x, Phi x -> Chi x.
 Proof.
