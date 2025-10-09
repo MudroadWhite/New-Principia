@@ -64,7 +64,7 @@ to satisfy the function in question. *)
 (* This simulation seems to be very unsatisfying! Don't use without any clear 
   intention from original text *)
 Definition n9_13 (φ : Prop → Prop) (X : Prop) : 
-  φ X = (∀ y : Prop, φ y). Admitted.
+  φ X = (∀ y , φ y). Admitted.
 
 (* TODO: 
 - Formalize the idea of `is same type` 
@@ -81,15 +81,15 @@ Definition n9_14 : ∀ (a : Prop) (φ : Prop → Prop) (X : Prop),
 (* Pp n9_15 : If for some `a` there is a proposition `φ a`, then there is a function
   `phi x^` and vice versa. *)
 
-Theorem n9_2 (φ : Prop → Prop) (Y : Prop) : (∀ x : Prop, φ x) → φ Y.
+Theorem n9_2 (φ : Prop → Prop) (Y : Prop) : (∀ x , φ x) → φ Y.
 Proof. 
   (** Step 1 **)
   pose proof (n2_1 (φ Y)) as n2_1.
   (** Step 2 **)
-  pose proof (n9_1 (fun x : Prop => ¬ φ x ∨ φ Y) Y) as n9_1.
+  pose proof (n9_1 (fun x => ¬ φ x ∨ φ Y) Y) as n9_1.
   MP n9_1 n2_1.
   (** Step 3 **)
-  rewrite <- (n9_05 (fun x : Prop => ¬ φ x) (φ Y)) in n9_1.
+  rewrite <- (n9_05 (fun x => ¬ φ x) (φ Y)) in n9_1.
   (** Step 4 **)
   rewrite <- (n9_01 φ) in n9_1.
   rewrite <- Impl1_01 in n9_1. 
@@ -107,7 +107,7 @@ Proof.
     as Impl1_01a.
   set (λ (φ0 : Prop → Prop) (P0 : Prop), 
     eq_to_equiv 
-      (P0 ∨ ∃ x : Prop, φ0 x) (∃ x : Prop, P0 ∨ φ0 x) 
+      (P0 ∨ ∃ x, φ0 x) (∃ x, P0 ∨ φ0 x) 
       (n9_06 φ0 P0))
   as n9_06a.
   set (Z := Real "z").
@@ -115,27 +115,26 @@ Proof.
   (** S1 **)
   pose proof (Id2_08 (φ Z → ψ Z)) as S1.
   (** S2 **)
-  assert (S2 : ∃ y : Prop, (φ Z → ψ Z) → φ y → ψ Z).
+  assert (S2 : ∃ y, (φ Z → ψ Z) → φ y → ψ Z).
   { 
     pose proof (n9_1 (fun x => (φ Z → ψ Z) → φ x → ψ Z) Z) as n9_1.
     MP n9_1 S1. exact n9_1.
   }
   (** S3 **)
-  assert (S3 : ∃ x y : Prop, (φ x → ψ x) → φ y → ψ Z).
+  assert (S3 : ∃ x y, (φ x → ψ x) → φ y → ψ Z).
   { 
-    pose proof (n9_1 (fun x => (∃ z0 : Prop, (φ x → ψ x) → φ z0 → ψ Z)) Z) as n9_1.
+    pose proof (n9_1 (fun x => (∃ z0, (φ x → ψ x) → φ z0 → ψ Z)) Z) as n9_1.
     MP n9_1 S2. exact n9_1.
   }
   (** S4 **)
-  assert (S4 : ∀ z : Prop, ∃ x y : Prop, (φ x → ψ x) → φ y → ψ z).
+  assert (S4 : ∀ z, ∃ x y, (φ x → ψ x) → φ y → ψ z).
   {
     rewrite -> (n9_13 (fun z => 
-      (∃ x y : Prop, (φ x → ψ x) → φ y → ψ z)) Z) in S3.
+      (∃ x y, (φ x → ψ x) → φ y → ψ z)) Z) in S3.
     exact S3.
   }
   (** S5 **)
-  assert (S5 : ∀ z : Prop, (∃ x : Prop, 
-    (φ x → ψ x) → (∃ y : Prop, φ y → ψ z))).
+  assert (S5 : ∀ z, (∃ x, (φ x → ψ x) → (∃ y, φ y → ψ z))).
   {
     setoid_rewrite -> Impl1_01a in S4.
     setoid_rewrite <- n9_06a in S4.
@@ -146,11 +145,11 @@ Proof.
   {
     setoid_rewrite Impl1_01a in S5.
     setoid_rewrite Impl1_01a in S5 at 3.
-    rewrite <- (n9_08 (fun z1 => (∃ y0 : Prop, (¬ φ y0) ∨ ψ z1)) 
+    rewrite <- (n9_08 (fun z1 => (∃ y0, (¬ φ y0) ∨ ψ z1)) 
       (fun x1 => ¬ (φ x1 → ψ x1))) in S5.
     exact S5.
   }
-  assert (S7 : (∃ x : Prop, ¬(φ x → ψ x)) ∨ ((∃ y : Prop, (¬ φ y)) ∨ (∀ z : Prop, ψ z))).
+  assert (S7 : (∃ x, ¬(φ x → ψ x)) ∨ ((∃ y, (¬ φ y)) ∨ (∀ z, ψ z))).
   { rewrite <- n9_08 in S6. exact S6. }
   assert (S8 : (∀ x, φ x → ψ x) → (∀ y, φ y) → ∀ z, ψ z).
   {
@@ -167,17 +166,17 @@ Proof.
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
   set (λ (P0 : Prop) (φ0 : Prop → Prop),
-    eq_to_equiv (P0 ∨ ∃ x : Prop, φ0 x) (∃ x : Prop, P0 ∨ φ0 x) 
+    eq_to_equiv (P0 ∨ ∃ x, φ0 x) (∃ x, P0 ∨ φ0 x) 
     (n9_06 φ0 P0)) as n9_06a.
   set (λ φ0 ψ0 : (Prop → Prop), 
     eq_to_equiv 
-      ((∃ y : Prop, ψ0 y) ∨ ∀ x : Prop, φ0 x) 
-      (∀ x : Prop, ∃ y : Prop, ψ0 y ∨ φ0 x) 
+      ((∃ y, ψ0 y) ∨ ∀ x, φ0 x) 
+      (∀ x, ∃ y, ψ0 y ∨ φ0 x) 
       (n9_08 φ0 ψ0)) as n9_08a.
   set (λ φ0 ψ0 : (Prop → Prop), 
     eq_to_equiv 
-      ((∀ x : Prop, φ0 x) ∨ (∃ y : Prop, ψ0 y))
-      (∀ x : Prop, ∃ y : Prop, φ0 x ∨ ψ0 y)
+      ((∀ x, φ0 x) ∨ (∃ y, ψ0 y))
+      (∀ x, ∃ y, φ0 x ∨ ψ0 y)
       (n9_07 φ0 ψ0)) as n9_07a.
   set (Y := Real "Y").
   (* ******** *)
@@ -220,13 +219,13 @@ Proof.
   assert (S8 : (∀ x, φ x → ψ x) → (∃ x, φ x) → (∃ x, ψ x)).
   { 
     rewrite <- n9_01, <- Impl1_01 in S7.
-    replace (∀ y : Prop, ¬ φ y) with (¬ ¬ (∀ y : Prop, ¬ φ y)) in S7.
+    replace (∀ y, ¬ φ y) with (¬ ¬ (∀ y, ¬ φ y)) in S7.
     2: {
       symmetry. apply propositional_extensionality. 
-      exact (n4_13 (∀ y : Prop, ¬ φ y)).
+      exact (n4_13 (∀ y, ¬ φ y)).
     }
     rewrite <- n9_02, <- Impl1_01 in S7.
-    replace (¬ ¬ ∃ x : Prop, φ x) with (∃ x : Prop, φ x) in S7.
+    replace (¬ ¬ ∃ x, φ x) with (∃ x, φ x) in S7.
     2: {
       apply propositional_extensionality. 
       now rewrite <- n4_13.
@@ -236,16 +235,16 @@ Proof.
   exact S8.
 Qed.
 
-Theorem n9_23 (φ : Prop → Prop) : (∀ x : Prop, φ x) → (∀ x : Prop, φ x).
+Theorem n9_23 (φ : Prop → Prop) : (∀ x, φ x) → (∀ x, φ x).
 (* Original proof uses Id, 9.13, 9.21 *)
-Proof. exact (Id2_08 (∀ x : Prop, φ x)). Qed.
+Proof. exact (Id2_08 (∀ x, φ x)). Qed.
 
-Theorem n9_24 (φ : Prop → Prop) : (∃ x : Prop, φ x) → (∃ x : Prop, φ x).
+Theorem n9_24 (φ : Prop → Prop) : (∃ x, φ x) → (∃ x, φ x).
 (* Original proof uses Id, 9.13, 9.22 *)
-Proof. exact (Id2_08 (∃ x : Prop, φ x)). Qed.
+Proof. exact (Id2_08 (∃ x, φ x)). Qed.
 
 Theorem n9_25 (P : Prop) (φ : Prop → Prop) : 
-  (∀ x : Prop, P ∨ φ x) → P ∨ (∀ x : Prop, φ x).
+  (∀ x, P ∨ φ x) → P ∨ (∀ x, φ x).
 Proof.
   pose proof (n9_23 (fun x => P ∨ φ x)) as n9_23; simpl in n9_23.
   rewrite <- (n9_04 φ P) in n9_23 at 2.
@@ -253,7 +252,7 @@ Proof.
 Qed.
 
 Theorem n9_3 (φ : Prop → Prop) : 
-  (∀ x : Prop, φ x) ∨ (∀ x : Prop, φ x) → (∀ x : Prop, φ x).
+  (∀ x, φ x) ∨ (∀ x, φ x) → (∀ x, φ x).
 Proof.
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
@@ -290,16 +289,15 @@ Proof.
   assert (S5 : (∀ x, (φ x ∨ ∀ y, φ y)) → (∀ x, φ x)).
   (* Here the real variable `X` can be arbitrary *)
   { 
-    pose proof (n9_21 (fun x => φ x ∨ (∀ y : Prop, φ y)) φ) as n9_21.
+    pose proof (n9_21 (fun x => φ x ∨ (∀ y, φ y)) φ) as n9_21.
     MP n9_21 S4. exact n9_21. 
   }
-  assert (S6 : (∀ x : Prop, φ x) ∨ (∀ x : Prop, φ x) → (∀ x : Prop, φ x)).
+  assert (S6 : (∀ x, φ x) ∨ (∀ x, φ x) → (∀ x, φ x)).
   { rewrite <- n9_03 in S5. exact S5. }
   exact S6.
 Qed.
 
-Theorem n9_31 (φ : Prop → Prop) : 
-  ((∃ x : Prop, φ x) ∨ (∃ x : Prop, φ x)) → (∃ x : Prop, φ x).
+Theorem n9_31 (φ : Prop → Prop) : ((∃ x, φ x) ∨ (∃ x, φ x)) → (∃ x, φ x).
 Proof. 
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
@@ -309,7 +307,7 @@ Proof.
   assert (S1 : ∀ y, φ X ∨ φ y → ∃ z, φ z).
   {
     pose proof (n9_11 φ X X) as n9_11. 
-    pose proof (n9_13 (fun y => (φ X ∨ φ y) → ∃ z : Prop, φ z) X) as n9_13.
+    pose proof (n9_13 (fun y => (φ X ∨ φ y) → ∃ z, φ z) X) as n9_13.
     replace (φ X ∨ φ X → ∃ z, φ z) 
       with (∀ y , φ X ∨ φ y → ∃ z, φ z) in n9_11.
     exact n9_11.
@@ -331,12 +329,12 @@ Proof.
     rewrite <- n9_03, <- n9_02, <- Impl1_01 in S3.
     exact S3.
   }
-  assert (S5 : ((∃ x : Prop, φ x) ∨ (∃ y : Prop, φ y)) → (∃ x : Prop, φ x)).
+  assert (S5 : ((∃ x, φ x) ∨ (∃ y, φ y)) → (∃ x, φ x)).
   {
     (* n9_22?! *)
     (* Can we use Syll with Perm1_4 here? *)
     pose (fun x y => Perm1_4 (φ x) (φ y)) as f_Perm1_4.
-    replace (∃ x y : Prop, φ x ∨ φ y) with ((∃ x y : Prop, φ y ∨ φ x)) in S4.
+    replace (∃ x y, φ x ∨ φ y) with ((∃ x y, φ y ∨ φ x)) in S4.
     2: {
       apply propositional_extensionality.
       now setoid_rewrite <- or_comm at 1.
@@ -344,9 +342,8 @@ Proof.
     replace (∃ x, ∃ y, φ y ∨ φ x) with ((∃ x, φ x) ∨ (∃ y, φ y)) in S4.
     2: {
       set (λ (φ0 : Prop → Prop) (P0 : Prop), 
-        eq_to_equiv ((∃ x : Prop, φ0 x) ∨ P0) (∃ x : Prop, φ0 x ∨ P0) 
-                    (n9_05 φ0 P0))
-      as n9_05a.
+        eq_to_equiv ((∃ x, φ0 x) ∨ P0) (∃ x, φ0 x ∨ P0) (n9_05 φ0 P0))
+        as n9_05a.
       apply propositional_extensionality.
       setoid_rewrite <- n9_05a.
       now rewrite -> n9_06.
@@ -356,16 +353,15 @@ Proof.
   exact S5.
 Qed.
 
-Theorem n9_32 (φ : Prop → Prop) (Q : Prop) : Q → (∀ x : Prop, φ x) ∨ Q.
+Theorem n9_32 (φ : Prop → Prop) (Q : Prop) : Q → (∀ x, φ x) ∨ Q.
 Proof. 
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
   set (λ (φ0 : Prop → Prop) (P0 : Prop), 
-    eq_to_equiv ((∀ x : Prop, φ0 x) ∨ P0) 
-                (∀ x : Prop, φ0 x ∨ P0) 
-    (n9_03 φ0 P0))
-    as n9_03a.
+    eq_to_equiv ((∀ x, φ0 x) ∨ P0) (∀ x, φ0 x ∨ P0) 
+          (n9_03 φ0 P0))
+      as n9_03a.
   set (X := Real "x").
   (* ******** *)
   pose proof (Add1_3 (φ X) Q) as S1.
@@ -391,14 +387,14 @@ Proof.
   exact S4.
 Qed.
   
-Theorem n9_33 (φ : Prop → Prop) (Q : Prop) : Q → (∃ x : Prop, φ x) ∨ Q.
+Theorem n9_33 (φ : Prop → Prop) (Q : Prop) : Q → (∃ x, φ x) ∨ Q.
 Proof. 
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
   set (λ (φ0 : Prop → Prop) (P0 : Prop), 
-    eq_to_equiv ((∀ x : Prop, φ0 x) ∨ P0) 
-                (∀ x : Prop, φ0 x ∨ P0) 
+    eq_to_equiv ((∀ x, φ0 x) ∨ P0) 
+                (∀ x, φ0 x ∨ P0) 
     (n9_03 φ0 P0))
     as n9_03a.
   set (X := Real "x").
@@ -422,8 +418,7 @@ Proof.
   exact S4.
 Qed.
 
-Theorem n9_34 (φ : Prop → Prop) (P : Prop) : 
-  (∀ x : Prop, φ x) → P ∨ (∀ x : Prop, φ x).
+Theorem n9_34 (φ : Prop → Prop) (P : Prop) : (∀ x, φ x) → P ∨ (∀ x, φ x).
 Proof. 
   (* TOOLS *)
   set (X := Real "x").
@@ -441,13 +436,13 @@ Proof.
     MP n9_21 S2.
     exact n9_21.
   }
-  assert (S4 : (∀ x : Prop, φ x) → P ∨ (∀ x : Prop, φ x)).
+  assert (S4 : (∀ x, φ x) → P ∨ (∀ x, φ x)).
   { rewrite <- (n9_04 φ P) in S3. exact S3. }
   exact S4.
 Qed.
 
 Theorem n9_35 (φ : Prop → Prop) (P : Prop) : 
-  (∃ x : Prop, φ x) → P ∨ (∃ x : Prop, φ x).
+  (∃ x, φ x) → P ∨ (∃ x, φ x).
 Proof.
   (* TOOLS *)
   set (X := Real "x").
@@ -473,7 +468,7 @@ Proof.
   exact S6.
 Qed.
 
-Theorem n9_36 (φ : Prop → Prop) (P : Prop) : P ∨ (∀ x : Prop, φ x) → (∀ x : Prop, φ x) ∨ P.
+Theorem n9_36 (φ : Prop → Prop) (P : Prop) : P ∨ (∀ x, φ x) → (∀ x, φ x) ∨ P.
 Proof. 
   (* TOOLS *)
   set (X := Real "x").
@@ -486,28 +481,67 @@ Proof.
     MP n9_21 S1.
     exact n9_21.
   }
-  assert (S3 : P ∨ (∀ x : Prop, φ x) → (∀ x : Prop, φ x) ∨ P).
+  assert (S3 : P ∨ (∀ x, φ x) → (∀ x, φ x) ∨ P).
   { rewrite <- (n9_04 φ P), <- (n9_03 φ P) in S2. exact S2. }
   exact S3.
 Qed.
 
-Theorem n9_361 (φ : Prop → Prop) (P : Prop) : (∀ x : Prop, φ x) ∨ P → P ∨ (∀ x : Prop, φ x).
+Theorem n9_361 (φ : Prop → Prop) (P : Prop) : (∀ x, φ x) ∨ P → P ∨ (∀ x, φ x).
 Proof. 
-  (* Proof as above *)
-Admitted.
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
+  pose proof (Perm1_4 (φ X) P) as S1.
+  assert (S2 : (∀ x, φ x ∨ P) → ∀ x, P ∨ φ x).
+  {
+    rewrite -> (n9_13 (fun x => (φ x ∨ P) → (P ∨ φ x)) X) in S1.
+    pose proof (n9_21 (fun x => φ x ∨ P) (fun x => P ∨ φ x)) as n9_21.
+    MP n9_21 S1.
+    exact n9_21.
+  }
+  assert (S3 : (∀ x, φ x) ∨ P → P ∨ (∀ x, φ x)).
+  { rewrite <- n9_03, <- n9_04 in S2. exact S2. }
+  exact S3.
+Qed.
 
-Theorem n9_37 (φ : Prop → Prop) (P : Prop) : P ∨ (∃ x : Prop, φ x) → (∃ x : Prop, φ x) ∨ P.
+Theorem n9_37 (φ : Prop → Prop) (P : Prop) : P ∨ (∃ x, φ x) → (∃ x, φ x) ∨ P.
 Proof.
-  (* Proof as above *)
-Admitted.
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
+  pose proof (Perm1_4 P (φ X)) as S1.
+  assert (S2 : (∃ x, (P ∨ φ x)) → ∃ x, (φ x ∨ P)).
+  {
+    rewrite -> (n9_13 (fun x => P ∨ φ x → φ x ∨ P) X) in S1.
+    pose proof (n9_22 (fun x => P ∨ φ x) (fun x => φ x ∨ P)) as n9_22.
+    MP n9_22 S1.
+    exact n9_22.
+  }
+  assert (S3 : P ∨ (∃ x, φ x) → (∃ x, φ x) ∨ P).
+  { rewrite <- n9_06, <- n9_05 in S2. exact S2. }
+  exact S3.
+Qed.
 
-Theorem n9_371 (φ : Prop → Prop) (P : Prop) : (∃ x : Prop, φ x) ∨ P → P ∨ (∃ x : Prop, φ x).
+Theorem n9_371 (φ : Prop → Prop) (P : Prop) : (∃ x, φ x) ∨ P → P ∨ (∃ x, φ x).
 Proof. 
-  (* Proof as above *)
-Admitted.
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
+  pose proof (Perm1_4 (φ X) P) as S1.
+  assert (S2 : (∃ x, φ x ∨ P) → ∃ x, P ∨ φ x).
+  {
+    rewrite -> (n9_13 (fun x => (φ x ∨ P) → (P ∨ φ x)) X) in S1.
+    pose proof (n9_22 (fun x => φ x ∨ P) (fun x => P ∨ φ x)) as n9_22.
+    MP n9_22 S1.
+    exact n9_22.
+  }
+  assert (S3 : (∃ x, φ x) ∨ P → P ∨ (∃ x, φ x)).
+  { rewrite <- n9_06, <- n9_05 in S2. exact S2. }
+  exact S3.
+Qed.
 
-Theorem n9_4 (φ : Prop → Prop) (P Q : Prop) : P ∨ Q ∨ (∀ x : Prop, φ x)
-  → Q ∨ P ∨ (∀ x : Prop, φ x).
+Theorem n9_4 (φ : Prop → Prop) (P Q : Prop) : 
+  P ∨ Q ∨ (∀ x, φ x) → Q ∨ P ∨ (∀ x, φ x).
 Proof. 
   assert (S1 : (∀ x, P ∨ (Q ∨ φ x)) → (∀ x, Q ∨ (P ∨ φ x))).
   {
@@ -516,10 +550,10 @@ Proof.
     MP n9_21 Assoc1_5.
     exact n9_21.
   }
-  assert (S2 : P ∨ Q ∨ (∀ x : Prop, φ x) → Q ∨ P ∨ (∀ x : Prop, φ x)).
+  assert (S2 : P ∨ Q ∨ (∀ x, φ x) → Q ∨ P ∨ (∀ x, φ x)).
   { 
-    replace (∀ x : Prop, P ∨ Q ∨ φ x) with (∀ x : Prop, (P ∨ Q) ∨ φ x) in S1.
-    replace (∀ x : Prop, Q ∨ P ∨ φ x) with (∀ x : Prop, (Q ∨ P) ∨ φ x) in S1.
+    replace (∀ x, P ∨ Q ∨ φ x) with (∀ x, (P ∨ Q) ∨ φ x) in S1.
+    replace (∀ x, Q ∨ P ∨ φ x) with (∀ x, (Q ∨ P) ∨ φ x) in S1.
     2, 3: (
       apply propositional_extensionality; split;
       intros H x; pose proof (H x) as H0; [ apply n2_32 | apply n2_31 ]; exact H0
@@ -527,62 +561,64 @@ Proof.
     rewrite <- (n9_04 φ (P ∨ Q)), <- (n9_04 φ (Q ∨ P)) in S1.
     (* Here is a demonstration where we use `Syll` instead of `replace`.
       In the future we might still stick to `replace` for simplicity.
-      All `replace` tactics can be eventually rewritten as `Syll`s, since
-      `Syll` works like a binary search on the sub term and performs the 
-      replacements.
+      All `replace` tactics can be eventually rewritten as `Syll`s with 
+      `MP`s, since`Syll` works like a binary search on the sub term and 
+      performs the replacements.
       We have the `replace` alternative commented out for comparison.
     *)
     assert (Sy1 : P ∨ Q ∨ (∀ x, φ x) → Q ∨ P ∨ ∀ x, φ x).
     {
-      pose proof (n2_32 Q P (∀ x : Prop, φ x)) as n2_32.
+      pose proof (n2_32 Q P (∀ x, φ x)) as n2_32.
       Syll S1 n2_32 S1_1.
       clear S1 n2_32.
-      pose proof (n2_31 P Q (∀ x : Prop, φ x)) as n2_31.
+      pose proof (n2_31 P Q (∀ x, φ x)) as n2_31.
       Syll S1_1 n2_31 S1_2.
       exact S1_2.
     }
-    (* replace ((P ∨ Q) ∨ (∀ x : Prop, φ x)) with (P ∨ Q ∨ ∀ x : Prop, φ x) in S1.
-    replace ((Q ∨ P) ∨ ∀ x : Prop, φ x) with (Q ∨ P ∨ ∀ x : Prop, φ x) in S1.
+    (* 
+    replace ((P ∨ Q) ∨ (∀ x, φ x)) with (P ∨ Q ∨ ∀ x, φ x) in S1.
+    replace ((Q ∨ P) ∨ ∀ x, φ x) with (Q ∨ P ∨ ∀ x, φ x) in S1.
     2, 3: (
       apply propositional_extensionality; split; [ apply n2_31 | apply n2_32 ]; exact H0
-    ). *)
+    ). 
+    *)
     exact Sy1.
   }
   exact S2.
 Qed.
 
 Theorem n9_401 (φ : Prop → Prop) (P Q : Prop) : 
-  P ∨ Q ∨ (∃ x : Prop, φ x) → Q ∨ P ∨ (∃ x : Prop, φ x).
+  P ∨ Q ∨ (∃ x, φ x) → Q ∨ P ∨ (∃ x, φ x).
 Proof. 
   (* Proof as above *)
 Admitted.
 
 Theorem n9_41 (φ : Prop → Prop) (P R : Prop) : 
-  P ∨ (∀ x : Prop, φ x) ∨ R → (∀ x : Prop, φ x) ∨ P ∨ R.
+  P ∨ (∀ x, φ x) ∨ R → (∀ x, φ x) ∨ P ∨ R.
 Proof. 
   (* Proof as above *)
 Admitted.
 
 Theorem n9_411 (φ : Prop → Prop) (P R : Prop) : 
-  P ∨ (∃ x : Prop, φ x) ∨ R → (∃ x : Prop, φ x) ∨ P ∨ R.
+  P ∨ (∃ x, φ x) ∨ R → (∃ x, φ x) ∨ P ∨ R.
 Proof. 
   (* Proof as above *)
 Admitted.
 
 Theorem n9_42 (φ : Prop → Prop) (Q R : Prop) : 
-  (∀ x : Prop, φ x) ∨ Q ∨ R → Q ∨ (∀ x : Prop, φ x) ∨ R.
+  (∀ x, φ x) ∨ Q ∨ R → Q ∨ (∀ x, φ x) ∨ R.
 Proof. 
   (* Proof as above *)
 Admitted.
 
 Theorem n9_421 (φ : Prop → Prop) (Q R : Prop) : 
-  (∃ x : Prop, φ x) ∨ Q ∨ R → Q ∨ (∃ x : Prop, φ x) ∨ R.
+  (∃ x, φ x) ∨ Q ∨ R → Q ∨ (∃ x, φ x) ∨ R.
 Proof. 
   (* Proof as above *)
 Admitted.
 
 Theorem n9_5 (φ : Prop → Prop) (P Q : Prop) : 
-  (P → Q) → ((P ∨ ∀ x : Prop, φ x) → (Q ∨ ∀ x : Prop, φ x)).
+  (P → Q) → ((P ∨ ∀ x, φ x) → (Q ∨ ∀ x, φ x)).
 Proof. 
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
@@ -608,7 +644,7 @@ Proof.
   assert (S3 : (P → Q) → ∀ y, ∃ x, (P ∨ φ x) → (Q ∨ φ y)).
   { 
     (* *9.04 ignored - optional *)
-    rewrite -> (n9_13 (fun y => ∃ x : Prop, P ∨ φ x → Q ∨ φ y) Y) in S2.
+    rewrite -> (n9_13 (fun y => ∃ x, P ∨ φ x → Q ∨ φ y) Y) in S2.
     exact S2.
   }
   assert (S4 : (P → Q) → (∃ x, ¬ (P ∨ φ x)) ∨ (∀ y, Q ∨ φ y)).
@@ -619,13 +655,13 @@ Proof.
   }
   assert (S5 : (P → Q) → (∀ x, (P ∨ φ x)) → (∀ y, Q ∨ φ y)).
   { rewrite <- n9_01, <- Impl1_01 in S4. exact S4. }
-  assert (S6 : (P → Q) → ((P ∨ ∀ x : Prop, φ x) → (Q ∨ ∀ x : Prop, φ x))).
+  assert (S6 : (P → Q) → ((P ∨ ∀ x, φ x) → (Q ∨ ∀ x, φ x))).
   { rewrite <- (n9_04 φ P), <- (n9_04 φ Q) in S5. exact S5. }
   exact S6.
 Qed.
 
 Theorem n9_501 (φ : Prop → Prop) (P Q : Prop) : 
-  (P → Q) → (P ∨ ∃ x : Prop, φ x) → (Q ∨ ∃ x : Prop, φ x).
+  (P → Q) → (P ∨ ∃ x, φ x) → (Q ∨ ∃ x, φ x).
 Proof. 
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
@@ -649,7 +685,7 @@ Proof.
   }
   assert (S3 : (P → Q) → ∀ x, ∃ y, (P ∨ φ x) → (Q ∨ φ y)).
   { 
-    rewrite -> (n9_13 (fun x => ∃ y : Prop, P ∨ φ x → Q ∨ φ y) Y) in S2.
+    rewrite -> (n9_13 (fun x => ∃ y, P ∨ φ x → Q ∨ φ y) Y) in S2.
     exact S2.
   }
   assert (S4 : (P → Q) → (∀ x, ¬ (P ∨ φ x)) ∨ (∃ y, Q ∨ φ y)).
@@ -658,13 +694,13 @@ Proof.
     rewrite <- (n9_07 (fun x => ¬ (P ∨ φ x)) (fun y => Q ∨ φ y)) in S3.
     exact S3.
   }
-  assert (S5 : (P → Q) → (∃ x : Prop, P ∨ φ x) → (∃ y, Q ∨ φ y)).
+  assert (S5 : (P → Q) → (∃ x, P ∨ φ x) → (∃ y, Q ∨ φ y)).
   { 
     replace (∀ x, ¬ (P ∨ φ x)) with (¬ ¬ ∀ x, ¬ (P ∨ φ x)) in S4
       by (apply propositional_extensionality; now rewrite <- n4_13).
     setoid_rewrite <- Impl1_01a in S4.
     rewrite <- n9_02 in S4.
-    replace (¬ ¬ (∃ x : Prop, P ∨ φ x)) with (∃ x : Prop, P ∨ φ x) in S4
+    replace (¬ ¬ (∃ x, P ∨ φ x)) with (∃ x, P ∨ φ x) in S4
       by (apply propositional_extensionality; now rewrite <- n4_13).
     exact S4.
   }
@@ -674,7 +710,7 @@ Proof.
 Qed.
 
 Theorem n9_51 (φ : Prop → Prop) (P R : Prop) : 
-  (P → ∀ x : Prop, φ x) → P ∨ R → (∀ x : Prop, φ x) ∨ R.
+  (P → ∀ x, φ x) → P ∨ R → (∀ x, φ x) ∨ R.
 Proof. 
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
@@ -697,21 +733,21 @@ Proof.
     replace ((P ∨ R) → (φ X ∨ R)) with (∀ x, (P ∨ R) → (φ x ∨ R)) in S1.
     exact S1.
   }
-  assert (S3 : (P → ∀ x : Prop, φ x) → P ∨ R → (∀ x : Prop, φ x) ∨ R).
+  assert (S3 : (P → ∀ x, φ x) → P ∨ R → (∀ x, φ x) ∨ R).
   { 
     setoid_rewrite -> Impl1_01a in S2 at 2.
     rewrite <- (n9_04 φ (¬P)) in S2.
     setoid_rewrite <- Impl1_01a in S2.
     setoid_rewrite -> Impl1_01a in S2 at 3.
-    replace (∀ x : Prop, ¬ (P ∨ R) ∨ φ x ∨ R) 
-      with (∀ x : Prop, (φ x ∨ R) ∨ (¬ (P ∨ R))) in S2.
+    replace (∀ x, ¬ (P ∨ R) ∨ φ x ∨ R) 
+      with (∀ x, (φ x ∨ R) ∨ (¬ (P ∨ R))) in S2.
     2: { 
       apply propositional_extensionality; split; 
       intros H x; apply Perm1_4; exact (H x).
     }
     rewrite <- (n9_03 (fun x => φ x ∨ R) (¬ (P ∨ R))) in S2.
-    replace ((∀ x : Prop, φ x ∨ R) ∨ ¬ (P ∨ R))
-      with (¬ (P ∨ R) ∨ (∀ x : Prop, φ x ∨ R)) in S2
+    replace ((∀ x, φ x ∨ R) ∨ ¬ (P ∨ R))
+      with (¬ (P ∨ R) ∨ (∀ x, φ x ∨ R)) in S2
       by (apply propositional_extensionality; split; apply Perm1_4).
     setoid_rewrite <- Impl1_01a in S2.
     rewrite <- (n9_03 φ R) in S2.
@@ -721,7 +757,7 @@ Proof.
 Qed.
 
 Theorem n9_511 (φ : Prop → Prop) (P R : Prop) : 
-  (P → ∃ x : Prop, φ x) → P ∨ R → (∃ x : Prop, φ x) ∨ R.
+  (P → ∃ x, φ x) → P ∨ R → (∃ x, φ x) ∨ R.
 Proof. 
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
@@ -751,7 +787,7 @@ Proof.
     rewrite <- n9_03, <- n9_02, <- Impl1_01 in Sy1.
     exact Sy1.
   }
-  assert (S3 : (P → ∃ x : Prop, φ x) → P ∨ R → (∃ x : Prop, φ x) ∨ R).
+  assert (S3 : (P → ∃ x, φ x) → P ∨ R → (∃ x, φ x) ∨ R).
   {
     (* We won't stick to `Syll` here... *)
     setoid_rewrite -> Impl1_01a in S2 at 2.
@@ -766,7 +802,7 @@ Proof.
 Qed.
 
 Theorem n9_52 (φ : Prop → Prop) (Q R : Prop) :
-  ((∀ x : Prop, φ x) → Q) → ((∀ x : Prop, φ x) ∨ R) → (Q ∨ R).
+  ((∀ x, φ x) → Q) → ((∀ x, φ x) ∨ R) → (Q ∨ R).
 Proof.
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
@@ -801,7 +837,7 @@ Proof.
 Qed.
 
 Theorem n9_521 (φ : Prop → Prop) (Q R : Prop) :
-  ((∃ x : Prop, φ x) → Q) → (∃ x : Prop, φ x) ∨ R → Q ∨ R.
+  ((∃ x, φ x) → Q) → (∃ x, φ x) ∨ R → Q ∨ R.
 Proof. 
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
