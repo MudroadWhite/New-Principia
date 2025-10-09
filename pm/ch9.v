@@ -720,11 +720,50 @@ Proof.
   exact S3.
 Qed.
 
-Theorem n9_511 (φ : Prop → Prop) (P R : Prop) : (P → ∃ x : Prop, φ x) 
-  → P ∨ R → (∃ x : Prop, φ x) ∨ R.
+Theorem n9_511 (φ : Prop → Prop) (P R : Prop) : 
+  (P → ∃ x : Prop, φ x) → P ∨ R → (∃ x : Prop, φ x) ∨ R.
 Proof. 
-  (* Proof as above *)
-Admitted.
+  (* TOOLS *)
+  set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
+    as Impl1_01a.
+  set (X := Real "x").
+  (* ******** *)
+  assert (S1 : (P → φ X) → ((P ∨ R) → (φ X ∨ R))).
+  { 
+    pose proof (Sum1_6 R P (φ X)) as Sum1_6.
+    replace (R ∨ P) with (P ∨ R) in Sum1_6.
+    replace (R ∨ φ X) with (φ X ∨ R) in Sum1_6.
+      2, 3: (apply propositional_extensionality; split; apply Perm1_4).
+    exact Sum1_6.
+  }
+  assert (S2 : (∃ x, P → φ x) → (∃ x, (P ∨ R) → (φ x ∨ R))).
+  {
+    assert (Sy1 : (P → φ X) → (∃ x, (P ∨ R) → (φ x ∨ R))).
+    {
+      pose proof (n9_1 (fun x => P ∨ R → φ x ∨ R) X) as n9_1.
+      Syll S1 n9_1 Sy1.
+      exact Sy1.  
+    }
+    pose proof (n9_13 (fun y => (P → φ y) → (∃ x, (P ∨ R) → (φ x ∨ R))) X)
+      as n9_13.
+    rewrite -> n9_13 in Sy1.
+    setoid_rewrite -> Impl1_01a in Sy1.
+    rewrite <- n9_03, <- n9_02, <- Impl1_01 in Sy1.
+    exact Sy1.
+  }
+  assert (S3 : (P → ∃ x : Prop, φ x) → P ∨ R → (∃ x : Prop, φ x) ∨ R).
+  {
+    (* We won't stick to `Syll` here... *)
+    setoid_rewrite -> Impl1_01a in S2 at 2.
+    setoid_rewrite -> Impl1_01a in S2 at 3.
+    rewrite <- n9_06 in S2.
+    rewrite <- n9_06 in S2.
+    rewrite <- n9_05 in S2.
+    setoid_rewrite <- Impl1_01a in S2.
+    exact S2.
+  }
+  exact S3.
+Qed.
 
 Theorem n9_52 (φ : Prop → Prop) (Q R : Prop) :
   ((∀ x : Prop, φ x) → Q) → ((∀ x : Prop, φ x) ∨ R) → (Q ∨ R).
