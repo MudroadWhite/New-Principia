@@ -7,16 +7,16 @@ Require Import PM.pm.ch5.
 (* 
 Every propositions, variables in chapter 9 are supposed to be elementary propositions,
 which doesn't contain any quantifiers. That being said, in a rigorous sense, 
-`P := forall x, F x` shouldn't be allowed, but `P := X \/ Y` is allowed. Currently we 
+`P := ∀ x, F x` shouldn't be allowed, but `P := X ∨ Y` is allowed. Currently we 
 didn't pose any assertions on parameters being elementary propositions, and the proofs
 can be high flawed on this restriction.
 
-At the end of the chapter, Russell proved that the definition of a function P can be 
-extended to sentences involving `forall`s, and moreover, multiple param functions with 
-`forall`s within, or several `forall`s being concated with some binary logic operators.
+The end of the chapter proved that the definition of a function P can be extended to 
+sentences involving `∀`s, and moreover, multiple param functions with `∀`s within, or 
+several `∀`s being concated with some binary logic operators.
 
-In the beginning of chapter 10, Russell wrote that the implications in chapter 9 is 
-called "material implication"s, and the results will be extended to "formal implication"s.
+The beginning of chapter 10 said that the implications in chapter 9 are called 
+"material implication"s, and the results will be extended to "formal implication"s.
 *)
 
 Definition n9_01 (φ : Prop → Prop) :
@@ -50,10 +50,10 @@ Definition n9_08 (φ ψ : Prop → Prop) :
   ((∃ y, ψ y) ∨ (∀ x, φ x)) = ∀ x, ∃ y, ψ y ∨ φ x. Admitted.
 
 Definition n9_1 (φ : Prop → Prop) (X : Prop) : 
-  φ X → ∃ z : Prop, φ z. Admitted.
+  φ X → ∃ z, φ z. Admitted.
 
 Definition n9_11 (φ : Prop → Prop) (X Y : Prop) : 
-  (φ X ∨ φ Y) → ∃ z : Prop, φ z. Admitted.
+  (φ X ∨ φ Y) → ∃ z, φ z. Admitted.
 
 (* Pp n9_12 : What is implied by a true premiss is true. *)
 Definition n9_12 (X : Prop) : X. Admitted.
@@ -87,12 +87,11 @@ Proof.
   pose proof (n2_1 (φ Y)) as n2_1.
   (** Step 2 **)
   pose proof (n9_1 (fun x : Prop => ¬ φ x ∨ φ Y) Y) as n9_1.
-  MP n2_1 n9_1.
+  MP n9_1 n2_1.
   (** Step 3 **)
   rewrite <- (n9_05 (fun x : Prop => ¬ φ x) (φ Y)) in n9_1.
   (** Step 4 **)
-  pose proof (n9_01 φ) as n9_01.
-  rewrite <- n9_01 in n9_1.
+  rewrite <- (n9_01 φ) in n9_1.
   rewrite <- Impl1_01 in n9_1. 
   apply n9_1.
 Qed.
@@ -221,19 +220,16 @@ Proof.
   assert (S8 : (∀ x, φ x → ψ x) → (∃ x, φ x) → (∃ x, ψ x)).
   { 
     rewrite <- n9_01, <- Impl1_01 in S7.
-    (* TODO: replace with `Syll` *)
     replace (∀ y : Prop, ¬ φ y) with (¬ ¬ (∀ y : Prop, ¬ φ y)) in S7.
     2: {
       symmetry. apply propositional_extensionality. 
       exact (n4_13 (∀ y : Prop, ¬ φ y)).
     }
     rewrite <- n9_02, <- Impl1_01 in S7.
-    (* TODO: replace with `Syll` *)
     replace (¬ ¬ ∃ x : Prop, φ x) with (∃ x : Prop, φ x) in S7.
     2: {
       apply propositional_extensionality. 
-      setoid_rewrite <- n4_13.
-      reflexivity.
+      now rewrite <- n4_13.
     }
     exact S7.
   }
@@ -343,8 +339,7 @@ Proof.
     replace (∃ x y : Prop, φ x ∨ φ y) with ((∃ x y : Prop, φ y ∨ φ x)) in S4.
     2: {
       apply propositional_extensionality.
-      setoid_rewrite <- or_comm at 1.
-      reflexivity.
+      now setoid_rewrite <- or_comm at 1.
     }
     replace (∃ x, ∃ y, φ y ∨ φ x) with ((∃ x, φ x) ∨ (∃ y, φ y)) in S4.
     2: {
@@ -354,8 +349,7 @@ Proof.
       as n9_05a.
       apply propositional_extensionality.
       setoid_rewrite <- n9_05a.
-      rewrite -> n9_06.
-      reflexivity.
+      now rewrite -> n9_06.
     }
     exact S4.
   }
@@ -442,7 +436,7 @@ Proof.
     exact S1.
   }
   assert (S3 : (∀ x, φ x) → (∀ x, P ∨ φ x)).
-  { 
+  {
     pose proof (n9_21 φ (fun x => P ∨ φ x)) as n9_21.
     MP n9_21 S2.
     exact n9_21.
@@ -452,10 +446,32 @@ Proof.
   exact S4.
 Qed.
 
-Theorem n9_35 (φ : Prop → Prop) (P : Prop) : (∃ x : Prop, φ x) → P ∨ (∃ x : Prop, φ x).
+Theorem n9_35 (φ : Prop → Prop) (P : Prop) : 
+  (∃ x : Prop, φ x) → P ∨ (∃ x : Prop, φ x).
 Proof.
-  (* Proof as above *)
-Admitted.
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
+  pose proof (Add1_3 P (φ X)) as S1.
+  assert (S2 : ∀ x, φ x → P ∨ φ x).
+  { 
+    pose proof (n9_13 (fun x => φ x → P ∨ φ x) X).
+    replace (φ X → P ∨ φ X) with (∀ x, φ x → P ∨ φ x) in S1.
+    exact S1.
+  }
+  assert (S3 : (∃ x, φ x) → (∃ x, P ∨ φ x)).
+  {
+    pose proof (n9_22 (fun x => φ x) (fun x => P ∨ φ x)) as n9_22.
+    MP n9_22 S2.
+    exact n9_22.
+  }
+  assert (S6 : (∃ x, φ x) → P ∨ (∃ x, φ x)).
+  {
+    rewrite -> Impl1_01, <- n9_06, <- Impl1_01 in S3.
+    exact S3.
+  }
+  exact S6.
+Qed.
 
 Theorem n9_36 (φ : Prop → Prop) (P : Prop) : P ∨ (∀ x : Prop, φ x) → (∀ x : Prop, φ x) ∨ P.
 Proof. 
@@ -509,13 +525,28 @@ Proof.
       intros H x; pose proof (H x) as H0; [ apply n2_32 | apply n2_31 ]; exact H0
     ).
     rewrite <- (n9_04 φ (P ∨ Q)), <- (n9_04 φ (Q ∨ P)) in S1.
-    (* TODO: rewrite with Syll *)
-    replace ((P ∨ Q) ∨ (∀ x : Prop, φ x)) with (P ∨ Q ∨ ∀ x : Prop, φ x) in S1.
+    (* Here is a demonstration where we use `Syll` instead of `replace`.
+      In the future we might still stick to `replace` for simplicity.
+      All `replace` tactics can be eventually rewritten as `Syll`s, since
+      `Syll` works like a binary search on the sub term and performs the 
+      replacements.
+      We have the `replace` alternative commented out for comparison.
+    *)
+    assert (Sy1 : P ∨ Q ∨ (∀ x, φ x) → Q ∨ P ∨ ∀ x, φ x).
+    {
+      pose proof (n2_32 Q P (∀ x : Prop, φ x)) as n2_32.
+      Syll S1 n2_32 S1_1.
+      clear S1 n2_32.
+      pose proof (n2_31 P Q (∀ x : Prop, φ x)) as n2_31.
+      Syll S1_1 n2_31 S1_2.
+      exact S1_2.
+    }
+    (* replace ((P ∨ Q) ∨ (∀ x : Prop, φ x)) with (P ∨ Q ∨ ∀ x : Prop, φ x) in S1.
     replace ((Q ∨ P) ∨ ∀ x : Prop, φ x) with (Q ∨ P ∨ ∀ x : Prop, φ x) in S1.
     2, 3: (
       apply propositional_extensionality; split; [ apply n2_31 | apply n2_32 ]; exact H0
-    ).
-    exact S1.
+    ). *)
+    exact Sy1.
   }
   exact S2.
 Qed.
@@ -562,6 +593,7 @@ Proof.
   { 
     (* *9.21 ignored *)
     pose proof (Sum1_6 (φ Y) P Q) as Sum1_6.
+    (* TODO: rewrite with `Syll` *)
     replace (φ Y ∨ P) with (P ∨ φ Y) in Sum1_6.
     replace (φ Y ∨ Q) with (Q ∨ φ Y) in Sum1_6.
       2, 3: (apply propositional_extensionality; split; apply Perm1_4).
