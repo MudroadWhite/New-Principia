@@ -2,8 +2,8 @@
 Continuation on [formalizing Principia Mathematica](https://github.com/LogicalAtomist/principia) by Landon Elkind.
 
 This project is currently focused on the following parts:
-- [x] Chapter 9 (optionally with "similar as above")
-- [ ] Chapter 10 (optionally with "similar as above")
+- [x] Chapter 9
+- [ ] Chapter 10
 
 ## Why working on it
 - Principia Mathematica has a stable version
@@ -20,8 +20,8 @@ This project aims towards demonstration and addresses compatability. Readers are
 
 ## Can you make sure that the code/proof is 100% correct?
 No. Here are the reasons:
-- Some of the concepts are so fundamental that either it involves a brand new architecture, or I just cannot represent it as code. As a result, there are theorems being commented out and only written in natural language.
-- The design of `Ltac` isn't good(to be more exact, `match` doesn't work as one might think), therefore you might end up with a successful `Qed` still with bad things happening under the hood. Actually, I have caught a bug in the repo from this issue.
+- Some of the concepts are so fundamental that either they involve a brand new architecture, or I just cannot represent them as code. As a result, there are theorems being commented out and only written in natural language.
+- The design of `Ltac` isn't good(to be more exact, `match` doesn't work as one might think), so that even successful `Qed`s are nevertheless false positives. Actually, I have caught a bug in the repo from this issue.
 - The rigor of the proofs relies heavily on how refined your proofs are and how you interpret the original text.
 
 ## Running the code
