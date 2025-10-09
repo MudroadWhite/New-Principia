@@ -76,34 +76,6 @@ Proof.
   all: now rewrite Equiv4_01.
 Qed.
 
-Theorem n4_12_1 (P Q : Prop) : 
-  (P ↔ ¬Q) ↔ (Q ↔ ¬P).
-Proof.
-  specialize Transp2_03 with P Q. 
-  intros Transp2_03a.
-  specialize Transp2_15 with Q P. 
-  intros Transp2_15a.
-  Conj Transp2_03a Transp2_15a Ca.
-  specialize n3_47 with (P→¬Q) (¬Q→P) (Q→¬P) (¬P→Q).
-  intros n3_47a.
-  MP n3_47a C.
-  specialize Transp2_03 with Q P. 
-  intros Transp2_03b.
-  specialize Transp2_15 with P Q. 
-  intros Transp2_15b.
-  Conj Transp2_03b Transp2_15b Cb.
-  specialize n3_47 with (Q→¬P) (¬P→Q) (P→¬Q) (¬Q→P).
-  intros n3_47b.
-  MP n3_47b H0.
-  clear Transp2_03a. clear Transp2_15a. clear Ca. 
-  clear Transp2_03b. clear Transp2_15b. clear Cb.
-  Conj n3_47a n3_47b Cc.
-  rewrite <- Equiv4_01 in Cc.
-  rewrite <- Equiv4_01 in Cc.
-  rewrite <- Equiv4_01 in Cc.
-  exact Cc.
-Qed.
-
 Theorem n4_12 (P Q : Prop) :
   (P ↔ ¬Q) ↔ (Q ↔ ¬P).
 Proof.

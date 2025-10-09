@@ -6,6 +6,8 @@ Typically in type system, or when we design a programming language syntax theore
 
 Started from chapter 9, Principia doesn't have it defined how function works formally. It doesn't have axioms for introduction rule or elimination rule for functions. Function looks like just a simple substitution tool after all, so what can go wrong?
 
+(TODO: add concrete example)
+
 ## Tactics being used
 TLDR: We use a mixture of multiple tactics to implement a single functionality.
 
@@ -17,7 +19,7 @@ Although the tactics might not be appearing in the proofs, but these alternative
 4. `setoid_rewrite`. For every axioms defined in the form of `f = P x`, we need to change them into the form of `f <-> P x` with `pm.lib.eq_to_equiv`. After this tedious manual work, it seems to work very well to "penetrate" through quantifiers in most case.
 
 ## Destructing and constructing quantifiers
-Without `setoid_rewrite`, for a function to be defined for quantifiers, I feel that equations and functions flavor locality, while rewritting flavors globality. We want the variables to be as global as you can to perform the rewrite, the best being the whole proposition. Equations and functions on the other hand, the smaller the better. In practice, the "best" way to just make the proof run is
+(TODO: rewrite this section)(If everything doesn't work, here is the final take:) In practice, the "best" way to just make the proof run is
 1. Destruct the quantifier in the hypothesis and in the goal. `forall` is easy to break and make, while `exists` involves the constructor `existT`.
 2. Define the function in the defined context
 3. Either wrap back everything up to proceed, or match the goal `exact`ly
