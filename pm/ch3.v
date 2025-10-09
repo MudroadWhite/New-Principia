@@ -45,6 +45,14 @@ Qed.
 (*3.03 is permits the inference from the theoremhood 
     of P and that of Q to the theoremhood of P and Q.So:*)
 
+(* NOTE:
+Although this Ltac simplifies the proof a lot, there is only one safe way
+to perform the `Conj`. We have to 
+1. `assert` the final proposition being produced
+2. `clear` all irrevalent hypotheses
+3. `move` the only two hypotheses into right order, optionally
+4. `Conj` them and `exact` the result
+*)
 Ltac Conj H1 H2 C :=
   let C := fresh C in lazymatch goal with 
     | [ H1 : ?P, H2 : ?Q |- _ ] =>  
