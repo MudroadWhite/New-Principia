@@ -320,12 +320,7 @@ Proof.
   }
   assert (S2 : (∃ y, φ X ∨ φ y) → (∃ z, φ z)).
   {
-    replace (∀ y, φ X ∨ φ y → ∃ z : Prop, φ z)
-      with (∀ y, (¬ (φ X ∨ φ y) ∨ ∃ z : Prop, φ z)) in S1.
-    2: {
-      apply propositional_extensionality.
-      setoid_rewrite <- Impl1_01a. reflexivity.
-    }
+    setoid_rewrite -> Impl1_01a in S1.
     rewrite <- n9_03, <- n9_02, <- Impl1_01 in S1.
     exact S1.
   }
@@ -336,12 +331,7 @@ Proof.
   }
   assert (S4 : (∃ x, (∃ y, φ x ∨ φ y)) → (∃ z, φ z)).
   {
-    replace (∀ x, (∃ y, φ x ∨ φ y) → ∃ z, φ z)
-      with (∀ x, ¬ (∃ y, φ x ∨ φ y) ∨ ∃ z, φ z) in S3.
-    2: {
-      apply propositional_extensionality.
-      setoid_rewrite <- Impl1_01a. reflexivity.
-    }
+    setoid_rewrite -> Impl1_01a in S3.
     rewrite <- n9_03, <- n9_02, <- Impl1_01 in S3.
     exact S3.
   }
@@ -394,14 +384,12 @@ Proof.
   assert (S3 : Q → ∀ x, φ x ∨ Q).
   { 
     pose proof (n9_25 (¬ Q) (fun x => φ x ∨ Q)) as n9_25.
-    replace (∀ x : Prop, Q → φ x ∨ Q) with (∀ x : Prop, ¬ Q ∨ (φ x ∨ Q))
-      in S2.
-    2: { apply propositional_extensionality; setoid_rewrite <- Impl1_01a; reflexivity. }
+    setoid_rewrite -> Impl1_01a in S2.
     MP n9_25 S2.
     rewrite <- Impl1_01 in n9_25.
     exact n9_25.
   }
-  assert (S4 : Q → (∀ x : Prop, φ x) ∨ Q).
+  assert (S4 : Q → (∀ x, φ x) ∨ Q).
   { 
     setoid_rewrite <- (n9_03a φ Q) in S3.
     exact S3.
@@ -411,8 +399,34 @@ Qed.
   
 Theorem n9_33 (φ : Prop → Prop) (Q : Prop) : Q → (∃ x : Prop, φ x) ∨ Q.
 Proof. 
-  (* Proof as above *)
-Admitted.
+  (* TOOLS *)
+  set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
+    as Impl1_01a.
+  set (λ (φ0 : Prop → Prop) (P0 : Prop), 
+    eq_to_equiv ((∀ x : Prop, φ0 x) ∨ P0) 
+                (∀ x : Prop, φ0 x ∨ P0) 
+    (n9_03 φ0 P0))
+    as n9_03a.
+  set (X := Real "x").
+  (* ******** *)
+  pose proof (Add1_3 (φ X) Q) as S1.
+  assert (S2 : ∃ x, Q → (φ x) ∨ Q).
+  {
+    pose proof (n9_1 (fun x => Q → (φ x) ∨ Q) X) as n9_1.
+    MP n9_1 S1.
+    exact n9_1.
+  }
+  assert (S3 : Q → ∃ x, (φ x) ∨ Q).
+  { 
+    setoid_rewrite -> Impl1_01a in S2.
+    rewrite <- (n9_06 (fun x => (φ x) ∨ Q) (¬ Q)) in S2.
+    rewrite <- Impl1_01 in S2.
+    exact S2.
+  }
+  assert (S4 : Q → (∃ x, (φ x)) ∨ Q).
+  { rewrite <- n9_05 in S3. exact S3. }
+  exact S4.
+Qed.
 
 Theorem n9_34 (φ : Prop → Prop) (P : Prop) : 
   (∀ x : Prop, φ x) → P ∨ (∀ x : Prop, φ x).
