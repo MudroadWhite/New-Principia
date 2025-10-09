@@ -605,10 +605,9 @@ Proof.
   assert (S1 : (P → φ X) → ((P ∨ R) → (φ X ∨ R))).
   { 
     pose proof (Sum1_6 R P (φ X)) as Sum1_6.
-    replace (R ∨ P) with (P ∨ R) in Sum1_6
-      by (apply propositional_extensionality; split; apply Perm1_4).
-    replace (R ∨ φ X) with (φ X ∨ R) in Sum1_6
-      by (apply propositional_extensionality; split; apply Perm1_4).
+    replace (R ∨ P) with (P ∨ R) in Sum1_6.
+    replace (R ∨ φ X) with (φ X ∨ R) in Sum1_6.
+      2, 3: (apply propositional_extensionality; split; apply Perm1_4).
     exact Sum1_6.
   }
   assert (S2 : (∀ x, P → φ x) → (∀ x, (P ∨ R) → (φ x ∨ R))).
@@ -659,10 +658,9 @@ Proof.
   assert (S1 : (φ X → Q) → ((φ X ∨ R) → (Q ∨ R))).
   { 
     pose proof (Sum1_6 R (φ X) Q) as Sum1_6.
-    replace (R ∨ Q) with (Q ∨ R) in Sum1_6
-      by (apply propositional_extensionality; split; apply Perm1_4).
-    replace (R ∨ φ X) with (φ X ∨ R) in Sum1_6
-      by (apply propositional_extensionality; split; apply Perm1_4).
+    replace (R ∨ Q) with (Q ∨ R) in Sum1_6.
+    replace (R ∨ φ X) with (φ X ∨ R) in Sum1_6.
+      2, 3: (apply propositional_extensionality; split; apply Perm1_4).
     exact Sum1_6.
   }
   assert (S2 : (∃ x, (φ x → Q)) → (∃ x, (φ x ∨ R) → (Q ∨ R))).
