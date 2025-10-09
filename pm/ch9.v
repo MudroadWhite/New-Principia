@@ -98,9 +98,7 @@ Proof.
 Qed.
 
 Theorem n9_21 (φ ψ : Prop → Prop) :
-  (∀ x, φ x → ψ x) 
-  → (∀ y, φ y) 
-  → ∀ z, ψ z.
+  (∀ x, φ x → ψ x) → (∀ y, φ y) → ∀ z, ψ z.
 Proof.
   (** Necessary tools to be used globally **)
   (* Manually set up a `↔` variant from `=` relation so that we can
