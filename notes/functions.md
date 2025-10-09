@@ -6,6 +6,8 @@ Typically in type system, or when we design a programming language syntax theore
 
 Started from chapter 9, Principia doesn't have it defined how function works formally. It doesn't have axioms for introduction rule or elimination rule for functions. Function looks like just a simple substitution tool after all, so what can go wrong?
 
+(TODO: add concrete example)
+
 ## Tactics being used
 TLDR: We use a mixture of multiple tactics to implement a single functionality.
 
