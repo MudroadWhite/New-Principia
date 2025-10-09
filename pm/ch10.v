@@ -577,12 +577,12 @@ Proof.
   }
   assert (S2 : (∀ z, Phi z ↔ Psi z) → ((∀ z, Phi z) → (∀ z, Psi z))).
   {
-    (* `Hp` always have to be after the line where `Hp` is declared. I 
-      believe this is the only way to deal with the proof: actually, all
+    (* `Hp` always have to be after the line where `Hp` is declared. All
       theorems involved are supposed to be match directly on the conclusion 
       part of the proposition, with `Hp` removed from the goal.
-      As usual, we can proceed with `Syll`s, but a slight intro of `Hp` adds
-      a tiny spice aligned with original proof, without harming it too much *)
+      This isn't something breaking the rule, as we can always proceed with 
+      `Syll`s. But I think a slight intro of `Hp` adds a tiny spice aligned 
+      with original proof, without harming it too much *)
     intro Hp.
     pose proof (n10_27 Phi Psi) as n10_27.
     pose proof (S1 Hp) as S1_1.
@@ -768,10 +768,44 @@ Proof.
 Qed.
 
 (* Barbara's syllogism 2nd form *)
+
 Theorem n10_3 (Phi Psi Chi : Prop → Prop) :
   ((∀ x, Phi x → Psi x) ∧ (∀ x, Psi x → Chi x)) → ∀ x, Phi x → Chi x.
 Proof.
-Admitted.
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
+  pose proof (n10_22 (fun x => Phi x → Psi x) (fun x => Psi x → Chi x)) 
+    as n10_22a.
+  assert (S1 : ((∀ x, Phi x → Psi x) ∧ (∀ x, Psi x → Chi x))
+    -> forall x, (Phi x -> Psi x) /\ (Psi x -> Chi x)).
+  {
+    (* n10_221 ignored *)
+    destruct n10_22a as [n10_22l n10_22r].
+    exact n10_22r.
+  }
+  assert (S2 : ((∀ x, Phi x → Psi x) ∧ (∀ x, Psi x → Chi x))
+    -> forall x, (Phi x -> Chi x)).
+  {
+    intro Hp.
+    pose (S1 Hp) as S1_1.
+    (* The `Syll` here has been very unsatisfying: seems like I cannot find a way
+    to perform this without the `intro x`. n10_27 is also unused *)
+    assert (Sy1 : forall x, Phi x -> Chi x).
+    {
+      intro x.
+      specialize (S1_1 x).
+      pose (Simp3_26 (Phi x → Psi x) (Psi x → Chi x)) as Simp3_26.
+      MP Simp3_26 S1_1.
+      pose (Simp3_27 (Phi x → Psi x) (Psi x → Chi x)) as Simp3_27.
+      MP Simp3_27 S1_1.
+      Syll Simp3_26 Simp3_27 Sy1.
+      exact Sy1.
+    }
+    exact Sy1.
+  }
+  exact S2.
+Qed.
 
 Theorem n10_301 (Phi Psi Chi : Prop → Prop) :
   (∀ x, Phi x ↔ Psi x) ∧ (∀ x, Psi x ↔ Chi x) → ∀ x, Phi x ↔ Chi x.
