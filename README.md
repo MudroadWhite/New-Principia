@@ -12,7 +12,7 @@ This project is currently focused on the following parts:
 - Formalized PM is a good education material for verifiers
 
 ## Features
-This project is for demonstration as well as compatability. Readers are supposed to read the code line by line besides technical hacks. Future contributers should find it easy to continue for better works while pertaining the style. 
+This project aims towards demonstration and addresses compatability. Readers are supposed to be able to read the code line by line modulo technical hacks. Future contributers should find it easy to continue for better works while pertaining the style. 
 - Forward style reasoning, pertaining the most flavor of original Principia's proof
 - Clear proof architecture and clean, maybe beautiful proof window
 - No 3rd party library involved, and instead, minimal, native and simple tactics

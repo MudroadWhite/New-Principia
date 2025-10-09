@@ -7,5 +7,4 @@ TODO:
 - learn how to organize the commits
 - expect someone generously tell me what does license do
 - create a CI in the future
-- investigate how to use `replace` tactic and consider in `functions.md`
 - Can I understand `significant` as less than being a "valid type" and more than being inhabited?
