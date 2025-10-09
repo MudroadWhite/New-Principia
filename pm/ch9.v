@@ -590,32 +590,93 @@ Qed.
 Theorem n9_401 (φ : Prop → Prop) (P Q : Prop) : 
   P ∨ Q ∨ (∃ x, φ x) → Q ∨ P ∨ (∃ x, φ x).
 Proof. 
-  (* Proof as above *)
-Admitted.
+  assert (S1 : (∃ x, P ∨ (Q ∨ φ x)) → (∃ x, Q ∨ (P ∨ φ x))).
+  {
+    pose proof (fun x => (Assoc1_5 P Q (φ x))) as Assoc1_5.
+    pose proof (n9_22 (fun x => P ∨ Q ∨ φ x) (fun x => Q ∨ P ∨ φ x)) as n9_22.
+    MP n9_22 Assoc1_5.
+    exact n9_22.
+  }
+  assert (S2 : P ∨ Q ∨ (∃ x, φ x) → Q ∨ P ∨ (∃ x, φ x)).
+  { repeat rewrite <- n9_06 in S1. exact S1. }
+  exact S2.
+Qed.
 
 Theorem n9_41 (φ : Prop → Prop) (P R : Prop) : 
   P ∨ (∀ x, φ x) ∨ R → (∀ x, φ x) ∨ P ∨ R.
 Proof. 
-  (* Proof as above *)
-Admitted.
+  assert (S1 : (∀ x, P ∨ (φ x ∨ R)) → ∀ x, φ x ∨ (P ∨ R)).
+  {
+    pose proof (fun x => (Assoc1_5 P (φ x) R)) as Assoc1_5.
+    pose proof (n9_21 (fun x => P ∨ (φ x ∨ R)) (fun x => φ x ∨ (P ∨ R))) as n9_21.
+    MP n9_21 Assoc1_5.
+    exact n9_21.
+  }
+  assert (S2 : P ∨ (∀ x, φ x) ∨ R → (∀ x, φ x) ∨ P ∨ R).
+  {
+    rewrite <- n9_04 in S1.
+    repeat rewrite <- n9_03 in S1.
+    exact S1.
+  }
+  exact S2.
+Qed.
 
 Theorem n9_411 (φ : Prop → Prop) (P R : Prop) : 
   P ∨ (∃ x, φ x) ∨ R → (∃ x, φ x) ∨ P ∨ R.
 Proof. 
-  (* Proof as above *)
-Admitted.
+  assert (S1 : (∃ x, P ∨ (φ x ∨ R)) → ∃ x, φ x ∨ (P ∨ R)).
+  {
+    pose proof (fun x => (Assoc1_5 P (φ x) R)) as Assoc1_5.
+    pose proof (n9_22 (fun x => P ∨ (φ x ∨ R)) (fun x => φ x ∨ (P ∨ R))) as n9_22.
+    MP n9_22 Assoc1_5.
+    exact n9_22.
+  }
+  assert (S2 : P ∨ (∃ x, φ x) ∨ R → (∃ x, φ x) ∨ P ∨ R).
+  {
+    rewrite <- n9_06 in S1.
+    repeat rewrite <- n9_05 in S1.
+    exact S1.
+  }
+  exact S2.
+Qed.
 
 Theorem n9_42 (φ : Prop → Prop) (Q R : Prop) : 
   (∀ x, φ x) ∨ Q ∨ R → Q ∨ (∀ x, φ x) ∨ R.
 Proof. 
-  (* Proof as above *)
-Admitted.
+  assert (S1 : (∀ x, φ x ∨ (Q ∨ R)) → ∀ x, Q ∨ (φ x ∨ R)).
+  {
+    pose proof (fun x => (Assoc1_5 (φ x) Q R)) as Assoc1_5.
+    pose proof (n9_21 (fun x => φ x ∨ (Q ∨ R)) (fun x => Q ∨ (φ x ∨ R))) as n9_21.
+    MP n9_21 Assoc1_5.
+    exact n9_21.
+  }
+  assert (S2 : (∀ x, φ x) ∨ Q ∨ R → Q ∨ (∀ x, φ x) ∨ R).
+  {
+    rewrite <- n9_04 in S1.
+    repeat rewrite <- n9_03 in S1.
+    exact S1.
+  }
+  exact S2.
+Qed.
 
 Theorem n9_421 (φ : Prop → Prop) (Q R : Prop) : 
   (∃ x, φ x) ∨ Q ∨ R → Q ∨ (∃ x, φ x) ∨ R.
 Proof. 
-  (* Proof as above *)
-Admitted.
+  assert (S1 : (∃ x, φ x ∨ (Q ∨ R)) → ∃ x, Q ∨ (φ x ∨ R)).
+  {
+    pose proof (fun x => (Assoc1_5 (φ x) Q R)) as Assoc1_5.
+    pose proof (n9_22 (fun x => φ x ∨ (Q ∨ R)) (fun x => Q ∨ (φ x ∨ R))) as n9_22.
+    MP n9_22 Assoc1_5.
+    exact n9_22.
+  }
+  assert (S2 : (∃ x, φ x) ∨ Q ∨ R → Q ∨ (∃ x, φ x) ∨ R).
+  {
+    rewrite <- n9_06 in S1.
+    repeat rewrite <- n9_05 in S1.
+    exact S1.
+  }
+  exact S2.
+Qed.
 
 Theorem n9_5 (φ : Prop → Prop) (P Q : Prop) : 
   (P → Q) → ((P ∨ ∀ x, φ x) → (Q ∨ ∀ x, φ x)).
