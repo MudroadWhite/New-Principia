@@ -823,8 +823,38 @@ Qed.
 Theorem n10_301 (Phi Psi Chi : Prop → Prop) :
   (∀ x, Phi x ↔ Psi x) ∧ (∀ x, Psi x ↔ Chi x) → ∀ x, Phi x ↔ Chi x.
 Proof.
-  
-Admitted.
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
+  pose proof (n10_22 (fun x => Phi x <-> Psi x) (fun x => Psi x <-> Chi x))
+    as S1.
+  simpl in S1.
+  assert (S2 : (∀ x, Phi x ↔ Psi x) ∧ (∀ x, Psi x ↔ Chi x) → ∀ x, Phi x ↔ Chi x).
+  {
+    pose proof (n4_22 (Phi X) (Psi X) (Chi X)) as n4_22.
+    pose proof (n10_11 X
+      (fun x =>
+        ((Phi x <-> Psi x) /\ (Psi x <-> Chi x)) 
+        -> (Phi x <-> Chi x)
+      )) as n10_11.
+    MP n10_11 S1.
+    pose proof (n10_27
+      (fun x => (Phi x <-> Psi x) /\ (Psi x <-> Chi x))
+      (fun x => (Phi x <-> Chi x))
+      ) as n10_27.
+    MP n10_27 n10_11.
+    pose (n10_22
+      (fun x => (Phi x <-> Psi x))
+      (fun x => (Psi x <-> Chi x)) 
+      ) as n10_22.
+    simpl in n10_22.
+    destruct n10_22 as [n10_22l n10_22r].
+    clear S1 n4_22 n10_11 n10_22l.
+    Syll n10_22r n10_27 S2.
+    exact S2.
+  }
+  exact S2.
+Qed.
 
 Theorem n10_31 (Phi Psi Chi : Prop → Prop) :
   (∀ x, Phi x → Psi x) → (∀ x, (Phi x ∧ Chi x) → (Psi x ∧ Chi x)).
