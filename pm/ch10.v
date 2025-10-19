@@ -778,7 +778,7 @@ Proof.
   pose proof (n10_22 (fun x => Phi x → Psi x) (fun x => Psi x → Chi x)) 
     as n10_22a.
   assert (S1 : ((∀ x, Phi x → Psi x) ∧ (∀ x, Psi x → Chi x))
-    -> forall x, (Phi x -> Psi x) /\ (Psi x -> Chi x)).
+    -> forall x, (Phi x -> Psi x) ∧ (Psi x -> Chi x)).
   {
     (* n10_221 ignored *)
     destruct n10_22a as [n10_22l n10_22r].
@@ -789,42 +789,33 @@ Proof.
   {
     intro Hp.
     pose (S1 Hp) as S1_1.
+    (* Original proof here has abbreviated a lot of proofs being explained separately *)
     (* Note how the original proof here introduces a real variable *)
-    pose proof (Syll2_06 (Phi X) (Psi X) (Chi X)) as Sy1.
-    assert (Sy2 : forall x, (Phi x -> Psi x) 
-      -> (Psi x -> Chi x) -> (Phi x -> Chi x)).
+    assert (Sy1 : (Phi X -> Psi X) ∧ (Psi X -> Chi X) -> (Phi X -> Chi X)).
+    {
+      pose proof (Syll2_06 (Phi X) (Psi X) (Chi X)) as Syll2_06.
+      pose proof (Imp3_31 (Phi X -> Psi X) (Psi X -> Chi X) 
+        (Phi X -> Chi X)) as Imp3_31.
+      MP Imp3_31 Syll2_06.
+      exact Imp3_31.
+    }
+    assert (Sy2 : forall x, (Phi x -> Psi x) ∧ (Psi x -> Chi x) -> (Phi x -> Chi x)).
     {
       pose proof (n10_11 X (fun x => (Phi x -> Psi x) 
-        -> (Psi x -> Chi x) -> (Phi x -> Chi x))) as n10_11.
+        ∧ (Psi x -> Chi x) -> (Phi x -> Chi x))) as n10_11.
       MP n10_11 Sy1.
       exact n10_11.
     }
-    (* 
-    Theorem Syll2_05 (P Q R : Prop) :
-      (Q → R) → ((P  → Q) → (P → R)).
-
-    Theorem Syll2_06 (P Q R : Prop) :
-      (P → Q) → ((Q → R) → (P → R)).
-    *)
-    assert (Syll : )
-
-
-
-    (* The `Syll` here has been very unsatisfying: seems like I cannot find a way
-    to perform this without the `intro x`. n10_27 is also unused *)
-    (* TODO: check the original text for guidance *)
-    assert (Sy1 : forall x, Phi x -> Chi x).
+    assert (Sy3 : (forall x, (Phi x -> Psi x) ∧ (Psi x -> Chi x)) 
+      -> (forall y, Phi y -> Chi y)).
     {
-      intro x.
-      specialize (S1_1 x).
-      pose (Simp3_26 (Phi x → Psi x) (Psi x → Chi x)) as Simp3_26.
-      MP Simp3_26 S1_1.
-      pose (Simp3_27 (Phi x → Psi x) (Psi x → Chi x)) as Simp3_27.
-      MP Simp3_27 S1_1.
-      Syll Simp3_26 Simp3_27 Sy1.
-      exact Sy1.
+      pose (n10_27 (fun x => (Phi x -> Psi x) ∧ (Psi x -> Chi x))
+        (fun x => (Phi x -> Chi x))) as n10_27.
+      MP n10_27 Sy2.
+      exact n10_27.
     }
-    exact Sy1.
+    MP Sy3 S1_1.
+    exact Sy3.
   }
   exact S2.
 Qed.
@@ -832,6 +823,7 @@ Qed.
 Theorem n10_301 (Phi Psi Chi : Prop → Prop) :
   (∀ x, Phi x ↔ Psi x) ∧ (∀ x, Psi x ↔ Chi x) → ∀ x, Phi x ↔ Chi x.
 Proof.
+  
 Admitted.
 
 Theorem n10_31 (Phi Psi Chi : Prop → Prop) :
