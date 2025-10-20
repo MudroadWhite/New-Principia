@@ -1,4 +1,28 @@
-TODO: 
+# Tactics
+
+This chapter describes the tactics we generally use in further detail.
+
+## `assert` for intermediate steps
+When proofs are "long enough", the first tactic that should come to one's view should be `assert` to specify the intermediate steps. This tactics modularizes the proofs so that they usually have the following structure:
+
+```Coq
+Proof.
+  assert (S1 : x + y = z).
+  {
+    (* subproof for S1, where "S" here stands for step *)
+  }
+  assert (S2 : x + y = z -> x + y = z).
+  {
+    (* subproof for S2 *)
+  }
+  (* and so on... *)
+  exact Sn.
+Qed.
+```
+
+There are several reasons for organizing proofs like this. The most significant one is readability. Besides, we can have several equivalant forms for a proposition, i.e. `(fun x => x) x` is not very far from just `x` or `(fun y => y) x`. When we're using tactics to push on the proof, we might just get a result that is equivalent to `x`, but a further reorganization into `x` might be extremely tedious. By using `assert X` we're actually only require the proof ends at a proposition equivalent to `X`, and skip the tedious transformations into `X`. One last thing for `assert` is that it help us limit the scope of theorems we use. When we leave the scope, these theorems are automatically cleared away, and only the results as `S1` `S2` are being pertained. As a result, the proof window becomes extremely clean.
+
+TODO:
 
 1. If theorem is a `->`, only `Syll` and `MP` should be used (refer to SEP)
 
@@ -6,7 +30,7 @@ TODO:
 
 3. If `rewrite` doesn't work, alternatives includes `replace`, `setoid_rewrite`, `apply propositional_extensionality` ...etc; see `functions,md` for more info
 
-4. Ltacs are bugged: the only safe way to perform `Syll`, `Comp`, etc. is setting up a intermediate goal and clear irrevalent hypotheses
+4. Ltacs are bugged: the only safe way to perform `Syll`, `Comp`, etc. is setting up a intermediate goal and clear irrevalent hypotheses. Safely using `Conj`, `Syll`, and `MP` with `assert` and `clear`
 
 Alternatives to mere deductions and substitutions, and how they works
 

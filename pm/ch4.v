@@ -55,10 +55,8 @@ Proof.
     Syll n3_47a n3_22a Sa_1.
     exact Sa_1.
   }
-  replace ((P → Q) ∧ (Q → P)) with (P↔Q) in Sa
-    by now rewrite Equiv4_01.
-  replace ((¬P → ¬Q) ∧ (¬Q → ¬P)) with (¬P↔¬Q) in Sa 
-    by now rewrite Equiv4_01.
+  replace ((P → Q) ∧ (Q → P)) with (P↔Q) in Sa.
+  replace ((¬P → ¬Q) ∧ (¬Q → ¬P)) with (¬P↔¬Q) in Sa .
   assert (Sb : (¬ P → ¬ Q) ∧ (¬ Q → ¬ P) → (P → Q) ∧ (Q → P)).
   {
     pose proof (Transp2_17 Q P) as Transp2_17a.
@@ -70,13 +68,12 @@ Proof.
     Syll n3_47a n3_22a Sb_1.
     exact Sb_1.
   }
-  replace ((P → Q) ∧ (Q → P)) with (P↔Q) in Sb
-    by now rewrite Equiv4_01.
-  replace ((¬P → ¬Q) ∧ (¬Q → ¬P)) with (¬P↔¬Q)
-    in Sb by now rewrite Equiv4_01.
+  replace ((P → Q) ∧ (Q → P)) with (P↔Q) in Sb.
+  replace ((¬P → ¬Q) ∧ (¬Q → ¬P)) with (¬P↔¬Q) in Sb.
   Conj Sa Sb Cc.
   Equiv Cc.
   exact Cc.
+  all: now rewrite Equiv4_01.
 Qed.
 
 Theorem n4_12 (P Q : Prop) :
@@ -193,17 +190,18 @@ Theorem n4_21 (P Q : Prop) :
 Proof.
   pose proof (n3_22 (P→Q) (Q→P)) as n3_22a.
   replace ((P → Q) ∧ (Q → P)) with (P↔Q) 
-    in n3_22a by now rewrite Equiv4_01.
+    in n3_22a.
   replace ((Q → P) ∧ (P → Q)) with (Q↔P)
-  in n3_22a by now rewrite Equiv4_01.
+    in n3_22a.
   pose proof (n3_22 (Q→P) (P→Q)) as n3_22b.
   replace ((P → Q) ∧ (Q → P)) with (P↔Q) 
-    in n3_22b by now rewrite Equiv4_01.
+    in n3_22b.
   replace ((Q → P) ∧ (P → Q)) with (Q↔P) 
-    in n3_22b by now rewrite Equiv4_01.
+    in n3_22b.
   Conj n3_22a n3_22b C.
   Equiv C.
   exact C.
+  all: now rewrite Equiv4_01.
 Qed.
 
 Theorem n4_22 (P Q R : Prop) :
@@ -254,7 +252,7 @@ Proof.
   pose proof (Comp3_43 ((P↔Q)∧(Q↔R)) (P→R) (R→P)) as Comp3_43a.
   MP Comp3_43a C.
   replace ((P→R) ∧ (R→P)) with (P↔R) 
-    in Comp3_43a by now rewrite Equiv4_01.
+    in Comp3_43a.
   exact Comp3_43a.
 Qed.
 
@@ -380,11 +378,10 @@ Proof.
   pose proof (n3_47 (P→Q) (Q→P) 
       (P ∧ R → Q ∧ R) (Q ∧ R → P ∧ R)) as n3_47a.
   MP n3_47 C.
-  replace  ((P → Q) ∧ (Q → P)) with (P↔Q) in n3_47a
-    by now rewrite Equiv4_01.
-  replace ((P∧R→Q∧R)∧(Q∧R→P∧R)) with (P∧R↔Q∧R) 
-    in n3_47a by now rewrite Equiv4_01.
+  replace  ((P → Q) ∧ (Q → P)) with (P↔Q) in n3_47a.
+  replace ((P∧R→Q∧R)∧(Q∧R→P∧R)) with (P∧R↔Q∧R) in n3_47a.
   exact n3_47a.
+  all : now rewrite Equiv4_01.
 Qed.
 
 Theorem n4_37 (P Q R : Prop) :
@@ -396,10 +393,8 @@ Proof.
   pose proof (n3_47 (P → Q) (Q → P) 
       (R ∨ P → R ∨ Q) (R ∨ Q → R ∨ P)) as n3_47a.
   MP n3_47 C.
-  replace  ((P → Q) ∧ (Q → P)) with (P↔Q) in n3_47a
-  by now rewrite Equiv4_01.
-  replace ((R∨P→R∨Q)∧(R∨Q→R∨P)) with (R∨P↔R∨Q) 
-      in n3_47a by now rewrite Equiv4_01.
+  replace  ((P → Q) ∧ (Q → P)) with (P↔Q) in n3_47a.
+  replace ((R∨P→R∨Q)∧(R∨Q→R∨P)) with (R∨P↔R∨Q) in n3_47a.
   pose proof (n4_31 Q R) as n4_31a.
   apply propositional_extensionality in n4_31a.
   pose proof (n4_31 P R) as n4_31b.
@@ -409,6 +404,7 @@ Proof.
   replace (R ∨ Q) with (Q ∨ R) in n3_47a
     by now apply n4_31a.
   exact n3_47a.
+  all: now rewrite Equiv4_01.
 Qed.
 
 Theorem n4_38 (P Q R S : Prop) :
@@ -451,13 +447,11 @@ Proof.
   replace ((P → R) ∧ (R → P) ∧ (Q → S) ∧ (S → Q)) with 
       (((P → R) ∧ (R → P)) ∧ (Q → S) ∧ (S → Q)) in n3_47c
       by now apply n4_32d.
-  replace ((P→R) ∧ (R → P)) with (P↔R) in n3_47c
-    by now rewrite Equiv4_01.
-  replace ((Q → S) ∧ (S → Q)) with (Q↔S) in n3_47c
-    by now rewrite Equiv4_01.
-  replace ((P∧Q→R∧S)∧(R∧S→P∧Q)) with ((P∧Q)↔(R∧S)) 
-      in n3_47c by now rewrite Equiv4_01.
+  replace ((P→R) ∧ (R → P)) with (P↔R) in n3_47c.
+  replace ((Q → S) ∧ (S → Q)) with (Q↔S) in n3_47c.
+  replace ((P∧Q→R∧S)∧(R∧S→P∧Q)) with ((P∧Q)↔(R∧S)) in n3_47c.
   exact n3_47c.
+  all : now rewrite Equiv4_01.
 Qed.
 
 Theorem n4_39 (P Q R S : Prop) :
@@ -469,8 +463,7 @@ Proof.
   pose proof (n3_47 ((P → R) ∧ (Q → S)) 
       ((R → P) ∧ (S → Q)) (P ∨ Q → R ∨ S) (R ∨ S → P ∨ Q)) as n3_47a.
   MP n3_47a Ca.
-  replace ((P∨Q→R∨S)∧(R∨S→P∨Q)) with ((P∨Q)↔(R∨S)) 
-      in n3_47a by now rewrite Equiv4_01.
+  replace ((P∨Q→R∨S)∧(R∨S→P∨Q)) with ((P∨Q)↔(R∨S)) in n3_47a.
   pose proof (n4_32 ((P → R) ∧ (Q → S)) (R → P) (S → Q)) as n4_32a.
   apply propositional_extensionality in n4_32a.
   replace (((P → R) ∧ (Q → S)) ∧ (R → P) ∧ (S → Q)) with 
@@ -496,17 +489,16 @@ Proof.
   replace ((P → R) ∧ (R → P) ∧ (Q → S)) with 
       (((P → R) ∧ (R → P)) ∧ (Q → S)) in n3_47a
       by now apply n4_32c.
-  replace ((P → R) ∧ (R → P)) with (P↔R) in n3_47a
-    by now rewrite Equiv4_01.
+  replace ((P → R) ∧ (R → P)) with (P↔R) in n3_47a.
   pose proof (n4_32 (P↔R) (Q→S) (S→Q)) as n4_32d.
   apply propositional_extensionality in n4_32d.
   symmetry in n4_32d.
   replace (((P ↔ R) ∧ (Q → S)) ∧ (S → Q)) with 
       ((P ↔ R) ∧ (Q → S) ∧ (S → Q)) in n3_47a
       by now apply n4_32d.
-  replace ((Q → S) ∧ (S → Q)) with (Q ↔ S) in n3_47a
-  by now rewrite Equiv4_01.
+  replace ((Q → S) ∧ (S → Q)) with (Q ↔ S) in n3_47a.
   exact n3_47a.
+  all: now rewrite Equiv4_01.
 Qed.
 
 Theorem n4_4 (P Q R : Prop) :
@@ -1005,18 +997,16 @@ Theorem n4_76 (P Q R : Prop) :
   ((P → Q) ∧ (P → R)) ↔ (P → (Q ∧ R)).
 Proof.
   pose proof (n4_41 (¬P) Q R) as n4_41a.
-  replace (¬P ∨ Q) with (P→Q) in n4_41a
-    by now rewrite Impl1_01.
-  replace (¬P ∨ R) with (P→R) in n4_41a
-    by now rewrite Impl1_01.
-  replace (¬P ∨ Q ∧ R) with (P → Q ∧ R) in n4_41a
-    by now rewrite Impl1_01.
+  replace (¬P ∨ Q) with (P→Q) in n4_41a.
+  replace (¬P ∨ R) with (P→R) in n4_41a.
+  replace (¬P ∨ Q ∧ R) with (P → Q ∧ R) in n4_41a.
   pose proof (n4_21 ((P → Q) ∧ (P → R)) (P → Q ∧ R)) as n4_21a.
   apply propositional_extensionality in n4_21a.
   replace ((P → Q ∧ R) ↔ (P → Q) ∧ (P → R)) with 
       ((P → Q) ∧ (P → R) ↔ (P → Q ∧ R)) in n4_41a
       by now apply n4_21a.
   exact n4_41a.
+  all: now rewrite Impl1_01.
 Qed.
 
 Theorem n4_77 (P Q R : Prop) :
@@ -1233,12 +1223,11 @@ Proof.
   pose proof (n3_47 (P→Q) (Q→P) ((R→P)→R→Q) 
     ((R→Q)→R→P)) as n3_47a.
   MP n3_47a Ca.
-  replace ((P→Q) ∧ (Q → P)) with (P↔Q) in n3_47a
-  by now rewrite Equiv4_01.
+  replace ((P→Q) ∧ (Q → P)) with (P↔Q) in n3_47a.
   replace (((R→P)→R→Q)∧((R→Q)→R→P)) with 
-    ((R→P)↔(R→Q)) in n3_47a 
-    by now rewrite Equiv4_01.
+    ((R→P)↔(R→Q)) in n3_47a.
   exact n3_47a.
+  all: now rewrite Equiv4_01.
 Qed.
 
 Theorem n4_86 (P Q R : Prop) :

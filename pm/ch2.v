@@ -25,37 +25,32 @@ Theorem Transp2_03 (P Q : Prop) :
   (P → ¬Q) → (Q → ¬P).
 Proof.
   pose proof (Perm1_4 (¬P) (¬Q)) as Perm1_4.
-  replace (¬P ∨ ¬Q) with (P → ¬Q) in Perm1_4
-    by now rewrite Impl1_01.
-  replace (¬Q ∨ ¬P) with (Q → ¬P) in Perm1_4
-    by now rewrite Impl1_01.
+  replace (¬P ∨ ¬Q) with (P → ¬Q) in Perm1_4.
+  replace (¬Q ∨ ¬P) with (Q → ¬P) in Perm1_4.
   exact Perm1_4.
+  all : now rewrite Impl1_01.
 Qed.
 
 Theorem Comm2_04 (P Q R : Prop) :
   (P → (Q → R)) → (Q → (P → R)).
 Proof.
   pose proof (Assoc1_5 (¬P) (¬Q) R) as Assoc1_5.
-  replace (¬Q ∨ R) with (Q → R) in Assoc1_5
-    by now rewrite Impl1_01.
-  replace (¬P ∨ (Q → R)) with (P → (Q → R)) in Assoc1_5
-    by now rewrite Impl1_01.
-  replace (¬P ∨ R) with (P → R) in Assoc1_5
-    by now rewrite Impl1_01.
-  replace (¬Q ∨ (P → R)) with (Q → (P → R)) in Assoc1_5
-    by now rewrite Impl1_01.
+  replace (¬Q ∨ R) with (Q → R) in Assoc1_5.
+  replace (¬P ∨ (Q → R)) with (P → (Q → R)) in Assoc1_5.
+  replace (¬P ∨ R) with (P → R) in Assoc1_5.
+  replace (¬Q ∨ (P → R)) with (Q → (P → R)) in Assoc1_5.
   exact Assoc1_5.
+  all: now rewrite Impl1_01.
 Qed.
 
 Theorem Syll2_05 (P Q R : Prop) :
   (Q → R) → ((P  → Q) → (P → R)).
 Proof.
   pose proof (Sum1_6 (¬P) Q R) as Sum1_6.
-  replace (¬P ∨ Q) with (P → Q) in Sum1_6
-    by now rewrite Impl1_01. 
-  replace (¬P ∨ R) with (P → R) in Sum1_6
-    by now rewrite Impl1_01.
+  replace (¬P ∨ Q) with (P → Q) in Sum1_6.
+  replace (¬P ∨ R) with (P → R) in Sum1_6.
   exact Sum1_6.
+  all: now rewrite Impl1_01.
 Qed.
 
 Theorem Syll2_06 (P Q R : Prop) :
@@ -286,7 +281,7 @@ Qed.
 
 (* Theorem Abb2_33 : ∀ P Q R : Prop,
   (P ∨ Q ∨ R) = ((P ∨ Q) ∨ R).
-Proof.as P Q R.rewrite → n2_32.*)
+Proof. intros P Q R. rewrite → n2_32. *)
 
 Theorem Abb2_33 (P Q R : Prop) :
   (P ∨ Q ∨ R) = ((P ∨ Q) ∨ R).
@@ -430,33 +425,30 @@ Theorem n2_5 (P Q : Prop) :
   ¬(P → Q) → (¬P → Q).
 Proof.
   pose proof (n2_47 (¬P) Q) as n2_47a.
-  replace (¬P∨Q) with (P→Q) in n2_47a
-    by now rewrite Impl1_01.
-  replace (¬¬P∨Q) with (¬P→Q) in n2_47a
-    by now rewrite Impl1_01.
+  replace (¬P∨Q) with (P→Q) in n2_47a.
+  replace (¬¬P∨Q) with (¬P→Q) in n2_47a.
   exact n2_47a.
+  all: now rewrite Impl1_01.
 Qed.
 
 Theorem n2_51 (P Q : Prop) :
   ¬(P → Q) → (P → ¬Q).
 Proof.
   pose proof (n2_48 (¬P) Q) as n2_48a.
-  replace (¬P∨Q) with (P→Q) in n2_48a
-    by now rewrite Impl1_01.
-  replace (¬P∨¬Q) with (P→¬Q) in n2_48a
-    by now rewrite Impl1_01.
+  replace (¬P∨Q) with (P→Q) in n2_48a.
+  replace (¬P∨¬Q) with (P→¬Q) in n2_48a.
   exact n2_48a.
+  all : now rewrite Impl1_01.
 Qed.
 
 Theorem n2_52 (P Q : Prop) :
   ¬(P → Q) → (¬P → ¬Q).
 Proof.
   pose proof (n2_49 (¬P) Q) as n2_49a.
-  replace (¬P∨Q) with (P→Q) in n2_49a
-   by now rewrite Impl1_01.
-  replace (¬¬P∨¬Q) with (¬P→¬Q) in n2_49a
-    by now rewrite Impl1_01.
+  replace (¬P∨Q) with (P→Q) in n2_49a.
+  replace (¬¬P∨¬Q) with (¬P→¬Q) in n2_49a.
   exact n2_49a.
+  all : now rewrite Impl1_01.
 Qed.
 
 Theorem n2_521 (P Q : Prop) :
@@ -576,11 +568,10 @@ Theorem n2_65 (P Q : Prop) :
   (P → Q) → ((P → ¬Q) → ¬P).
 Proof.
   pose proof (n2_64 (¬P) Q) as n2_64a.
-  replace (¬P∨Q) with (P→Q) in n2_64a
-    by now rewrite Impl1_01.
-  replace (¬P∨¬Q) with (P→¬Q) in n2_64a
-    by now rewrite Impl1_01.
+  replace (¬P∨Q) with (P→Q) in n2_64a.
+  replace (¬P∨¬Q) with (P→¬Q) in n2_64a.
   exact n2_64a.
+  all: now rewrite Impl1_01.
 Qed.
 
 Theorem n2_67 (P Q : Prop) :
@@ -672,13 +663,11 @@ Theorem n2_77 (P Q R : Prop) :
   (P → (Q → R)) → ((P → Q) → (P → R)).
 Proof.
   pose proof (n2_76 (¬P) Q R) as n2_76a.
-  replace (¬P∨(Q→R)) with (P→Q→R) in n2_76a
-    by now rewrite Impl1_01.
-  replace (¬P∨Q) with (P→Q) in n2_76a
-    by now rewrite Impl1_01.
-  replace (¬P∨R) with (P→R) in n2_76a
-    by now rewrite Impl1_01.
+  replace (¬P∨(Q→R)) with (P→Q→R) in n2_76a.
+  replace (¬P∨Q) with (P→Q) in n2_76a.
+  replace (¬P∨R) with (P→R) in n2_76a.
   exact n2_76a.
+  all: now rewrite Impl1_01.
 Qed.
 
 Theorem n2_8 (Q R S : Prop) :
@@ -716,21 +705,14 @@ Theorem n2_83 (P Q R S : Prop) :
   (P→(Q→R))→((P→(R→S))→(P→(Q→S))).
 Proof.
   pose proof (n2_82 (¬P) (¬Q) R S) as n2_82a.
-  replace (¬Q∨R) with (Q→R) in n2_82a
-    by now rewrite Impl1_01.
-  replace (¬P∨(Q→R)) with (P→Q→R) in n2_82a
-    by now rewrite Impl1_01.
-  replace (¬R∨S) with (R→S) in n2_82a
-    by now rewrite Impl1_01.
-  replace (¬P∨(R→S)) with (P→R→S) in n2_82a
-    by now rewrite Impl1_01.
-  replace (¬Q∨S) with (Q→S) in n2_82a
-    by now rewrite Impl1_01.
-  replace (¬Q∨S) with (Q→S) in n2_82a
-    by now rewrite Impl1_01.
-  replace (¬P∨(Q→S)) with (P→Q→S) in n2_82a
-    by now rewrite Impl1_01.
+  replace (¬Q∨R) with (Q→R) in n2_82a.
+  replace (¬P∨(Q→R)) with (P→Q→R) in n2_82a.
+  replace (¬R∨S) with (R→S) in n2_82a.
+  replace (¬P∨(R→S)) with (P→R→S) in n2_82a.
+  replace (¬Q∨S) with (Q→S) in n2_82a.
+  replace (¬P∨(Q→S)) with (P→Q→S) in n2_82a.
   exact n2_82a.
+  all : now rewrite Impl1_01.
 Qed.
 
 Theorem n2_85 (P Q R : Prop) :
@@ -759,11 +741,9 @@ Theorem n2_86 (P Q R : Prop) :
   ((P → Q) → (P → R)) → (P → (Q →  R)).
 Proof.
   pose proof (n2_85 (¬P) Q R) as n2_85a.
-  replace (¬P∨Q) with (P→Q) in n2_85a
-    by now rewrite Impl1_01.
-  replace (¬P∨R) with (P→R) in n2_85a
-    by now rewrite Impl1_01.
-  replace (¬P∨(Q→R)) with (P→Q→R) in n2_85a
-    by now rewrite Impl1_01.
+  replace (¬P∨Q) with (P→Q) in n2_85a.
+  replace (¬P∨R) with (P→R) in n2_85a.
+  replace (¬P∨(Q→R)) with (P→Q→R) in n2_85a.
   exact n2_85a.
+  all: now rewrite Impl1_01.
 Qed.

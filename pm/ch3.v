@@ -36,15 +36,22 @@ Proof.
   MP n2_32a n2_11a.
   replace (¬(¬P∨¬Q)) with (P∧Q) in n2_32a
     by now rewrite Prod3_01.
-  replace (¬Q ∨ (P∧Q)) with (Q→(P∧Q)) in n2_32a
-    by now rewrite Impl1_01.
-  replace (¬P ∨ (Q → (P∧Q))) with (P→Q→(P∧Q)) in n2_32a
-    by now rewrite Impl1_01.
+  replace (¬Q ∨ (P∧Q)) with (Q→(P∧Q)) in n2_32a.
+  replace (¬P ∨ (Q → (P∧Q))) with (P→Q→(P∧Q)) in n2_32a.
   exact n2_32a.
+  all: now rewrite Impl1_01.
 Qed.
 (*3.03 is permits the inference from the theoremhood 
     of P and that of Q to the theoremhood of P and Q.So:*)
 
+(* NOTE:
+Although this Ltac simplifies the proof a lot, there is only one safe way
+to perform the `Conj`. We have to 
+1. `assert` the final proposition being produced
+2. `clear` all irrevalent hypotheses
+3. `move` the only two hypotheses into right order, optionally
+4. `Conj` them and `exact` the result
+*)
 Ltac Conj H1 H2 C :=
   let C := fresh C in lazymatch goal with 
     | [ H1 : ?P, H2 : ?Q |- _ ] =>  
@@ -105,11 +112,10 @@ Proof.
   pose proof (n3_12 P Q) as n3_12a.
   pose proof (n2_32 (¬P) (¬Q) (P∧Q)) as n2_32a.
   MP n3_32a n3_12a.
-  replace (¬Q ∨ P ∧ Q) with (Q→P∧Q) in n2_32a
-    by now rewrite Impl1_01.
-  replace (¬P ∨ (Q → P ∧ Q)) with (P→Q→P∧Q) 
-  in n2_32a by now rewrite Impl1_01.
+  replace (¬Q ∨ P ∧ Q) with (Q→P∧Q) in n2_32a.
+  replace (¬P ∨ (Q → P ∧ Q)) with (P→Q→P∧Q) in n2_32a.
   exact n2_32a.
+  all: now rewrite Impl1_01.
 Qed.
 
 Theorem n3_21 (P Q : Prop) :
@@ -147,10 +153,8 @@ Theorem Simp3_26 (P Q : Prop) :
   (P ∧ Q) → P.
 Proof.
   pose proof (Simp2_02 Q P) as Simp2_02a.
-  replace (P→(Q→P)) with (¬P∨(Q→P)) in Simp2_02a
-    by now rewrite <- Impl1_01.
-  replace (Q→P) with (¬Q∨P) in Simp2_02a
-    by now rewrite Impl1_01.
+  replace (P→(Q→P)) with (¬P∨(Q→P)) in Simp2_02a.
+  replace (Q→P) with (¬Q∨P) in Simp2_02a.
   pose proof (n2_31 (¬P) (¬Q) P) as n2_31a.
   MP n2_31a Simp2_02a.
   pose proof (n2_53 (¬P∨¬Q) P) as n2_53a.
@@ -158,6 +162,7 @@ Proof.
   replace (¬(¬P∨¬Q)) with (P∧Q) in n2_53a
     by now rewrite Prod3_01.
   exact n2_53a.
+  all: now rewrite <- Impl1_01.
 Qed.
 
 Theorem Simp3_27 (P Q : Prop) :
