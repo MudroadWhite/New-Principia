@@ -1436,23 +1436,80 @@ Theorem n10_411 (Phi Psi Chi Theta : Prop → Prop) :
   ((Phi x <[- x -]> Chi x) ∧ ((Psi x <[- x -]> Theta x)))
   → (Phi x ∨ Psi x) <[- x -]> (Chi x ∨ Theta x).
 Proof.
-Admitted.
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
+  assert (S1 : ((Phi x <[- x -]> Chi x) ∧ ((Psi x <[- x -]> Theta x)))
+    -> ((Phi X <-> Chi X) /\ (Psi X <-> Theta X))).
+  {
+    exact (n10_14 (fun x => Phi x <-> Chi x) 
+      (fun x => Psi x <-> Theta x) X).
+  }
+  assert (S2 : ((Phi x <[- x -]> Chi x) ∧ ((Psi x <[- x -]> Theta x)))
+    -> ((Phi X \/ Psi X) <-> (Chi X \/ Theta X))).
+  {
+    pose proof (n4_39 (Phi X) (Psi X) (Chi X) (Theta X)) as n4_39.
+    now Syll n4_39 S1 S2.
+  }
+  assert (S3 : ((Phi x <[- x -]> Chi x) ∧ ((Psi x <[- x -]> Theta x)))
+    → (Phi x ∨ Psi x) <[- x -]> (Chi x ∨ Theta x)).
+  {
+    pose proof (n10_11 X
+      (fun x0 =>
+        ((Phi x <[- x -]> Chi x) ∧ ((Psi x <[- x -]> Theta x)))
+          -> ((Phi x0 \/ Psi x0) <-> (Chi x0 \/ Theta x0)))) 
+      as n10_11.
+    MP S2 n10_11.
+    pose proof (n10_21
+      (fun x0 => ((Phi x0 \/ Psi x0) <-> (Chi x0 \/ Theta x0)))
+      ((Phi x <[- x -]> Chi x) ∧ ((Psi x <[- x -]> Theta x)))
+    ) as n10_21.
+    now rewrite -> n10_21 in n10_11.
+  }
+  exact S3.
+Qed.
 
 Theorem n10_412 (Phi Psi : Prop → Prop) :
   (Phi x <[- x -]> Psi x) ↔ (¬ Phi x <[- x -]> ¬ Psi x).
 Proof.
-Admitted.
+  set (X := Real "x").
+  pose proof (Transp4_11 (Phi X) (Psi X)) as Transp4_11.
+  pose proof (n10_11 X (fun x =>
+    (Phi x ↔ Psi x) ↔ (¬ Phi x ↔ ¬ Psi x))) as n10_11.
+  MP n10_11 Transp4_11.
+  pose proof (n10_271 (fun x => Phi x ↔ Psi x) 
+    (fun x => ¬ Phi x ↔ ¬ Psi x)) as n10_271.
+  now MP n10_11 n10_271.
+Qed.
 
 Theorem n10_413 (Phi Psi Chi Theta : Prop → Prop) :
   ((Phi x <[- x -]> Chi x) ∧ ((Psi x <[- x -]> Theta x)))
   → (Phi x → Psi x) <[- x -]> (Chi x → Theta x).
 Proof.
-Admitted.
+  (* TOOLS *)
+  set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
+    as Impl1_01a.
+  (* ******** *)
+  assert (S1 : ((Phi x <[- x -]> Chi x) ∧ ((Psi x <[- x -]> Theta x)))
+  -> ((~Phi x) \/ Psi x) <[- x -]> ((~Chi x) \/ Theta x)).
+  {
+    pose proof (n10_411 (fun x => ~ Phi x) Psi 
+      (fun x => ~ Chi x) Theta) as n10_411.
+    simpl in n10_411.
+    pose proof (n10_412 Phi Chi) as n10_412.
+    now rewrite <- n10_412 in n10_411.
+  }
+  assert (S2 : ((Phi x <[- x -]> Chi x) ∧ ((Psi x <[- x -]> Theta x)))
+    → (Phi x → Psi x) <[- x -]> (Chi x → Theta x)).
+  { now setoid_rewrite <- Impl1_01a in S1. }
+  exact S2.
+Qed.
 
 Theorem n10_414 (Phi Psi Chi Theta : Prop → Prop) :
   ((Phi x <[- x -]> Chi x) ∧ ((Psi x <[- x -]> Theta x)))
   → (Phi x ↔ Psi x) <[- x -]> (Chi x ↔ Theta x).
 Proof.
+  
 Admitted.
 
 Theorem n10_42 (Phi Psi : Prop → Prop) :
