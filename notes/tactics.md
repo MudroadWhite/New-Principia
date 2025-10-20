@@ -34,6 +34,11 @@ TODO:
 
 Alternatives to mere deductions and substitutions, and how they works
 
+5. If theorem is `<->`, we can use `rewrite`. State possible cases (->, <->) and what theorems will they involve in original proof
+
+6. `now` to simplify some places
+
+
 TODO: 
 - state that the goal is to simplify the proof
 - collect alternatives that replaced `Syll` and `MP`
