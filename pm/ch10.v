@@ -1509,24 +1509,135 @@ Theorem n10_414 (Phi Psi Chi Theta : Prop → Prop) :
   ((Phi x <[- x -]> Chi x) ∧ ((Psi x <[- x -]> Theta x)))
   → (Phi x ↔ Psi x) <[- x -]> (Chi x ↔ Theta x).
 Proof.
-  
-Admitted.
+  (* TOOLS *)
+  set (λ P0 Q0 : Prop, eq_to_equiv (P0 ↔ Q0) ((P0 → Q0) ∧ (Q0 → P0)) 
+    (Equiv4_01 P0 Q0)) as Equiv4_01a.
+  (* ******** *)
+  assert (S1 : ((Phi x <[- x -]> Chi x) ∧ ((Psi x <[- x -]> Theta x)))
+    -> ((Psi x -> Phi x) <[- x -]> (Theta x -> Chi x))).
+  {
+    pose proof (n10_413 Psi Phi Theta Chi) as n10_413.
+    (* as always, ignore some chores *)
+    now rewrite -> n4_3 in n10_413 at 1.
+  }
+  assert (S2 : ((Phi x <[- x -]> Chi x) ∧ ((Psi x <[- x -]> Theta x)))
+    → (Phi x ↔ Psi x) <[- x -]> (Chi x ↔ Theta x)).
+  {
+    pose proof (n10_413 Phi Psi Chi Theta) as n10_413.
+    assert (C1 :
+      (( Phi x<[-x-]>Chi x ) ∧  Psi x<[-x-]>Theta x  →  
+        (Psi x → Phi x)<[-x-]>(Theta x → Chi x))
+      /\
+      (( Phi x<[-x-]>Chi x ) ∧  Psi x<[-x-]>Theta x  →  
+        (Phi x → Psi x)<[-x-]>(Chi x → Theta x) )).
+    { now Conj S1 n10_413 C1. }
+    pose proof (n10_4
+      (fun x => Psi x → Phi x)
+      (fun x => Phi x → Psi x)
+      (fun x => Theta x → Chi x)
+      (fun x => Chi x → Theta x)
+      ) as n10_4.
+    pose proof (n4_76
+      (( Phi x<[-x-]>Chi x ) ∧  Psi x<[-x-]>Theta x)
+      ((Psi x → Phi x)<[-x-]>(Theta x → Chi x))
+      ((Phi x → Psi x)<[-x-]>(Chi x → Theta x))
+      ) as n4_76.
+    rewrite -> n4_76 in C1.
+    clear S1 n10_413 n4_76.
+    Syll C1 n10_4 S1_1.
+    setoid_rewrite <- Equiv4_01a in S1_1.
+    (* Change the orders in conclusion *)
+    setoid_rewrite -> n4_21 in S1_1 at 4.
+    setoid_rewrite -> n4_21 in S1_1 at 5.
+    exact S1_1.
+  }
+  exact S2.
+Qed.
 
 Theorem n10_42 (Phi Psi : Prop → Prop) :
   (∃ x, Phi x) ∨ (∃ x, Psi x) ↔ (∃ x, Phi x ∨ Psi x).
 Proof.
-Admitted.
+  assert (S1 : ((forall x, ~ Phi x) /\ (forall x, ~ Psi x))
+    <-> (forall x, (~ Phi x) /\ (~ Psi x))).
+  {
+    pose proof (n10_22 
+      (fun x => ~ Phi x) (fun x => ~ Psi x)) as n10_22.
+    now symmetry in n10_22.
+  }
+  assert (S2 : (~((forall x, ~ Phi x) /\ (forall x, ~ Psi x)))
+    <-> (~(forall x, (~ Phi x) /\ (~ Psi x)))).
+  { now rewrite -> Transp4_11 in S1. }
+  assert (S3 : ((~(forall x, ~ Phi x)) \/ (~(forall x, ~ Psi x)))
+    <-> (~(forall x, ~(Phi x \/  Psi x)))).
+  {
+    rewrite -> n4_51 in S2.
+    setoid_rewrite -> n4_56 in S2.
+    (* n10_271 ignored - does it have something to do with 
+      `setoid_rewrite`?! *)
+    exact S2.
+  }
+  assert (S4 : (∃ x, Phi x) ∨ (∃ x, Psi x) ↔ (∃ x, Phi x ∨ Psi x)).
+  {
+    setoid_rewrite ->  n10_253_alt in S3.
+    now setoid_rewrite <- n4_13 in S3.
+  }
+  exact S4.
+Qed.
 
 Theorem n10_43 (Phi Psi : Prop → Prop) (X : Prop) :
-  (Phi z <[- z -]> Psi z ∧ Phi X) ↔
-  (Phi z <[- z -]> Psi z ∧ Psi X).
+  ((Phi z <[- z -]> Psi z) ∧ Phi X) ↔
+  ((Phi z <[- z -]> Psi z) ∧ Psi X).
 Proof.
-Admitted.
+  assert (S1 : (Phi z <[- z -]> Psi z) -> (Phi X <-> Psi X)).
+  { now apply n10_1. }
+  assert (S2 : ((Phi z <[- z -]> Psi z) ∧ Phi X) ↔
+    ((Phi z <[- z -]> Psi z) ∧ Psi X)).
+  { now rewrite -> n5_32 in S1. }
+  exact S2.
+Qed.
 
 Theorem n10_5 (Phi Psi : Prop → Prop) :
   (∃ x, Phi x ∧ Psi x) → ((∃ x, Phi x) ∧ (∃ x, Psi x)).
 Proof. 
-Admitted.
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
+  assert (S1 : forall x, (Phi x /\ Psi x) -> Phi x).
+  {
+    pose proof (Simp3_26 (Phi X) (Psi X)) as Simp3_26.
+    pose proof (n10_11 X (fun x => Phi x ∧ Psi x → Phi x)) as n10_11.
+    now MP Simp3_26 n10_11.
+  }
+  assert (S2 : (exists x, (Phi x /\ Psi x)) -> (exists x, Phi x)).
+  {
+    pose proof (n10_28 (fun x => Phi x ∧ Psi x) Phi) as n10_28.
+    now MP S1 n10_28.
+  }
+  assert (S3 : forall x, (Phi x /\ Psi x) -> Psi x).
+  {
+    pose proof (Simp3_27 (Phi X) (Psi X)) as Simp3_26.
+    pose proof (n10_11 X (fun x => Phi x ∧ Psi x → Psi x)) as n10_11.
+    now MP Simp3_27 n10_11.
+  }
+  assert (S4 : (exists x, (Phi x /\ Psi x)) -> (exists x, Psi x)).
+  {
+    pose proof (n10_28 (fun x => Phi x ∧ Psi x) Psi) as n10_28.
+    now MP S3 n10_28.
+  }
+  assert (S5 : (∃ x, Phi x ∧ Psi x) → ((∃ x, Phi x) ∧ (∃ x, Psi x))).
+  {
+    assert (C1 : ((∃ x : Prop, Phi x ∧ Psi x) → ∃ x : Prop, Phi x)
+      /\
+      ((∃ x : Prop, Phi x ∧ Psi x) → ∃ x : Prop, Psi x)).
+    { now Conj S2 S4 C1. }
+    pose proof (Comp3_43
+      (∃ x : Prop, Phi x ∧ Psi x)
+      (∃ x : Prop, Phi x)
+      (∃ x : Prop, Psi x)) as Comp3_43.
+    now MP C1 Comp3_43.
+  }
+  exact S5.
+Qed.
 
 Theorem n10_51 (Phi Psi : Prop → Prop) :
   ¬(∃ x, Phi x ∧ Psi x) ↔ (Phi x -[ x ]> ¬ Psi x).
