@@ -1133,13 +1133,106 @@ Proof.
   (* TOOLS *)
   set (X := Real "x").
   (* ******** *)
-  assert (S1 : )
-Admitted.
+  assert (S1 : (P /\ Phi X) -> P).
+  { exact (Simp3_26 P (Phi X)). }
+  assert (S2 : forall x, (P /\ Phi x) -> P).
+  {
+    pose proof (n10_11 X (fun x => ((P /\ Phi x) -> P))) as n10_11.
+    now MP n10_11 S1.
+  }
+  assert (S3 : (exists x, (P /\ Phi x)) -> P).
+  {
+    (* pose proof n10_23 as n10_23. *)
+    pose proof (n10_23 (fun x => P /\ Phi x) P) as n10_23.
+    simpl in n10_23.
+    (* omit the MP we should use *)
+    now rewrite -> n10_23 in S2.
+  }
+  assert (S4 : (P /\ Phi X) -> (Phi X)).
+  { exact (Simp3_27 P (Phi X)). }
+  assert (S5 : forall x, (P /\ Phi x) -> Phi x).
+  {
+    pose proof (n10_11 X (fun x => ((P /\ Phi x) -> Phi x))) as n10_11.
+    now MP n10_11 S4.
+  }
+  assert (S6 : (exists x, P /\ Phi x) -> (exists x, Phi x)).
+  {
+    pose proof (n10_28 (fun x => P /\ Phi x) Phi) as n10_28.
+    now MP n10_28 S5.
+  }
+  assert (S7 : P -> (Phi X -> (P /\ Phi X))).
+  { exact (n3_2 P (Phi X)). }
+  assert (S8 : P -> (forall x, Phi x -> (P /\ Phi x))).
+  {
+    pose proof (n10_11 X (fun x => Phi x -> (P /\ Phi x))) as n10_11.
+    simpl in n10_11.
+    Syll n10_11 S7 S8.
+    (* n10_21 ignored - the difference isn't significant *)
+    exact S8.
+  }
+  assert (S9 : P -> ((exists x, Phi x) -> (exists x, P /\ Phi x))).
+  {
+    pose proof (n10_28 Phi (fun x => P /\ Phi x)) as n10_28.
+    now Syll n10_28 S8 S9.
+  }
+  assert (S10 : (∃ x, P ∧ Phi x) ↔ P ∧ (∃ x, Phi x)).
+  {
+    clear S1 S2 S4 S5 S7 S8.
+    pose proof (Imp3_31 P ((∃ x : Prop, Phi x)) (∃ x : Prop, P ∧ Phi x))
+      as Imp3_31.
+    MP Imp3_31 S9.
+    assert (C1 : ((∃ x : Prop, P ∧ Phi x) → P) 
+      /\ ((∃ x : Prop, P ∧ Phi x) → ∃ x : Prop, Phi x)).
+    { now Conj S3 S6 C1. }
+    pose proof (Comp3_43 (∃ x : Prop, P ∧ Phi x) P (∃ x : Prop, Phi x))
+      as Comp3_43.
+    MP Comp3_43 C1.
+    assert (C2 : ((∃ x : Prop, P ∧ Phi x) → P ∧ ∃ x : Prop, Phi x)
+      /\
+      (P ∧ (∃ x : Prop, Phi x) → ∃ x : Prop, P ∧ Phi x)).
+    { now Conj Comp3_43 Imp3_31 C2. }
+    now Equiv C2.
+  }
+  exact S10.
+Qed.
 
 Theorem n10_36 (Phi : Prop → Prop) (P : Prop) :
   (∃ x, Phi x ∨ P) ↔ (∃ x, Phi x) ∨ P.
 Proof.
-Admitted.
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
+  assert (S1 : (Phi X \/ P) <-> ((~Phi X) -> P)).
+  {
+    pose proof (n4_64 (Phi X) P) as n4_64.
+    now symmetry in n4_64.
+  }
+  assert (S2 : forall x, (Phi x \/ P) <-> ((~Phi x) -> P)).
+  {
+    pose proof (n10_11 X (fun x => (Phi x \/ P) <-> ((~Phi x) -> P))) 
+      as n10_11.
+    now MP n10_11 S1.
+  }
+  assert (S3 : (exists x, Phi x \/ P) <-> (exists x, (~Phi x) -> P)).
+  {
+    pose proof (n10_281 (fun x => Phi x \/ P) (fun x => (~Phi x) -> P)) 
+      as n10_281.
+    now MP n10_281 S2.
+  }
+  assert (S4 : (exists x, Phi x \/ P) <-> ((forall x, ~Phi x) -> P)).
+  {
+    (* Same as previous attempts, here we directly use `rewrite` rather than
+    going on all the decomposing and recomposing *)
+    now rewrite -> n10_34 in S3.
+  }
+  assert (S5 : (exists x, Phi x \/ P) <-> ((∃ x, Phi x) ∨ P)).
+  {
+    rewrite -> n4_6 in S4.
+    rewrite <- n10_01 in S4.
+    exact S4.
+  }
+  exact S5.
+Qed.
 
 Theorem n10_37 (Phi : Prop → Prop) (P : Prop) :
   (∃ x, P → Phi x) ↔ (P → ∃ x, Phi x).
