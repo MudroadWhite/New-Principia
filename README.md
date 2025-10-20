@@ -4,6 +4,7 @@ Continuation of [Principia Mathematica's formalization](https://github.com/Logic
 This project is currently focused on the following parts:
 - [x] Chapter 9
 - [x] Chapter 10
+- [ ] Chapter 11
 
 ## Why working on it
 - Principia Mathematica has a stable version
