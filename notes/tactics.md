@@ -20,7 +20,7 @@ Proof.
 Qed.
 ```
 
-There are several reasons for organizing proofs like this. The most significant reason is readability. Besides, there might be cases where we have several equivalant forms to represent a proposition, i.e. `(fun x => x) x` is not very far from just `x` or `(fun y => y) x`. When we're using tactics to push on the proof, we might just get a result that is equivalent to `x`, but a further reorganization into `x` might be extremely tedious. One last thing for `assert` is that these subproofs help us limit the theorems to be within the step. When the subproofs have been proven, what you will see in the proof window is only the `S1` `S2` steps without those intermediate theorems being used, leaving the proof window extremely clean.
+There are several reasons for organizing proofs like this. The most significant one is readability. Besides, we can have several equivalant forms for a proposition, i.e. `(fun x => x) x` is not very far from just `x` or `(fun y => y) x`. When we're using tactics to push on the proof, we might just get a result that is equivalent to `x`, but a further reorganization into `x` might be extremely tedious. By using `assert X` we're actually only require the proof ends at a proposition equivalent to `X`, and skip the tedious transformations into `X`. One last thing for `assert` is that it help us limit the scope of theorems we use. When we leave the scope, these theorems are automatically cleared away, and only the results as `S1` `S2` are being pertained. As a result, the proof window becomes extremely clean.
 
 TODO:
 
