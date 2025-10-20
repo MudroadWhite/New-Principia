@@ -1,6 +1,28 @@
-TODO: 
+# Tactics
 
-0. `assert` as general structure
+This chapter describes the tactics we generally use in further detail.
+
+## `assert` for intermediate steps
+When proofs are "long enough", the first tactic that should come to one's view should be `assert` to specify the intermediate steps. This tactics modularizes the proofs so that they usually have the following structure:
+
+```Coq
+Proof.
+  assert (S1 : x + y = z).
+  {
+    (* subproof for S1, where "S" here stands for step *)
+  }
+  assert (S2 : x + y = z -> x + y = z).
+  {
+    (* subproof for S2 *)
+  }
+  (* and so on... *)
+  exact Sn.
+Qed.
+```
+
+There are several reasons for organizing proofs like this. The most significant reason is readability. Besides, there might be cases where we have several equivalant forms to represent a proposition, i.e. `(fun x => x) x` is not very far from just `x` or `(fun y => y) x`. When we're using tactics to push on the proof, we might just get a result that is equivalent to `x`, but a further reorganization into `x` might be extremely tedious. One last thing for `assert` is that these subproofs help us limit the theorems to be within the step. When the subproofs have been proven, what you will see in the proof window is only the `S1` `S2` steps without those intermediate theorems being used, leaving the proof window extremely clean.
+
+TODO:
 
 1. If theorem is a `->`, only `Syll` and `MP` should be used (refer to SEP)
 
