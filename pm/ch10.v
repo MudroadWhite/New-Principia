@@ -10,6 +10,14 @@ Require Import PM.pm.ch9.
 to `∀ x, p x→ q x`. In order to do this, we mostly don't use the 
 definitions in chapter 9 and develop a new way to interpret `∃` 
 instead.
+
+Notes on this chapter:
+1. There are several places in this chapter where n10_271 is used, 
+but for all these occurrences I used `setoid_rewrite` to finish the 
+proof instantly and n10_271 is completely unused. Idk how should 
+n10_271 be used
+2. At the very end of this chapter, n10_57 seems to contain one 
+error that I cannot prove.
 *)
 
 Notation " A -[ x : P ]> B " := (∀ (x : P), A → B)
