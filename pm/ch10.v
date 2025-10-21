@@ -12,25 +12,31 @@ definitions in chapter 9 and develop a new way to interpret `∃`
 instead.
 *)
 
+Declare Scope single_app_impl.
+Declare Scope single_app_equiv.
+
 Notation " A -[ x : P ]> B " := (∀ (x : P), A → B)
   (at level 85, x name, right associativity,
   format " '[' A '/' '[ ' -[ x : P ]> ']' '/' B ']' ")
-  : type_scope.
+  : single_app_impl.
+
+Open Scope single_app_impl.
+Open Scope single_app_equiv.
 
 Notation " A -[ x ]> B " := (( A -[ x : Prop ]> B ))
   (at level 80, x name, right associativity,
   format " A '/' '[ ' -[ x ]> ']' '/' B ")
-  : type_scope.
+  : single_app_impl.
 
 Notation " A <[- x : P -]> B " := (∀ (x : P), A ↔ B)
   (at level 85, x name, right associativity,
   format " '[' A '/' '[ ' <[- x : P -]> ']' '/' B ']' ")
-  : type_scope.
+  : single_app_equiv.
 
 Notation " A <[- x -]> B " := (A <[- x : Prop -]> B)
   (at level 80, x name, right associativity,
   format " A '/' '[ ' <[- x -]> ']' '/' B ")
-  : type_scope.
+  : single_app_equiv.
 
 Definition n10_01 (φ : Prop → Prop) : 
   (∃ x, φ x) = ¬ (∀ x, ¬ φ x). Admitted.
@@ -1839,3 +1845,6 @@ Proof.
   }
   exact S4.
 Admitted.
+
+Close Scope single_app_impl.
+Close Scope single_app_equiv.
