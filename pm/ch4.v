@@ -252,7 +252,7 @@ Proof.
   pose proof (Comp3_43 ((P↔Q)∧(Q↔R)) (P→R) (R→P)) as Comp3_43a.
   MP Comp3_43a C.
   replace ((P→R) ∧ (R→P)) with (P↔R) 
-    in Comp3_43a.
+    in Comp3_43a by apply Equiv4_01.
   exact Comp3_43a.
 Qed.
 

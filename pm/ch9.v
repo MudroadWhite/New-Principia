@@ -17,6 +17,11 @@ several `∀`s being concated with some binary logic operators.
 
 The beginning of chapter 10 said that the implications in chapter 9 are called 
 "material implication"s, and the results will be extended to "formal implication"s.
+
+Notes on this chapter:
+Simply put, there are still several places where I might have oversimplified the proofs
+with Coq tactics. I'm still figuring out if these tactics are within original proof's 
+routine.
 *)
 
 Definition n9_01 (φ : Prop → Prop) :
