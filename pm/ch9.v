@@ -1,8 +1,11 @@
 Require Import PM.pm.lib.
 Require Import PM.pm.ch1.
 Require Import PM.pm.ch2.
+Require Import PM.pm.ch3.
 Require Import PM.pm.ch4.
 Require Import PM.pm.ch5.
+
+(* TODO: from Impl1_01 derive Impl1_01a using n9_13 *)
 
 (* 
 Every propositions, variables in chapter 9 are supposed to be elementary propositions,
@@ -302,21 +305,11 @@ Proof.
   assert (S8 : (∀ x, φ x → ψ x) → (∃ x, φ x) → (∃ x, ψ x)).
   { 
     rewrite <- n9_01, <- Impl1_01 in S7.
-    (* n9_01 ignored *)
-    (* TODO: eliminate this *)
-    replace (∀ y, ¬ φ y) with (¬ ¬ (∀ y, ¬ φ y)) in S7.
-    2: {
-      apply propositional_extensionality.
-      now rewrite <- n4_13.
-    }
+    pose proof (n4_13 (∀ y, ¬ φ y)) as n4_13a.
+    rewrite -> n4_13a in S7.
     rewrite <- n9_02, <- Impl1_01 in S7.
-    (* TODO: eliminate this *)
-    replace (¬ ¬ ∃ x, φ x) with (∃ x, φ x) in S7.
-    2: {
-      apply propositional_extensionality. 
-      now rewrite <- n4_13.
-    }
-    exact S7.
+    pose proof (n4_13 (∃ x, φ x)) as n4_13b.
+    now rewrite <- n4_13b in S7.
   }
   exact S8.
 Qed.
@@ -623,6 +616,16 @@ Qed.
 Theorem n9_4 (φ : Prop → Prop) (P Q : Prop) : 
   P ∨ Q ∨ (∀ x, φ x) → Q ∨ P ∨ (∀ x, φ x).
 Proof. 
+  (* TOOLS *)
+  assert (Assoc_Equiv : ∀ P Q R : Prop, (P ∨ Q) ∨ R <-> P ∨ Q ∨ R).
+  {
+    intros P1 Q1 R1.
+    pose proof (n2_32 P1 Q1 R1) as n2_32.
+    pose proof (n2_31 P1 Q1 R1) as n2_31.
+    Conj n2_32 n2_31 C1.
+    now Equiv C1.
+  }
+  (* ******** *)
   assert (S1 : (∀ x, P ∨ (Q ∨ φ x)) → (∀ x, Q ∨ (P ∨ φ x))).
   {
     pose proof (fun x => (Assoc1_5 P Q (φ x))) as Assoc1_5.
@@ -631,21 +634,15 @@ Proof.
     exact n9_21.
   }
   assert (S2 : P ∨ Q ∨ (∀ x, φ x) → Q ∨ P ∨ (∀ x, φ x)).
-  { 
-    replace (∀ x, P ∨ Q ∨ φ x) with (∀ x, (P ∨ Q) ∨ φ x) in S1.
-    replace (∀ x, Q ∨ P ∨ φ x) with (∀ x, (Q ∨ P) ∨ φ x) in S1.
-    (* TODO: make a bidirectional version of these propositions *)
-    2, 3: (
-      apply propositional_extensionality; split;
-      intros H x; pose proof (H x) as H0; [ apply n2_32 | apply n2_31 ]; exact H0
-    ).
+  {
+    repeat setoid_rewrite <- Assoc_Equiv in S1.
     rewrite <- (n9_04 φ (P ∨ Q)), <- (n9_04 φ (Q ∨ P)) in S1.
-    (* Here is a demonstration where we use `Syll` instead of `replace`.
-      In the future we might still stick to `replace` for simplicity.
-      All `replace` tactics can be eventually rewritten as `Syll`s with 
-      `MP`s, since`Syll` works like a binary search on the sub term and 
-      performs the replacements.
-      We have the `replace` alternative commented out for comparison.
+    (* A demonstration where we use `Syll` to perform a single-direction 
+      rewrite. We can alternative use `replace`, or `rewrite` using a 
+      equivalence relation.
+      In the future, we want to use as least `replace` as possible, and
+      optionally `rewrite on equiv`, as it requires relatively lowest 
+      setups
     *)
     assert (Sy1 : P ∨ Q ∨ (∀ x, φ x) → Q ∨ P ∨ ∀ x, φ x).
     {
@@ -769,13 +766,10 @@ Proof.
   (* ******** *)
   assert (S1 : (P → Q) → ((P ∨ φ Y) → (Q ∨ φ Y))).
   { 
-    (* *9.21 ignored *)
+    (* The most optimal way here is still using `Syll` on the proposition, 
+    but we show how it can also be done with a `rewrite` on a `<->` relation  *)
     pose proof (Sum1_6 (φ Y) P Q) as Sum1_6.
-    (* TODO: rewrite with `Syll` *)
-    replace (φ Y ∨ P) with (P ∨ φ Y) in Sum1_6.
-    replace (φ Y ∨ Q) with (Q ∨ φ Y) in Sum1_6.
-      2, 3: (apply propositional_extensionality; split; apply Perm1_4).
-    exact Sum1_6.
+    now rewrite -> (n4_31 (φ Y) P), -> (n4_31 (φ Y) Q) in Sum1_6.
   }
   assert (S2 : (P → Q) → ∃ x, (P ∨ φ x) → (Q ∨ φ Y)).
   {
@@ -812,12 +806,8 @@ Proof.
   (* ******** *)
   assert (S1 : (P → Q) → ((P ∨ φ Y) → (Q ∨ φ Y))).
   { 
-    (* *9.21 ignored *)
     pose proof (Sum1_6 (φ Y) P Q) as Sum1_6.
-    replace (φ Y ∨ P) with (P ∨ φ Y) in Sum1_6.
-    replace (φ Y ∨ Q) with (Q ∨ φ Y) in Sum1_6.
-      2, 3: (apply propositional_extensionality; split; apply Perm1_4).
-    exact Sum1_6.
+    now rewrite -> (n4_31 (φ Y) P), -> (n4_31 (φ Y) Q) in Sum1_6.
   }
   assert (S2 : (P → Q) → ∃ y, (P ∨ φ Y) → (Q ∨ φ y)).
   {
@@ -838,14 +828,12 @@ Proof.
   }
   assert (S5 : (P → Q) → (∃ x, P ∨ φ x) → (∃ y, Q ∨ φ y)).
   { 
-    (* TODO: eliminate this *)
-    replace (∀ x, ¬ (P ∨ φ x)) with (¬ ¬ ∀ x, ¬ (P ∨ φ x)) in S4
-      by (apply propositional_extensionality; now rewrite <- n4_13).
+    pose proof (n4_13 (∀ x, ¬ (P ∨ φ x))) as n4_13a.
+    rewrite -> n4_13a in S4.
     setoid_rewrite <- Impl1_01a in S4.
     rewrite <- n9_02 in S4.
-    replace (¬ ¬ (∃ x, P ∨ φ x)) with (∃ x, P ∨ φ x) in S4
-      by (apply propositional_extensionality; now rewrite <- n4_13).
-    exact S4.
+    pose proof (n4_13 (∃ x, P ∨ φ x)) as n4_13b.
+    now rewrite <- n4_13b in S4.
   }
   assert (S6 : (P → Q) → (P ∨ ∃ x, φ x) → (Q ∨ ∃ y, φ y)).
   { repeat rewrite <- n9_06 in S5. exact S5. }
@@ -863,10 +851,7 @@ Proof.
   assert (S1 : (P → φ X) → ((P ∨ R) → (φ X ∨ R))).
   { 
     pose proof (Sum1_6 R P (φ X)) as Sum1_6.
-    replace (R ∨ P) with (P ∨ R) in Sum1_6.
-    replace (R ∨ φ X) with (φ X ∨ R) in Sum1_6.
-      2, 3: (apply propositional_extensionality; split; apply Perm1_4).
-    exact Sum1_6.
+    now rewrite -> (n4_31 R P), -> (n4_31 R (φ X)) in Sum1_6.
   }
   assert (S2 : (∀ x, P → φ x) → (∀ x, (P ∨ R) → (φ x ∨ R))).
   { 
@@ -882,19 +867,11 @@ Proof.
     rewrite <- (n9_04 φ (¬P)) in S2.
     setoid_rewrite <- Impl1_01a in S2.
     setoid_rewrite -> Impl1_01a in S2 at 3.
-    replace (∀ x, ¬ (P ∨ R) ∨ φ x ∨ R) 
-      with (∀ x, (φ x ∨ R) ∨ (¬ (P ∨ R))) in S2.
-    2: { 
-      apply propositional_extensionality; split; 
-      intros H x; apply Perm1_4; exact (H x).
-    }
-    rewrite <- (n9_03 (fun x => φ x ∨ R) (¬ (P ∨ R))) in S2.
-    replace ((∀ x, φ x ∨ R) ∨ ¬ (P ∨ R))
-      with (¬ (P ∨ R) ∨ (∀ x, φ x ∨ R)) in S2
-      by (apply propositional_extensionality; split; apply Perm1_4).
+    setoid_rewrite -> n4_31 in S2.
+    rewrite <- (n9_03 (fun x => φ x ∨ R) (¬ (P ∨ R))),
+            -> n4_31 in S2.
     setoid_rewrite <- Impl1_01a in S2.
-    rewrite <- (n9_03 φ R) in S2.
-    exact S2.
+    now rewrite <- (n9_03 φ R) in S2.
   }
   exact S3.
 Qed.
@@ -910,10 +887,7 @@ Proof.
   assert (S1 : (P → φ X) → ((P ∨ R) → (φ X ∨ R))).
   { 
     pose proof (Sum1_6 R P (φ X)) as Sum1_6.
-    replace (R ∨ P) with (P ∨ R) in Sum1_6.
-    replace (R ∨ φ X) with (φ X ∨ R) in Sum1_6.
-      2, 3: (apply propositional_extensionality; split; apply Perm1_4).
-    exact Sum1_6.
+    now rewrite -> (n4_31 R P), ->(n4_31 R (φ X)) in Sum1_6.
   }
   assert (S2 : (∃ x, P → φ x) → (∃ x, (P ∨ R) → (φ x ∨ R))).
   {
@@ -954,10 +928,7 @@ Proof.
   assert (S1 : (φ X → Q) → ((φ X ∨ R) → (Q ∨ R))).
   { 
     pose proof (Sum1_6 R (φ X) Q) as Sum1_6.
-    replace (R ∨ Q) with (Q ∨ R) in Sum1_6.
-    replace (R ∨ φ X) with (φ X ∨ R) in Sum1_6.
-      2, 3: (apply propositional_extensionality; split; apply Perm1_4).
-    exact Sum1_6.
+    now rewrite -> (n4_31 R Q), -> (n4_31 R (φ X)) in Sum1_6.
   }
   assert (S2 : (∃ x, (φ x → Q)) → (∃ x, (φ x ∨ R) → (Q ∨ R))).
   { 
@@ -989,10 +960,7 @@ Proof.
   assert (S1 : (φ X → Q) → ((φ X ∨ R) → (Q ∨ R))).
   { 
     pose proof (Sum1_6 R (φ X) Q) as Sum1_6.
-    replace (R ∨ Q) with (Q ∨ R) in Sum1_6.
-    replace (R ∨ φ X) with (φ X ∨ R) in Sum1_6.
-      2, 3: (apply propositional_extensionality; split; apply Perm1_4).
-    exact Sum1_6.
+    now rewrite -> (n4_31 R Q), ->(n4_31 R (φ X)) in Sum1_6.
   }
   assert (S2 : (∀ x, (φ x → Q)) → (∀ x, (φ x ∨ R) → (Q ∨ R))).
   { 
@@ -1047,6 +1015,6 @@ Admitted.
 (* We currently ignore the restriction that they are efuncs since is_efunc is bugged *)
 Theorem n9_63 (φ ψ : Prop → Prop → Prop) (X0 Y0 : Prop) :
   IsSameType.t (φ X0 Y0) (ψ X0 Y0)
-  → ((∀ y, φ X0 y) \/ (∀ z, ψ X0 z)).
+  → ((∀ y, φ X0 y) ∨ (∀ z, ψ X0 z)).
 Proof.
 Admitted.
