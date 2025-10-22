@@ -105,8 +105,9 @@ to satisfy the function in question. *)
   - If φ (over elementary propositions?) can be defined and φY is always true
   - and if X is a real variable
   - then we can construct a 1st order proposition made up from φ *)
+
 Definition n9_13 (φ : Prop → Prop) (Y : Prop) : 
-  φ Y = (∀ x , φ x). Admitted.
+  φ Y -> (∀ x , φ x). Admitted.
 (* ******** *)
 
 (* Primitive propositions for identifying propositions "of the same type" *)
@@ -301,12 +302,15 @@ Proof.
   assert (S8 : (∀ x, φ x → ψ x) → (∃ x, φ x) → (∃ x, ψ x)).
   { 
     rewrite <- n9_01, <- Impl1_01 in S7.
+    (* n9_01 ignored *)
+    (* TODO: eliminate this *)
     replace (∀ y, ¬ φ y) with (¬ ¬ (∀ y, ¬ φ y)) in S7.
     2: {
-      symmetry. apply propositional_extensionality. 
-      exact (n4_13 (∀ y, ¬ φ y)).
+      apply propositional_extensionality.
+      now rewrite <- n4_13.
     }
     rewrite <- n9_02, <- Impl1_01 in S7.
+    (* TODO: eliminate this *)
     replace (¬ ¬ ∃ x, φ x) with (∃ x, φ x) in S7.
     2: {
       apply propositional_extensionality. 
@@ -388,11 +392,17 @@ Proof.
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
+  set (λ (φ0 : Prop → Prop) (P0 : Prop), 
+    eq_to_equiv ((∃ x, φ0 x) ∨ P0) (∃ x, φ0 x ∨ P0) (n9_05 φ0 P0))
+    as n9_05a.
   set (X := Real "X").
   (* ******** *)
   assert (S1 : ∀ y, φ X ∨ φ y → ∃ z, φ z).
   {
     pose proof (n9_11 φ X X) as n9_11. 
+    (* `n9_13` is frequently used in this chapter. Originally we should do
+    in a way just as chapter 10. Currently we're using `replace` which is not 
+    ideal. *)
     pose proof (n9_13 (fun y => (φ X ∨ φ y) → ∃ z, φ z) X) as n9_13.
     replace (φ X ∨ φ X → ∃ z, φ z) 
       with (∀ y , φ X ∨ φ y → ∃ z, φ z) in n9_11.
@@ -417,23 +427,12 @@ Proof.
   }
   assert (S5 : ((∃ x, φ x) ∨ (∃ y, φ y)) → (∃ x, φ x)).
   {
-    (* n9_22?! *)
-    (* Can we use Syll with Perm1_4 here? *)
-    pose (fun x y => Perm1_4 (φ x) (φ y)) as f_Perm1_4.
-    replace (∃ x y, φ x ∨ φ y) with ((∃ x y, φ y ∨ φ x)) in S4.
-    2: {
-      apply propositional_extensionality.
-      now setoid_rewrite <- or_comm at 1.
-    }
-    replace (∃ x, ∃ y, φ y ∨ φ x) with ((∃ x, φ x) ∨ (∃ y, φ y)) in S4.
-    2: {
-      set (λ (φ0 : Prop → Prop) (P0 : Prop), 
-        eq_to_equiv ((∃ x, φ0 x) ∨ P0) (∃ x, φ0 x ∨ P0) (n9_05 φ0 P0))
-        as n9_05a.
-      apply propositional_extensionality.
-      setoid_rewrite <- n9_05a.
-      now rewrite -> n9_06.
-    }
+    (* TODO: Make a demonstration.
+    - derive the `exists` form from ordinary propositions
+    - maybe use `Syll` for the result *)
+    setoid_rewrite <- n4_31 in S4.
+    setoid_rewrite <- n9_05a in S4.
+    setoid_rewrite <- n9_06 in S4.
     exact S4.
   }
   exact S5.
@@ -640,6 +639,7 @@ Proof.
   { 
     replace (∀ x, P ∨ Q ∨ φ x) with (∀ x, (P ∨ Q) ∨ φ x) in S1.
     replace (∀ x, Q ∨ P ∨ φ x) with (∀ x, (Q ∨ P) ∨ φ x) in S1.
+    (* TODO: make a bidirectional version of these propositions *)
     2, 3: (
       apply propositional_extensionality; split;
       intros H x; pose proof (H x) as H0; [ apply n2_32 | apply n2_31 ]; exact H0
@@ -843,6 +843,7 @@ Proof.
   }
   assert (S5 : (P → Q) → (∃ x, P ∨ φ x) → (∃ y, Q ∨ φ y)).
   { 
+    (* TODO: eliminate this *)
     replace (∀ x, ¬ (P ∨ φ x)) with (¬ ¬ ∀ x, ¬ (P ∨ φ x)) in S4
       by (apply propositional_extensionality; now rewrite <- n4_13).
     setoid_rewrite <- Impl1_01a in S4.
