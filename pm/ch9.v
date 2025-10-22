@@ -129,8 +129,6 @@ Module IsSameType.
         → (U = φ X) → (V = ψ Y)
         → t U V
     | NEFuncs (φ : Prop → Prop) (X : Prop) : (is_efunc φ) 
-        (* Do we need to assert that their parameters are of the same type? *)
-        (* → t X Y *)
         → (U = φ X) → (V = ¬ φ X)
         → t U V
     | OrL (φ ψ : Prop → Prop) (X : Prop) : (is_efunc φ) → (is_efunc ψ)
@@ -153,6 +151,7 @@ End IsSameType.
 
 Definition n9_131 := IsSameType.t.
 
+(* TODO: check ch10 *)
 (* Cf p.120, *10.121 *)
 Definition n9_14 (A : Prop) (φ : Prop → Prop) (X : Prop) :
   φ X → (n9_131 X A ↔ φ A). Admitted.
@@ -164,8 +163,8 @@ Definition n9_15 (A X : Prop) (φ : Prop → Prop) :
 Admitted.
 (* ******** *)
 
-(* Contents below are supposed to prove that `∀` and `∃` deduces just like 
-  elementary propositions. First we have some setups *)
+(* Contents below are supposed to prove that `∀` and `∃` deduce just like 
+  elementary propositions. The first few theorems are some setups *)
 Theorem n9_2 (φ : Prop → Prop) (Y : Prop) : (∀ x , φ x) → φ Y.
 Proof. 
   (** Step 1 **)
@@ -305,6 +304,7 @@ Proof.
   assert (S8 : (∀ x, φ x → ψ x) → (∃ x, φ x) → (∃ x, ψ x)).
   { 
     now rewrite <- n9_01, <- Impl1_01,
+    (* TODO: examine this:are we allowed for forall propositions yet? *)
             -> (n4_13 (∀ y, ¬ φ y)),
             <- n9_02, <- Impl1_01,
             <- (n4_13 (∃ x, φ x)) in S7.
@@ -313,6 +313,7 @@ Proof.
 Qed.
 
 Theorem n9_23 (φ : Prop → Prop) : (∀ x, φ x) → (∀ x, φ x).
+(* TODO: obtain the proof in original way, restricting the variable to be only eprops *)
 (* Original proof uses Id, 9.13, 9.21 *)
 Proof. exact (Id2_08 (∀ x, φ x)). Qed.
 
