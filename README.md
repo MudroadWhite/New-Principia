@@ -2,8 +2,9 @@
 Continuation of [Principia Mathematica's formalization](https://github.com/LogicalAtomist/principia) by Landon Elkind.
 
 This project is currently focused on the following parts:
-- [x] Chapter 9
-- [x] Chapter 10
+- [x] Chapter 9 - Theorems now involves functions and quantified propositions(with single "apparent variables")
+- [x] Chapter 10 - Added a special notation for `->` and `<->` with single apparent variables
+- [ ] Chapter 11 - quantified propositions are extended to multiple apparent variables
 
 ## Why working on it
 - Principia Mathematica has a stable version
