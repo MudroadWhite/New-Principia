@@ -50,6 +50,8 @@ For just a single step on deduction, all the routine above seems pretty tedious.
 - `rewrite <- thm` on `<->` is allowed
 - The `thm` for rewrite is recommended to provided its full parameter list, but can be omitted.
 
+Some of the examples showing how they can be simplified, are provided through chapter 9 & 10.
+
 ## How to use a `=` proposition(rewrite)
 Aka. the root of all evils. A clear way how `=` proposition interacts with other types of proposition is not clearly defined. By default, the best way to apply these propositions in Rocq is through `rewrite`.
 - `rewrite ->` on `=` is allowed
