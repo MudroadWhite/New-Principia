@@ -292,3 +292,36 @@ Theorem n11_521 (Phi Psi : Prop -> Prop -> Prop) :
 Proof.
 Admitted.
 
+Theorem n11_53 (Phi Psi : Prop -> Prop) :
+  (forall x y, Phi x -> Psi y) <-> ((exists x, Phi x) -> forall y, Psi y).
+Proof.
+Admitted.
+
+Theorem n11_54 (Phi Psi : Prop -> Prop) :
+  (exists x y, Phi x /\ Psi y) 
+  <-> ((exists x, Phi x) /\ (exists y, Psi y)).
+Proof.
+Admitted.
+
+Theorem n11_55 (Phi : Prop -> Prop) (Psi : Prop -> Prop -> Prop) :
+  (exists x y, Phi x /\ Psi x y) 
+  <-> (exists x, Phi x /\ (exists y, Psi x y)).
+Proof.
+Admitted.
+
+Theorem n11_56 (Phi Psi : Prop -> Prop) :
+  ((forall x, Phi x) /\ (forall y, Psi y)) <-> (forall x y, Phi x /\ Psi y).
+Proof.
+Admitted.
+
+Theorem n11_57 (Phi : Prop -> Prop) :
+  (forall x, Phi x) <-> (forall x y, Phi x /\ Phi y).
+Proof.
+Admitted.
+
+Theorem n11_58 (Phi : Prop -> Prop) :
+  (exists x, Phi x) <-> (exists x y, Phi x /\ Phi y).
+Proof.
+Admitted.
+
+Theorem 
