@@ -90,9 +90,154 @@ Theorem n11_14 (W Z : Prop) (Phi Psi : Prop -> Prop -> Prop) :
 Proof.
 Admitted.
 
-(* WTF?!! *)
 Theorem n11_2 (Phi : Prop -> Prop -> Prop) : 
   (forall x y, Phi x y) <-> (forall y x, Phi x y).
 Proof.
 Admitted.
 
+Theorem n11_21 (Phi : Prop -> Prop -> Prop -> Prop) :
+  (forall x y z, Phi x y z) = (forall y z x, Phi x y z).
+Proof.
+Admitted.
+
+Theorem n11_22 (Phi : Prop -> Prop -> Prop) :
+  (exists x y, Phi x y) = (~ (forall x y, ~ Phi x y)).
+Proof.
+Admitted.
+
+Theorem n11_23 (Phi : Prop -> Prop -> Prop) :
+  (exists x y, Phi x y) = (exists y x, Phi x y).
+Proof.
+Admitted.
+
+Theorem n11_24 (Phi : Prop -> Prop -> Prop -> Prop) :
+  (exists x y z, Phi x y z) = (exists y x z, Phi x y z).
+Proof.
+Admitted.
+
+Theorem n11_25 (Phi : Prop -> Prop -> Prop) :
+  (~exists x y, Phi x y) = forall x y, ~ Phi x y.
+Proof.
+Admitted.
+
+Theorem n11_26 (Phi : Prop -> Prop -> Prop) :
+  (exists x, forall y, Phi x y) -> (forall y, exists x, Phi x y).
+Proof.
+Admitted.
+
+(* NOTE: here the format is slightly different from original text *)
+Theorem n11_27 (Phi : Prop -> Prop -> Prop -> Prop) :
+  ((exists x y, exists z, Phi x y z) <-> (exists x, exists y z, Phi x y z))
+  /\
+  ((exists x, exists y z, Phi x y z) <-> (exists x y z, Phi x y z)).
+Proof.
+Admitted.
+
+Theorem n11_3 (P : Prop) (Phi : Prop -> Prop -> Prop) :
+  (P -> (forall x y, Phi x y)) <-> (forall x y, P -> Phi x y).
+Proof.
+Admitted.
+
+Theorem n11_31 (Phi Psi : Prop -> Prop -> Prop) :
+  ((forall x y, Phi x y) /\ (forall x y, Psi x y))
+  <->
+  (forall x y, Phi x y /\ Psi x y).
+Proof.
+Admitted.
+
+(* Thm *11.311: to be filled *)
+Theorem n11_32 (Phi Psi : Prop -> Prop -> Prop) :
+  (forall x y, Phi x y -> Psi x y) 
+  -> ((forall x y, Phi x y) -> forall x y, Psi x y).
+Proof.
+Admitted.
+
+Theorem n11_33 (Phi Psi : Prop -> Prop -> Prop) :
+  (forall x y, Phi x y <-> Psi x y) 
+  -> ((forall x y, Phi x y) <-> (forall x y, Psi x y)).
+Proof.
+Admitted.
+
+Theorem n11_34 (Phi Psi : Prop -> Prop -> Prop) :
+  (forall x y, Phi x y -> Psi x y) 
+  -> ((exists x y, Phi x y) -> (exists x y, Psi x y)).
+Proof.
+Admitted.
+
+Theorem n11_341 (Phi Psi : Prop -> Prop -> Prop) :
+  (forall x y, Phi x y <-> Psi x y) 
+  -> ((exists x y, Phi x y) <-> (exists x y, Psi x y)).
+Proof.
+Admitted.
+
+Theorem n11_35 (P : Prop) (Phi : Prop -> Prop -> Prop) :
+  (forall x y, Phi x y -> P) <-> ((exists x y, Phi x y) -> P).
+Proof.
+Admitted.
+
+Theorem n11_36 (W Z : Prop) (Phi : Prop -> Prop -> Prop) :
+  (Phi Z W) -> exists x y, Phi x y.
+Proof.
+Admitted.
+
+Theorem n11_37 (Phi Psi Chi : Prop -> Prop -> Prop) :
+  ((forall x y, Phi x y -> Psi x y) 
+  /\ (forall x y, Psi x y -> Chi x y))
+  -> (forall x y, Phi x y -> Chi x y).
+Proof.
+Admitted.
+
+Theorem n11_371 (Phi Psi Chi : Prop -> Prop -> Prop) :
+  ((forall x y, Phi x y <-> Psi x y) 
+  /\ (forall x y, Psi x y <-> Chi x y))
+  -> (forall x y, Phi x y <-> Chi x y).
+Proof.
+Admitted.
+
+Theorem n11_38 (Phi Psi Chi : Prop -> Prop -> Prop) :
+  (forall x y, Phi x y -> Psi x y) ->
+  (forall x y, (Phi x y /\ Chi x y) -> (Psi x y /\ Chi x y)).
+Proof.
+Admitted.
+
+Theorem n11_39 (Phi Psi Chi Theta : Prop -> Prop -> Prop) :
+  ((forall x y, Phi x y -> Psi x y) /\ (forall x y, Chi x y -> Theta x y))
+  -> ((forall x y, Phi x y /\ Chi x y) -> (forall x y, Psi x y /\ Theta x y)).
+Proof.
+Admitted.
+
+Theorem n11_391 (Phi Psi Chi : Prop -> Prop -> Prop) :
+  ((forall x y, Phi x y -> Psi x y) /\ (forall x y, Phi x y -> Chi x y))
+  <-> (forall x y, Phi x y <-> (Psi x y /\ Chi x y)).
+Proof.
+Admitted.
+
+Theorem n11_4 (Phi Psi Chi Theta : Prop -> Prop -> Prop) :
+  ((forall x y, Phi x y <-> Psi x y) /\ (forall x y, Chi x y <-> Theta x y))
+  -> (forall x y, (Phi x y /\ Chi x y) <-> (Psi x y /\ Theta x y)).
+Proof.
+Admitted.
+
+Theorem n11_401 (Phi Psi Chi : Prop -> Prop -> Prop) :
+  (forall x y, Phi x y <-> Psi x y) 
+  -> (forall x y, (Phi x y /\ Chi x y) <-> (Psi x y /\ Chi x y)).
+Proof.
+Admitted.
+
+Theorem n11_41 (Phi Psi : Prop -> Prop -> Prop) :
+  ((exists x y, Phi x y) \/ (exists x y, Psi x y))
+  <-> (exists x y, Phi x y \/ Psi x y).
+Proof.
+Admitted.
+
+Theorem n11_42 (Phi Psi : Prop -> Prop -> Prop) :
+  (exists x y, Phi x y /\ Psi x y) 
+  -> ((exists x y, Phi x y) /\ (exists x y, Psi x y)).
+Proof.
+Admitted.
+
+Theorem n11_421 (Phi Psi : Prop -> Prop -> Prop) :
+  ((forall x y, Phi x y) \/ (forall x y, Psi x y))
+  -> (forall x y, Phi x y \/ Psi x y).
+Proof.
+Admitted.
