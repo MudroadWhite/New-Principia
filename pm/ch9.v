@@ -212,9 +212,9 @@ Proof.
   (** S4 **)
   assert (S4 : ∀ z, ∃ x y, (φ x → ψ x) → φ y → ψ z).
   {
-    rewrite -> (n9_13 (fun z => 
-      (∃ x y, (φ x → ψ x) → φ y → ψ z)) Z) in S3.
-    exact S3.
+    pose proof (n9_13 (fun z => 
+      (∃ x y, (φ x → ψ x) → φ y → ψ z)) Z) as n9_13.
+    now MP n9_13 S3.
   }
   (** S5 **)
   assert (S5 : ∀ z, (∃ x, (φ x → ψ x) → (∃ y, φ y → ψ z))).
@@ -276,9 +276,9 @@ Proof.
   }
   assert (S4 : ∀ y, ∃ x, ∃ z, (φ x → ψ x) → (φ y → ψ z)).
   {
-    rewrite -> (n9_13 (fun y => (∃ x, ∃ z, 
-      (φ x → ψ x) → (φ y → ψ z))) Y) in S3.
-    exact S3.
+    pose proof (n9_13 (fun y => (∃ x, ∃ z, 
+      (φ x → ψ x) → (φ y → ψ z))) Y) as n9_13.
+    now MP n9_13 S3.
   }
   assert (S5 : ∀ y, ∃ x, (φ x → ψ x) → (∃ z, (φ y → ψ z))).
   { 
@@ -358,8 +358,8 @@ Proof.
   }
   assert (S3 : ∀ x, ∃ y, (φ x ∨ φ y) → φ x).
   {
-    rewrite -> (n9_13 (fun x => ∃ y, (φ x ∨ φ y) → φ x) X) in S2.
-    exact S2.
+    pose proof (n9_13 (fun x => ∃ y, (φ x ∨ φ y) → φ x) X) as n9_13.
+    now MP n9_13 S2.
   }
   assert (S4 : ∀ x, (φ x ∨ ∀ y, φ y) → φ x).
   {
@@ -400,13 +400,8 @@ Proof.
   assert (S1 : ∀ y, φ X ∨ φ y → ∃ z, φ z).
   {
     pose proof (n9_11 φ X X) as n9_11. 
-    (* `n9_13` is frequently used in this chapter. Originally we should do
-    in a way just as chapter 10. Currently we're using `replace` which is not 
-    ideal. *)
     pose proof (n9_13 (fun y => (φ X ∨ φ y) → ∃ z, φ z) X) as n9_13.
-    replace (φ X ∨ φ X → ∃ z, φ z) 
-      with (∀ y , φ X ∨ φ y → ∃ z, φ z) in n9_11.
-    exact n9_11.
+    now MP n9_13 n9_11.
   }
   assert (S2 : (∃ y, φ X ∨ φ y) → (∃ z, φ z)).
   {
@@ -416,8 +411,8 @@ Proof.
   }
   assert (S3 : ∀ x, (∃ y, φ x ∨ φ y) → ∃ z, φ z).
   {
-    rewrite -> (n9_13 (fun x => (∃ y, φ x ∨ φ y) → ∃ z, φ z) X) in S2.
-    exact S2.
+    pose proof (n9_13 (fun x => (∃ y, φ x ∨ φ y) → ∃ z, φ z) X) as n9_13.
+    now MP n9_13 S2.
   }
   assert (S4 : (∃ x, (∃ y, φ x ∨ φ y)) → (∃ z, φ z)).
   {
@@ -453,8 +448,7 @@ Proof.
   assert (S2 : ∀ x, Q → (φ x) ∨ Q).
   {
     pose proof (n9_13 (fun x => Q → (φ x) ∨ Q) X) as n9_13.
-    replace (Q → φ X ∨ Q) with (∀ x, Q → (φ x) ∨ Q) in S1.
-    exact S1.
+    now MP n9_13 S1.
   }
   assert (S3 : Q → ∀ x, φ x ∨ Q).
   { 
@@ -512,8 +506,7 @@ Proof.
   assert (S2 : ∀ x, φ x → P ∨ φ x).
   { 
     pose proof (n9_13 (fun x => φ x → P ∨ φ x) X).
-    replace (φ X → P ∨ φ X) with (∀ x, φ x → P ∨ φ x) in S1.
-    exact S1.
+    now MP n9_13 S1.
   }
   assert (S3 : (∀ x, φ x) → (∀ x, P ∨ φ x)).
   {
@@ -536,8 +529,7 @@ Proof.
   assert (S2 : ∀ x, φ x → P ∨ φ x).
   { 
     pose proof (n9_13 (fun x => φ x → P ∨ φ x) X).
-    replace (φ X → P ∨ φ X) with (∀ x, φ x → P ∨ φ x) in S1.
-    exact S1.
+    now MP n9_13 S1.
   }
   assert (S3 : (∃ x, φ x) → (∃ x, P ∨ φ x)).
   {
@@ -561,8 +553,10 @@ Proof.
   pose proof (Perm1_4 P (φ X)) as S1.
   assert (S2 : (∀ x, (P ∨ φ x)) → ∀ x, (φ x ∨ P)).
   { 
-    rewrite -> (n9_13 (fun x => P ∨ φ x → φ x ∨ P) X) in S1.
+    pose proof (n9_13 (fun x => P ∨ φ x → φ x ∨ P) X) as n9_13.
+    MP S1 n9_13.
     pose proof (n9_21 (fun x => P ∨ φ x) (fun x => φ x ∨ P)) as n9_21.
+    simpl in n9_21.
     MP n9_21 S1.
     exact n9_21.
   }
@@ -579,10 +573,10 @@ Proof.
   pose proof (Perm1_4 (φ X) P) as S1.
   assert (S2 : (∀ x, φ x ∨ P) → ∀ x, P ∨ φ x).
   {
-    rewrite -> (n9_13 (fun x => (φ x ∨ P) → (P ∨ φ x)) X) in S1.
+    pose proof (n9_13 (fun x => (φ x ∨ P) → (P ∨ φ x)) X) as n9_13.
+    MP n9_13 S1.
     pose proof (n9_21 (fun x => φ x ∨ P) (fun x => P ∨ φ x)) as n9_21.
-    MP n9_21 S1.
-    exact n9_21.
+    now MP n9_21 n9_13.
   }
   assert (S3 : (∀ x, φ x) ∨ P → P ∨ (∀ x, φ x)).
   { rewrite <- n9_03, <- n9_04 in S2. exact S2. }
@@ -597,9 +591,10 @@ Proof.
   pose proof (Perm1_4 P (φ X)) as S1.
   assert (S2 : (∃ x, (P ∨ φ x)) → ∃ x, (φ x ∨ P)).
   {
-    rewrite -> (n9_13 (fun x => P ∨ φ x → φ x ∨ P) X) in S1.
+    pose proof (n9_13 (fun x => P ∨ φ x → φ x ∨ P) X) as n9_13.
+    MP n9_13 S1.
     pose proof (n9_22 (fun x => P ∨ φ x) (fun x => φ x ∨ P)) as n9_22.
-    MP n9_22 S1.
+    MP n9_22 n9_13.
     exact n9_22.
   }
   assert (S3 : P ∨ (∃ x, φ x) → (∃ x, φ x) ∨ P).
@@ -615,13 +610,13 @@ Proof.
   pose proof (Perm1_4 (φ X) P) as S1.
   assert (S2 : (∃ x, φ x ∨ P) → ∃ x, P ∨ φ x).
   {
-    rewrite -> (n9_13 (fun x => (φ x ∨ P) → (P ∨ φ x)) X) in S1.
+    pose proof (n9_13 (fun x => (φ x ∨ P) → (P ∨ φ x)) X) as n9_13.
+    MP n9_13 S1.
     pose proof (n9_22 (fun x => φ x ∨ P) (fun x => P ∨ φ x)) as n9_22.
-    MP n9_22 S1.
-    exact n9_22.
+    now MP n9_22 n9_13.
   }
   assert (S3 : (∃ x, φ x) ∨ P → P ∨ (∃ x, φ x)).
-  { rewrite <- n9_06, <- n9_05 in S2. exact S2. }
+  { now rewrite <- n9_06, <- n9_05 in S2. }
   exact S3.
 Qed.
 
@@ -791,8 +786,8 @@ Proof.
   assert (S3 : (P → Q) → ∀ y, ∃ x, (P ∨ φ x) → (Q ∨ φ y)).
   { 
     (* *9.04 ignored - optional *)
-    rewrite -> (n9_13 (fun y => ∃ x, P ∨ φ x → Q ∨ φ y) Y) in S2.
-    exact S2.
+    pose proof (n9_13 (fun y => ∃ x, P ∨ φ x → Q ∨ φ y) Y) as n9_13.
+    now Syll n9_13 S2 S3.
   }
   assert (S4 : (P → Q) → (∃ x, ¬ (P ∨ φ x)) ∨ (∀ y, Q ∨ φ y)).
   { 
@@ -832,8 +827,8 @@ Proof.
   }
   assert (S3 : (P → Q) → ∀ x, ∃ y, (P ∨ φ x) → (Q ∨ φ y)).
   { 
-    rewrite -> (n9_13 (fun x => ∃ y, P ∨ φ x → Q ∨ φ y) Y) in S2.
-    exact S2.
+    pose proof (n9_13 (fun x => ∃ y, P ∨ φ x → Q ∨ φ y) Y) as n9_13.
+    now Syll n9_13 S2 S3.
   }
   assert (S4 : (P → Q) → (∀ x, ¬ (P ∨ φ x)) ∨ (∃ y, Q ∨ φ y)).
   {
@@ -875,11 +870,11 @@ Proof.
   }
   assert (S2 : (∀ x, P → φ x) → (∀ x, (P ∨ R) → (φ x ∨ R))).
   { 
-    pose proof (n9_13 (fun x => P → φ x) X) as n9_13a.
-    replace (P → φ X) with (∀ x, P → φ x) in S1.
-    pose proof (n9_13 (fun x => (P ∨ R) → (φ x ∨ R)) X) as n9_13b.
-    replace ((P ∨ R) → (φ X ∨ R)) with (∀ x, (P ∨ R) → (φ x ∨ R)) in S1.
-    exact S1.
+    pose proof (n9_13 (fun x => (P → φ x) → P ∨ R → φ x ∨ R) X) as n9_13.
+    MP n9_13 S1.
+    pose proof (n9_21 (fun x => (P → φ x)) (fun x => P ∨ R → φ x ∨ R))
+      as n9_21.
+    now MP n9_21 n9_13.
   }
   assert (S3 : (P → ∀ x, φ x) → P ∨ R → (∀ x, φ x) ∨ R).
   { 
@@ -930,10 +925,9 @@ Proof.
     }
     pose proof (n9_13 (fun y => (P → φ y) → (∃ x, (P ∨ R) → (φ x ∨ R))) X)
       as n9_13.
-    rewrite -> n9_13 in Sy1.
-    setoid_rewrite -> Impl1_01a in Sy1.
-    rewrite <- n9_03, <- n9_02, <- Impl1_01 in Sy1.
-    exact Sy1.
+    MP n9_13 Sy1.
+    setoid_rewrite -> Impl1_01a in n9_13.
+    now rewrite <- n9_03, <- n9_02, <- Impl1_01 in n9_13.
   }
   assert (S3 : (P → ∃ x, φ x) → P ∨ R → (∃ x, φ x) ∨ R).
   {
@@ -967,10 +961,10 @@ Proof.
   }
   assert (S2 : (∃ x, (φ x → Q)) → (∃ x, (φ x ∨ R) → (Q ∨ R))).
   { 
-    rewrite -> (n9_13 (fun x => (φ x → Q) → ((φ x ∨ R) → (Q ∨ R))) X) in S1.
+    pose proof (n9_13 (fun x => (φ x → Q) → ((φ x ∨ R) → (Q ∨ R))) X) as n9_13.
+    MP n9_13 S1.
     pose proof (n9_22 (fun x => φ x → Q) (fun x => φ x ∨ R → Q ∨ R)) as n9_22.
-    MP n9_22 S1.
-    exact n9_22.
+    now MP n9_22 n9_13.
   }
   assert (S3 : ((∀ x, φ x) → Q) → (∀ x, φ x ∨ R) → (Q ∨ R)).
   { 
@@ -1002,10 +996,10 @@ Proof.
   }
   assert (S2 : (∀ x, (φ x → Q)) → (∀ x, (φ x ∨ R) → (Q ∨ R))).
   { 
-    rewrite -> (n9_13 (fun x => (φ x → Q) → ((φ x ∨ R) → (Q ∨ R))) X) in S1.
+    pose proof (n9_13 (fun x => (φ x → Q) → ((φ x ∨ R) → (Q ∨ R))) X) as n9_13.
+    MP n9_13 S1.
     pose proof (n9_21 (fun x => φ x → Q) (fun x => φ x ∨ R → Q ∨ R)) as n9_21.
-    MP n9_21 S1.
-    exact n9_21.
+    now MP n9_21 n9_13.
   }
   assert (S3 : ((∃ x, φ x) → Q) → (∃ x, φ x) ∨ R → Q ∨ R).
   {
