@@ -2,9 +2,9 @@
 Continuation of [Principia Mathematica's formalization](https://github.com/LogicalAtomist/principia) by Landon Elkind.
 
 This project is currently focused on the following parts:
-- [x] Chapter 9
-- [x] Chapter 10
-- [ ] Chapter 11
+- [x] Chapter 9 - Theorems now extend beyond propositions with "real variables". Now they involve functions and quantified propositions(with single "apparent variable")
+- [x] Chapter 10 - Added a special notation for `->` and `<->` with single apparent variable. One theorem seems to be unprovable
+- [ ] Chapter 11 - Notations for quantified propositions are extended to multiple apparent variables
 
 ## Why working on it
 - Principia Mathematica has a stable version
@@ -40,6 +40,14 @@ make
 ```
 
 The `Makefile` for `make` is supposed to automatically detect all `.v` files under the `pm` folder, generate the `_CoqProject` file and compile the whole folder.
+
+## Running the code, line by line
+IDEs for Coq/Rocq varies, but here is my preference:
+
+- WSL instance: Ubuntu 18.04 on WSL 2
+- VS Code version: 1.80.0
+- Extension installed locally: WSL
+- Extension installed on WSL instance: VSCoq v0.3.7 from [OpenVSX](https://open-vsx.org/extension/maximedenes/vscoq).
 
 ## To contribute
 Although I have tried to organize the issues well to indicate the current progress, I am not used to collaborate with others. It's suggested to raise an issue for inquiries, and I'll see what I can give.
