@@ -613,7 +613,7 @@ Theorem n9_4 (φ : Prop → Prop) (P Q : Prop) :
   P ∨ Q ∨ (∀ x, φ x) → Q ∨ P ∨ (∀ x, φ x).
 Proof. 
   (* TOOLS *)
-  assert (Assoc_Equiv : ∀ P Q R : Prop, (P ∨ Q) ∨ R <-> P ∨ Q ∨ R).
+  assert (Assoc_Equiv : ∀ P Q R : Prop, (P ∨ Q) ∨ R ↔ P ∨ Q ∨ R).
   {
     intros P1 Q1 R1.
     pose proof (n2_32 P1 Q1 R1) as n2_32.
@@ -830,12 +830,10 @@ Proof.
   }
   assert (S5 : (P → Q) → (∃ x, P ∨ φ x) → (∃ y, Q ∨ φ y)).
   { 
-    pose proof (n4_13 (∀ x, ¬ (P ∨ φ x))) as n4_13a.
-    rewrite -> n4_13a in S4.
+    rewrite -> (n4_13 (∀ x, ¬ (P ∨ φ x))) in S4.
     setoid_rewrite <- Impl1_01a in S4.
     rewrite <- n9_02 in S4.
-    pose proof (n4_13 (∃ x, P ∨ φ x)) as n4_13b.
-    now rewrite <- n4_13b in S4.
+    now rewrite <- (n4_13 (∃ x, P ∨ φ x)) in S4.
   }
   assert (S6 : (P → Q) → (P ∨ ∃ x, φ x) → (Q ∨ ∃ y, φ y)).
   { repeat rewrite <- n9_06 in S5. exact S5. }
@@ -910,9 +908,7 @@ Proof.
     (* We won't stick to `Syll` here... *)
     setoid_rewrite -> Impl1_01a in S2 at 2.
     setoid_rewrite -> Impl1_01a in S2 at 3.
-    rewrite <- n9_06 in S2.
-    rewrite <- n9_06 in S2.
-    rewrite <- n9_05 in S2.
+    rewrite <- n9_06, <- n9_06, <- n9_05 in S2.
     setoid_rewrite <- Impl1_01a in S2.
     exact S2.
   }
