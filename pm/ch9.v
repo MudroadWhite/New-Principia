@@ -5,7 +5,10 @@ Require Import PM.pm.ch3.
 Require Import PM.pm.ch4.
 Require Import PM.pm.ch5.
 
-(* TODO: from Impl1_01 derive Impl1_01a using n9_13 *)
+(* TODO: 
+- from Impl1_01 derive Impl1_01a using n9_13 
+- find a way to correctly express "argument in P is of the same type of argument in Q"
+*)
 
 (* 
 Every propositions, variables in chapter 9 are supposed to be elementary propositions,
@@ -116,7 +119,7 @@ Definition n9_13 (φ : Prop → Prop) (Y : Prop) :
 (* Primitive propositions for identifying propositions "of the same type" *)
 (* Individual: explained in p.51  *)
 Definition is_individual (x : Prop) : Prop. Admitted.
-(* NOTE: currently we only assert efuncs that takes 1 argument. How to 
+(* TODO: currently we only assert efuncs that takes 1 argument. How to 
   express that functions are taking multiple arguments of the same type? *)
 Definition is_efunc (F : Prop → Prop) : Prop. Admitted.
 Definition is_eprop (P : Prop) : Prop. Admitted.
@@ -151,7 +154,6 @@ End IsSameType.
 
 Definition n9_131 := IsSameType.t.
 
-(* TODO: check ch10 *)
 (* Cf p.120, *10.121 *)
 Definition n9_14 (A : Prop) (φ : Prop → Prop) (X : Prop) :
   φ X → (n9_131 X A ↔ φ A). Admitted.
@@ -163,8 +165,8 @@ Definition n9_15 (A X : Prop) (φ : Prop → Prop) :
 Admitted.
 (* ******** *)
 
-(* Contents below are supposed to prove that `∀` and `∃` deduce just like 
-  elementary propositions. The first few theorems are some setups *)
+(* Contents below are supposed to prove that `∀` and `∃` deduces just like 
+  elementary propositions. The first theorems are some setups *)
 Theorem n9_2 (φ : Prop → Prop) (Y : Prop) : (∀ x , φ x) → φ Y.
 Proof. 
   (** Step 1 **)
@@ -208,6 +210,7 @@ Proof.
   (** S3 **)
   assert (S3 : ∃ x y, (φ x → ψ x) → φ y → ψ Z).
   { 
+    (* *1.11 ignored *)
     pose proof (n9_1 (fun x => (∃ z0, (φ x → ψ x) → φ z0 → ψ Z)) Z) as n9_1.
     MP n9_1 S2. exact n9_1.
   }
@@ -304,7 +307,8 @@ Proof.
   assert (S8 : (∀ x, φ x → ψ x) → (∃ x, φ x) → (∃ x, ψ x)).
   { 
     now rewrite <- n9_01, <- Impl1_01,
-    (* TODO: examine this:are we allowed for forall propositions yet? *)
+    (* NOTE: currently we're technically not allowed for 1st order propositions to appear
+    as parameters. This proof might be flawed. *)
             -> (n4_13 (∀ y, ¬ φ y)),
             <- n9_02, <- Impl1_01,
             <- (n4_13 (∃ x, φ x)) in S7.
@@ -315,10 +319,17 @@ Qed.
 Theorem n9_23 (φ : Prop → Prop) : (∀ x, φ x) → (∀ x, φ x).
 (* TODO: obtain the proof in original way, restricting the variable to be only eprops *)
 (* Original proof uses Id, 9.13, 9.21 *)
-Proof. exact (Id2_08 (∀ x, φ x)). Qed.
+Proof. 
+  set (X := Real "x").
+  pose proof (Id2_08) (φ X) as Id2_08.
+  pose proof (n9_13 (fun x => φ x -> φ x) X) as n9_13.
+  MP n9_13 Id2_08.
+  pose proof (n9_21 φ φ) as n9_21.
+  now MP n9_21 n9_13.
+Qed.
 
 Theorem n9_24 (φ : Prop → Prop) : (∃ x, φ x) → (∃ x, φ x).
-(* Original proof uses Id, 9.13, 9.22 *)
+(* Original proof uses Id, 9.13, 9.22. Since it's similar as above, we omit the proof *)
 Proof. exact (Id2_08 (∃ x, φ x)). Qed.
 
 Theorem n9_25 (P : Prop) (φ : Prop → Prop) : 
@@ -358,8 +369,10 @@ Proof.
     setoid_rewrite -> Impl1_01a in S3.
     assert (S3_i1 : ∀ x, ¬ (φ x ∨ ∀ y, φ y) ∨ φ x).
     {
-      (* TODO: eliminate the intro here *)
       intro x0; pose proof (S3 x0) as S3_1.
+      (* NOTE: similar to the treatment with `n9_13`, we can use `f_equal`
+      to derive a quantified version for all these `=` propositions. Here for 
+      simplicity we omit the technical details *)
       rewrite <- (n9_05 ((fun x y => ¬ (φ x ∨ φ y)) x0) (φ x0)),
               <- (n9_01 (fun x => φ x0 ∨ φ x)),
               <- (n9_04 φ (φ x0)) in S3_1.
@@ -622,14 +635,15 @@ Proof.
     Conj n2_32 n2_31 C1.
     now Equiv C1.
   }
+  set (X := Real "x").
   (* ******** *)
   assert (S1 : (∀ x, P ∨ (Q ∨ φ x)) → (∀ x, Q ∨ (P ∨ φ x))).
   {
-    (* TODO: examine this proof *)
-    pose proof (fun x => (Assoc1_5 P Q (φ x))) as Assoc1_5.
+    pose proof (Assoc1_5 P Q (φ X)) as Assoc1_5.
+    pose proof (n9_13 (fun x => P ∨ Q ∨ φ x → Q ∨ P ∨ φ x) X) as n9_13.
+    MP n9_13 Assoc1_5.
     pose proof (n9_21 (fun x => P ∨ Q ∨ φ x) (fun x => Q ∨ P ∨ φ x)) as n9_21.
-    MP n9_21 Assoc1_5.
-    exact n9_21.
+    now MP n9_21 Assoc1_5.
   }
   assert (S2 : P ∨ Q ∨ (∀ x, φ x) → Q ∨ P ∨ (∀ x, φ x)).
   {
@@ -666,13 +680,16 @@ Qed.
 Theorem n9_401 (φ : Prop → Prop) (P Q : Prop) : 
   P ∨ Q ∨ (∃ x, φ x) → Q ∨ P ∨ (∃ x, φ x).
 Proof. 
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
   assert (S1 : (∃ x, P ∨ (Q ∨ φ x)) → (∃ x, Q ∨ (P ∨ φ x))).
   {
-    (* TODO: examine this proof & rewrite it *)
-    pose proof (fun x => (Assoc1_5 P Q (φ x))) as Assoc1_5.
+    pose proof (Assoc1_5 P Q (φ X)) as Assoc1_5.
+    pose proof (n9_13 (fun x => P ∨ Q ∨ φ x → Q ∨ P ∨ φ x) X) as n9_13.
+    MP n9_13 Assoc1_5.
     pose proof (n9_22 (fun x => P ∨ Q ∨ φ x) (fun x => Q ∨ P ∨ φ x)) as n9_22.
-    MP n9_22 Assoc1_5.
-    exact n9_22.
+    now MP n9_22 n9_13.
   }
   assert (S2 : P ∨ Q ∨ (∃ x, φ x) → Q ∨ P ∨ (∃ x, φ x)).
   { repeat rewrite <- n9_06 in S1. exact S1. }
@@ -682,13 +699,16 @@ Qed.
 Theorem n9_41 (φ : Prop → Prop) (P R : Prop) : 
   P ∨ (∀ x, φ x) ∨ R → (∀ x, φ x) ∨ P ∨ R.
 Proof. 
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
   assert (S1 : (∀ x, P ∨ (φ x ∨ R)) → ∀ x, φ x ∨ (P ∨ R)).
   {
-    (* TODO: examine this proof *)
-    pose proof (fun x => (Assoc1_5 P (φ x) R)) as Assoc1_5.
+    pose proof ((Assoc1_5 P (φ X) R)) as Assoc1_5.
+    pose proof (n9_13 (fun x => P ∨ φ x ∨ R → φ x ∨ P ∨ R) X) as n9_13.
+    MP n9_13 Assoc1_5.
     pose proof (n9_21 (fun x => P ∨ (φ x ∨ R)) (fun x => φ x ∨ (P ∨ R))) as n9_21.
-    MP n9_21 Assoc1_5.
-    exact n9_21.
+    now MP n9_21 n9_13.
   }
   assert (S2 : P ∨ (∀ x, φ x) ∨ R → (∀ x, φ x) ∨ P ∨ R).
   {
@@ -702,13 +722,16 @@ Qed.
 Theorem n9_411 (φ : Prop → Prop) (P R : Prop) : 
   P ∨ (∃ x, φ x) ∨ R → (∃ x, φ x) ∨ P ∨ R.
 Proof. 
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
   assert (S1 : (∃ x, P ∨ (φ x ∨ R)) → ∃ x, φ x ∨ (P ∨ R)).
   {
-    (* TODO: examine this proof *)
-    pose proof (fun x => (Assoc1_5 P (φ x) R)) as Assoc1_5.
+    pose proof (Assoc1_5 P (φ X) R) as Assoc1_5.
+    pose proof (n9_13 (fun x => P ∨ φ x ∨ R → φ x ∨ P ∨ R) X) as n9_13.
+    MP n9_13 Assoc1_5.
     pose proof (n9_22 (fun x => P ∨ (φ x ∨ R)) (fun x => φ x ∨ (P ∨ R))) as n9_22.
-    MP n9_22 Assoc1_5.
-    exact n9_22.
+    now MP n9_22 n9_13.
   }
   assert (S2 : P ∨ (∃ x, φ x) ∨ R → (∃ x, φ x) ∨ P ∨ R).
   {
@@ -722,13 +745,16 @@ Qed.
 Theorem n9_42 (φ : Prop → Prop) (Q R : Prop) : 
   (∀ x, φ x) ∨ Q ∨ R → Q ∨ (∀ x, φ x) ∨ R.
 Proof. 
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
   assert (S1 : (∀ x, φ x ∨ (Q ∨ R)) → ∀ x, Q ∨ (φ x ∨ R)).
   {
-    (* TODO: examine this proof *)
-    pose proof (fun x => (Assoc1_5 (φ x) Q R)) as Assoc1_5.
+    pose proof (Assoc1_5 (φ X) Q R) as Assoc1_5.
+    pose proof (n9_13 (fun x =>  φ x ∨ Q ∨ R → Q ∨  φ x ∨ R) X) as n9_13.
+    MP n9_13 Assoc1_5.
     pose proof (n9_21 (fun x => φ x ∨ (Q ∨ R)) (fun x => Q ∨ (φ x ∨ R))) as n9_21.
-    MP n9_21 Assoc1_5.
-    exact n9_21.
+    now MP n9_21 n9_13.
   }
   assert (S2 : (∀ x, φ x) ∨ Q ∨ R → Q ∨ (∀ x, φ x) ∨ R).
   {
@@ -742,13 +768,16 @@ Qed.
 Theorem n9_421 (φ : Prop → Prop) (Q R : Prop) : 
   (∃ x, φ x) ∨ Q ∨ R → Q ∨ (∃ x, φ x) ∨ R.
 Proof. 
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
   assert (S1 : (∃ x, φ x ∨ (Q ∨ R)) → ∃ x, Q ∨ (φ x ∨ R)).
   {
-    (* TODO: examine this proof *)
-    pose proof (fun x => (Assoc1_5 (φ x) Q R)) as Assoc1_5.
+    pose proof (Assoc1_5 (φ X) Q R) as Assoc1_5.
+    pose proof (n9_13 (fun x =>  φ x ∨ Q ∨ R → Q ∨  φ x ∨ R) X) as n9_13.
+    MP n9_13 Assoc1_5.
     pose proof (n9_22 (fun x => φ x ∨ (Q ∨ R)) (fun x => Q ∨ (φ x ∨ R))) as n9_22.
-    MP n9_22 Assoc1_5.
-    exact n9_22.
+    now MP n9_22 n9_13.
   }
   assert (S2 : (∃ x, φ x) ∨ Q ∨ R → Q ∨ (∃ x, φ x) ∨ R).
   {
