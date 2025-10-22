@@ -24,6 +24,12 @@ Second one:
   and negations can work as a primitive idea regardless of type of the proposition. This
   procedure doesn't involve mathematical induction.
 
+The reason for the 2nd set of goal:
+- Without definition of `¬` and `∨` we cannot form a function.
+- Without definition for a function we cannot form `∀ x, F x`.
+- Requiring `¬` and `∨` be defined for that order of proposition limits the scope. See
+  example in p.129.
+
 The end of the chapter proved that the definition of a function P can be extended to 
 sentences involving `∀`s, and moreover, multiple param functions with `∀`s within, or 
 several `∀`s being concated with some binary logic operators.
@@ -37,6 +43,10 @@ with Coq tactics. I'm still figuring out if these tactics are following the orig
 proof's routine.
 *)
 
+(* Definitions involving `¬` on 1st order props. Our current simulation
+doesn't emphasize that its' the negation that we're trying to specify
+(a more obvious example can be how a typeclasse works on different 
+instances) *)
 Definition n9_01 (φ : Prop → Prop) :
   (¬ ∀ x, φ x) = ∃ x, ¬ φ x. Admitted.
 
@@ -48,7 +58,9 @@ Definition n9_011 (φ : Prop → Prop) :
 
 Definition n9_021 (φ : Prop → Prop) :
   (¬ ∃ x, φ x) = ¬ (∃ x, φ x). Admitted.
+(* ******** *)
 
+(* Definitions for `∨` *)
 Definition n9_03 (φ : Prop → Prop) (p : Prop) :
   ((∀ x, φ x) ∨ p) = (∀ x, φ x ∨ p). Admitted.
 
@@ -66,45 +78,97 @@ Definition n9_07 (φ ψ : Prop → Prop) :
 
 Definition n9_08 (φ ψ : Prop → Prop) :
   ((∃ y, ψ y) ∨ (∀ x, φ x)) = ∀ x, ∃ y, ψ y ∨ φ x. Admitted.
+(* ******** *)
 
+(* Primitive propositions for `∃`, deriving from elementary propositions *)
+(* `∃ z, φ z` means that for a function `φ z^`, there's a value that makes it true *)
 Definition n9_1 (φ : Prop → Prop) (X : Prop) : 
   φ X → ∃ z, φ z. Admitted.
 
+(* An extra Pp to avoid dependency on *1.2, which is only limited to elementary 
+  propositions *)
 Definition n9_11 (φ : Prop → Prop) (X Y : Prop) : 
   (φ X ∨ φ Y) → ∃ z, φ z. Admitted.
+(* ******** *)
 
-(* Pp n9_12 : What is implied by a true premiss is true. *)
-Definition n9_12 (X : Prop) : X. Admitted.
+(* Primitive propositions for inference, for 1st order propositions. *)
+(* Pp *9_12 : What is implied by a true premiss is true. Analogue to *1.1. *)
+(* Currently I decide that we perform `MP` on 1st order props with the native 
+  `MP` tactic without explicitly citing this alternative version. *)
+Definition MP9_12 (P Q : Prop): (P → Q) → P → Q. Admitted.
 
 (* Pp n9_13 : In any assersion containing a real variable, this real variable
 may be turned into an apparent variable of which all possible values are asserted
 to satisfy the function in question. *)
-(* This simulation seems to be very unsatisfying! Don't use without any clear 
-  intention from original text *)
-Definition n9_13 (φ : Prop → Prop) (X : Prop) : 
-  φ X = (∀ y , φ y). Admitted.
+(* The proposition to instantiate a real variable into a first order proposition. 
+  What it really means:
+  - If φ (over elementary propositions?) can be defined and φY is always true
+  - and if X is a real variable
+  - then we can construct a 1st order proposition made up from φ *)
+Definition n9_13 (φ : Prop → Prop) (Y : Prop) : 
+  φ Y = (∀ x , φ x). Admitted.
+(* ******** *)
 
-(* TODO: 
-- Formalize the idea of `is same type` 
-- Identify clearly what does "significant" mean *)
+(* Primitive propositions for identifying propositions "of the same type" *)
+(* Individual: explained in p.51  *)
 Definition is_individual (x : Prop) : Prop. Admitted.
-Definition is_elementary_function (F : Prop → Prop) : Prop. Admitted.
-Definition is_same_type (u v : Prop) : Prop. Admitted.
+(* NOTE: currently we only assert efuncs that takes 1 argument. How to 
+  express that functions are taking multiple arguments of the same type? *)
+Definition is_efunc (F : Prop → Prop) : Prop. Admitted.
+Definition is_eprop (P : Prop) : Prop. Admitted.
 
-Definition SameTy9_131 := is_same_type.
+Module IsSameType.
+  Inductive t (U V : Prop) : Prop :=
+    | Individual : (is_individual U) → (is_individual V) → t U V
+    | EFuncs (φ ψ : Prop → Prop) (X Y : Prop) 
+      : (is_efunc φ) → (is_efunc ψ) → t X Y 
+        → (U = φ X) → (V = ψ Y)
+        → t U V
+    | NEFuncs (φ : Prop → Prop) (X : Prop) : (is_efunc φ) 
+        (* Do we need to assert that their parameters are of the same type? *)
+        (* → t X Y *)
+        → (U = φ X) → (V = ¬ φ X)
+        → t U V
+    | OrL (φ ψ : Prop → Prop) (X : Prop) : (is_efunc φ) → (is_efunc ψ)
+        → (U = φ X) → (V = φ X ∨ ψ X)
+        → t U V
+    | OrR (φ ψ : Prop → Prop) (X : Prop) : (is_efunc φ) → (is_efunc ψ)
+        → (U = ψ X) → (V = φ X ∨ ψ X)
+        → t U V
+    | All2 (φ ψ : Prop → Prop → Prop) (X : Prop) (Y0 : Prop) : 
+        t (φ X Y0) (ψ X Y0)
+        → (U = ∀ y, φ X y) → (V = ∀ z, ψ X z)
+        → t U V
+    | EProp : (is_eprop U) → (is_eprop V) → t U V
+    | NProp : (V = ¬ U) → t U V
+    | All (φ ψ : Prop → Prop) (X0 : Prop) : t (φ X0) (ψ X0)
+        → (U = ∀ x, φ x) → (V = ∀ y, ψ y)
+        → t U V
+    .
+End IsSameType.
 
-Definition n9_14 : ∀ (a : Prop) (φ : Prop → Prop) (X : Prop),
-  φ X → (SameTy9_131 X a ↔ φ a). Admitted.
+Definition n9_131 := IsSameType.t.
+
+(* Cf p.120, *10.121 *)
+Definition n9_14 (A : Prop) (φ : Prop → Prop) (X : Prop) :
+  φ X → (n9_131 X A ↔ φ A). Admitted.
 
 (* Pp n9_15 : If for some `a` there is a proposition `φ a`, then there is a function
   `phi x^` and vice versa. *)
+Definition n9_15 (A X : Prop) (φ : Prop → Prop) :
+  (φ A) ↔ (X → φ X).
+Admitted.
+(* ******** *)
 
+(* Contents below are supposed to prove that `∀` and `∃` deduces just like 
+  elementary propositions. First we have some setups *)
 Theorem n9_2 (φ : Prop → Prop) (Y : Prop) : (∀ x , φ x) → φ Y.
 Proof. 
   (** Step 1 **)
   pose proof (n2_1 (φ Y)) as n2_1.
   (** Step 2 **)
   pose proof (n9_1 (fun x => ¬ φ x ∨ φ Y) Y) as n9_1.
+  (* MP here is the version *1.11 *)
   MP n9_1 n2_1.
   (** Step 3 **)
   rewrite <- (n9_05 (fun x => ¬ φ x) (φ Y)) in n9_1.
@@ -268,7 +332,11 @@ Proof.
   rewrite <- (n9_04 φ P) in n9_23 at 2.
   exact n9_23.
 Qed.
+(* ******** *)
 
+(* After the setup, we're going to derive the analogues for *1.2 - *1.6. These analogues
+  supports variables to be replaced by `∀ x, φ x` and `∃ x, φ x` only.
+  After deriving them, can we use theorems in *2 - *5. *)
 Theorem n9_3 (φ : Prop → Prop) : 
   (∀ x, φ x) ∨ (∀ x, φ x) → (∀ x, φ x).
 Proof.
@@ -951,10 +1019,39 @@ Proof.
   exact S3.
 Qed.
 
-(* Thm 9.6: `∀ x, φ x`, `¬(∀ x, φ x)`, `∃ x, φ x`, `¬(∃ x, φ x)` are of the same type. From *9.131, (7) and (8)  *)
+(* Thm 9.6: `∀ x, φ x`, `¬(∀ x, φ x)`, `∃ x, φ x`, `¬(∃ x, φ x)` are of the same type. From *9.131, (7) and (8) *)
+Theorem n9_6 (φ : Prop → Prop) :
+  IsSameType.t (∀ x, φ x) (¬(∀ x, φ x))
+  ∧ IsSameType.t (¬(∀ x, φ x)) (∃ x, φ x)
+  ∧ IsSameType.t (∃ x, φ x) (¬(∃ x, φ x)).
+Proof.
+  repeat split.
+  - now apply IsSameType.NProp.
+  - admit. (* This should be done by some transitivity relations on IsSameType *)
+  - now apply IsSameType.NProp.
+Admitted.
 
 (* Thm 9.61: If `φ x^` and `ψ x^` are elementary functions of the same type, there is a function `φ x^ ∨ ψ x^`. *)
+Theorem n9_61 (φ ψ : Prop → Prop) `{is_efunc φ} `{is_efunc ψ} (X0 : Prop) : 
+  IsSameType.t (φ X0) (ψ X0)
+  → (φ X0 ∨ ψ X0).
+Proof.
+Admitted.
 
 (* Thm 9.62 : If `φ(x^, y^)` and `ψ z^` are elementary functions, and the x-argument to `φ` is of the same type as the argument of `ψ`, there are functions `(∀ y, φ(x^, y)) ∨ ψ x^`, `(∃ y, φ (x^, y) ∨ φ x^)` *)
+Theorem n9_62 (φ : Prop → Prop → Prop) (ψ : Prop → Prop) (X Z : Prop) :
+  IsSameType.t X Z 
+  → (((∀ y, φ X y) ∨ ψ Z) 
+  (* The `∧` below actually stands for the extra proposition *)
+  ∧ ((∃ y, φ X y) ∨ ψ Z)).
+Proof.
+Admitted.
 
+(* This is a very rough simulation of the theorem in natural language *)
 (* Thm 9.63 : If `φ(x^, y^)` and `ψ(x^, y^)` are elementary functions of the same type, there are functions `(∀ y, φ(x^, y) ∨ ∀ z, ψ(x^, z)), etc.` *)
+(* We currently ignore the restriction that they are efuncs since is_efunc is bugged *)
+Theorem n9_63 (φ ψ : Prop → Prop → Prop) (X0 Y0 : Prop) :
+  IsSameType.t (φ X0 Y0) (ψ X0 Y0)
+  → ((∀ y, φ X0 y) \/ (∀ z, ψ X0 z)).
+Proof.
+Admitted.
