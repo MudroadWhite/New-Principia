@@ -95,7 +95,10 @@ Proof.
 
   assert (S1 : (forall y, P \/ Phi X y) -> (P \/ forall y, Phi X y)).
   { apply n10_12. }
-  assert (S2 : )
+  assert (S2 : (forall x y, P \/ Phi x y) -> (forall x, P \/ (forall y, Phi x y))).
+  {
+  
+  }
 Admitted.
 
 (* Similar to *10.13 *)
