@@ -245,12 +245,37 @@ Qed.
 Theorem n11_22 (Phi : Prop → Prop → Prop) :
   (∃ x y, Phi x y) <-> (¬ (∀ x y, ¬ Phi x y)).
 Proof.
-  
-Admitted.
+  assert (S1 : (exists x y, Phi x y) <-> (~forall x, ~exists y, Phi x y)).
+  {
+    (* The `exists` are currently separated, i.e. in the form of 
+      `exists x, exists y` *)
+    pose proof (n10_252 (fun x => exists y, Phi x y)) as n10_252.
+    (* TODO: check if it is elligible to use theorems in chapter 4 *)
+    rewrite -> Transp4_11 in n10_252.
+    rewrite <- n4_13 in n10_252.
+    (* Now we use n11_03 to merge the exists. Since it's pretty tedious, I
+    want to ignore this in the future. We can see that Rocq doesn't even 
+    allow such rewrite to perform. *)
+    (* rewrite <- (n11_03 Phi) in n10_252. *)
+    exact n10_252.
+  }
+  assert (S2 : (exists x y, Phi x y) <-> (~forall x, forall y, ~Phi x y)).
+  {
+    (* n10_271 ignored as in ch10 *)
+    now setoid_rewrite -> n10_252 in S1.
+  }
+  assert (S3 : (∃ x y, Phi x y) <-> (¬ (∀ x y, ¬ Phi x y))).
+  {
+    (* n11_01 ignored for merging `forall`s *)
+    exact S2.
+  }
+  exact S3.
+Qed.
 
 Theorem n11_23 (Phi : Prop → Prop → Prop) :
   (∃ x y, Phi x y) <-> (∃ y x, Phi x y).
 Proof.
+  
 Admitted.
 
 Theorem n11_24 (Phi : Prop → Prop → Prop → Prop) :
