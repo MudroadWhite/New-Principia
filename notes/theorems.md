@@ -2,6 +2,11 @@
 
 The conventions below starts from chapter 9.
 
+TODO: 
+- move `assert`'s introduction into this chapter
+- rename this chapter to `architecture`
+- cover the file architecture a little bit
+
 ## Definitions and Theorems
 `Definition`s and `Theorem`s are being used, not because of their *literal meaning*, but because of their ability to nicely organize the data, just like a "class" or a "structure" in typical programming languages.
 

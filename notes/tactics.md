@@ -60,7 +60,7 @@ For just a single step on deduction, all the routine above seems pretty tedious.
 Besides the construction procedure on `<->`, we also have destruction procedure on `<->`. `Equiv` theorem(not tactic) in this sense, changes `P <-> Q` back to `P -> Q /\ Q -> P`. For this proposition, we can use `Simp` to choose the direction we want to use. But a more convinient way is seamlessly use the Rocq's `destruct` tactic.
 - `destruct` on `<->` is **allowed** to simplify this routine.
 
-Explicit examples, sometimes with comments, on reducing these routines with Rocq native tactics, are provided through chapter 9 & 10.
+Explicit examples, sometimes with comments, on reducing these routines with Rocq native tactics, are provided through chapter 9 & 10. **For simplicity, most `rewrite` theorems are not instantiated with explicit parameters, potentitally lead to flaws**.
 
 ## How to use a `=` proposition(rewrite)
 Aka. the root of all evils. A clear way how `=` proposition interacts with other types of proposition is not clearly defined. On elementary propositions, Rocq's default preference `rewrite` works perfectly.
