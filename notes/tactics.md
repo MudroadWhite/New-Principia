@@ -43,7 +43,7 @@ A `->` proposition means that we can derive a conclusion from its premise. Immed
 - `MP p1 p2`, using the `MP` tactic, is **allowed**, where `p1` and `p2` are both propositions posed in the hypotheses. This is also how we treat "parameters" at the *rhs* of a theorem.
 - `Syll p1 p2 Sy` for deriving a new "composed" proposition `Sy`, by using `Syll` tactic, is **allowed**. This is a tactic similar to `MP` and its exact meaning is given in chapter 2.
 
-## 4. How to use a `<->` proporition(rewrite)
+## 4. How to use a `<->` proposition(rewrite)
 Technically speaking, if we completely follow the deduction rules in PM's logic system, we need to
 1. Apply `Equiv` rule to destruct `P <-> Q` into `P -> Q /\ Q -> P`
 2. Use `Simp` to extract the direction that you want to use
@@ -77,6 +77,23 @@ But when things become complicated, more problems will come to surface. a `foral
 - Providing the full parameter list is **recommended**
 
 WARNING: thanks to the `rewrite` tactic in Rocq, `<->` is usually more useful than `->` theorems - a `rewrite` on `<->` is way simpler than `MP` or `Syll` on `->`. We might *slightly overuse* the `<->` theorems. There exists cases original proof `MP`s on its single-direction version, but for simplicity we still apply the `<->` version with a `rewrite` or `setoid_rewrite` on a proposition.
+
+### What routine does `setoid_rewrite` actually simplify?
+It should be very worthwhile to discuss how we deal with rewriting for quantified ("forall x") propositions, which also brings up the discussion on the viability for `setoid_rewrite` to simulate original proof. As we see, `setoid_rewrite` is only used in 2 situations: either the proposition is a `=`, or the proposition is a `<->`.
+
+We first discuss the case for `<->`. As an opening, here is a question: how does a `forall` proposition appear? The basic idea for Principia is quite different from modern approach which uses a `forall` constructor. *Primitive propositions* in each chapter allow that
+- If we have a proposition with the form of `Phi X`, with `X` being a *real variable*,
+- Then we can change `Phi X` into `forall x, Phi x`. Here, `x` has become an *apparent variable* as it's in a `forall`.
+If, say, we want to construct something like `(forall x, Phi x) -> (forall y, Psi y)`, then we further have some other rules to allow us to "split" the `forall` into half. `forall x, Phi x -> Psi x` can even be turned into `(exists x, Phi x) -> (exists y, Psi y)`.
+
+If we have a proposition having the form of `H : forall x, Phi x`, and we only have a rewrite rule of `Phi X <-> Psi X`, we can 
+1. Pick the rewrite rule `Phi X <-> Psi X` as our base
+2. Use primitive propositions to change real variables into apparent variables. For example it will become `(forall x, Phi x) <-> (forall x, Psi x)`.
+3. Now we can rewrite `H` as a whole into `forall x, Psi x`.
+
+As we can see, even without `setoid_rewrite`, "rewriting on quantified propositions" is always viable with a fixed routine and a fixed set of primitive propositions to perform, and this is what exactly we're trying to use `setoid_rewrite` to do.
+
+For `=` case: how does `=` interact with others is mostly undefined. There doesn't exist a single *primitive proposition* in Principia explaining what does it do. We might either treat it as a `=` in Coq's type system. That means we're allowed to use whatever tactics just to perform the right substitution on a proposition. Or, as a common way, we can use `eq_to_equiv` or `apply propositional_extentionality` to change the `=` proposition into a `<->` one. But since these substitution doesn't involve any of the primitive propositions in Principia, using them to guide our rewriting is still not really a necessity.
 
 ## Rules for technical hacks 
 Either for "historical reasons"(this project really doesn't have a history), or when we want to work thourgh a proof quickly, and we didn't figure out the correct way to write the proof, "technical hacks" arises for proof completions. The most common ones are listed below. Unless it gets a severe technical barrier, they are **recommended** to be taken down.
