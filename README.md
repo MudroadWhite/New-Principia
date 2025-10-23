@@ -26,6 +26,16 @@ No. Here are the reasons:
 - The rigor of the proofs relies heavily on how refined your proofs are and how you interpret the original text.
 - I didn't examine the code in chapter 1 - 5.
 
+## How much can you formalize?
+Below are some technical aspects that arise from this project.
+- Distinguish between `forall x y, P x y` and `forall x, forall y, P x y` is currently **impossible**.
+- Limiting parameter's "type"(orders)s for a function is currently **partially supported**, by only writing them as a header in each of the chapters.
+- Checking their types is currently **impossible**.
+- Constructing "types" for every propositions in Principia is **on plan**.
+- Expressing "types(orders) for a function's parameters" is **on plan**.
+- Completely translate primitive propositions written in natural language, into formalized Rocq proof, is **on plan**.
+- More to come...
+
 ## Running the code
 Coq version: 8.20.0, installed with the `opam` environment:
 
