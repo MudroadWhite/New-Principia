@@ -2,6 +2,8 @@
 
 This chapter describes the tactics we generally use in further detail.
 
+Technically speaking, Principia's logic system is very simple, maybe much more simpler than most of the modern typs systems, cf. (SEP entry for Principia Mathematica)[https://plato.stanford.edu/entries/principia-mathematica/]. All it cares about is 1. deducing a theorem either directly or from Modus Ponens and 2. substitute/*rewrite* subparts of a proposition according to some rules. The tactics we use try to follow this flavor as much as possible while pertaining a reasonable level of simplicity.
+
 ## 1. `assert` for intermediate steps
 When proofs are "long enough", the first tactic that should come to one's view should be `assert` to specify the intermediate steps. This tactic modularizes the proofs so that they usually have the following structure:
 
@@ -26,15 +28,18 @@ There are several reasons for organizing proofs like this. The most significant 
 
 By using `assert`, the propositions being asserted is introduced into the hypotheses.
 
-## 2. What does it mean to use(deduce on) a theorem
+## 2. How to use(deduce on) a theorem
 `pose proof (thm x y z) as thm` should be almost the only way to *introduce* a theorem into the hypotheses. In Principia starting from chapter 9, propositions are further come with a special kind of "type", basically the order of the proposition, and at base case we're only allowed to use elementary propositions as parameters, for elementary functions. That being said,
-- Whether the parameter of `thm` is a `forall` proposition *matters*. If no context is provided, theorems can only accept elementary propositions as parameters.
-- `thm` cannot be applied to parameters more than the ones at lhs. These are for substitutions.
-- "Parameters" at the rhs of the `thm` are for the actual deduction, and can be only performed via *modus ponens*.
+- `pose proof` on a theorem is allowed.
+- `pose` on a theorem is strictly not allowed.
+- All parameters for the theorem at the *lhs* of its definition, are required.
+- All parameters for the theorem are limited to those at the *lhs* of theorem's definition.
+- All parameters for the theorem are limited their "type" to elementary propositions, as the default in chapter 9. Every chapter after chapter 9 enables a new class of proposition to be passed in as parameters. Fundamentally however, whether they starts with a `forall` matters. Restriction on parameters is something our current formalization failed to model on.
+- If a goal can be solved immediately, we might just `apply` the theorem to end it.
 
 ## 3. How to use a `->` proposition(rewrite)
 A `->` proposition means that we can derive a conclusion from its premise. Immediately from above, below are almost the only allowed rules on `->` propositions:
-- `MP p1 p2`, using the `MP` tactic, is allowed, where `p1` and `p2` are both propositions posed in the hypotheses.
+- `MP p1 p2`, using the `MP` tactic, is allowed, where `p1` and `p2` are both propositions posed in the hypotheses. This is also how we treat "parameters" at the *rhs* of a theorem.
 - `Syll p1 p2 Sy` for deriving a new "composed" proposition `Sy`, by using `Syll` tactic, is allowed. This is a tactic similar to `MP` and its exact meaning is given in chapter 2.
 
 ## 4. How to use a `<->` proporition(rewrite)
@@ -50,7 +55,10 @@ For just a single step on deduction, all the routine above seems pretty tedious.
 - `rewrite <- thm` on `<->` is allowed
 - The `thm` for rewrite is recommended to provided its full parameter list, but can be omitted.
 
-Some of the examples showing how they can be simplified, are provided through chapter 9 & 10.
+Besides construction part on `<->`, we also have destruction parts on `<->`. `Equiv` theorem(not tactic) in this sense, changes `P <-> Q` back to `P -> Q /\ Q -> P`. For this proposition, we can use `Simp` to choose the direction we want to use. But a more convinient way is seamlessly use the Rocq's `destruct` tactic.
+- `destruct` on `<->` is allowed
+
+Explicit examples, sometimes with comments, on reducing these routines with Rocq native tactics, are provided through chapter 9 & 10.
 
 ## How to use a `=` proposition(rewrite)
 Aka. the root of all evils. A clear way how `=` proposition interacts with other types of proposition is not clearly defined. On elementary propositions, Rocq's default preference `rewrite` works perfectly.
@@ -74,8 +82,10 @@ Either for "historical reasons"(this project really doesn't have a history), or 
 - `now tactic thm ...` says that, if the `tactic` we use can directly provide a result that is not very far from the goal, then we prove the goal immediately. Typically it's very useful for saving a line of `exact thm`. Every line of `now tactic thm` can be turned back into `tactic thm` for readers to check if it does indeed generate a proposition that is exactly the same as the goal.
 
 ## Bugged Ltacs
-
-TODO:
-- Ltacs are bugged: the only safe way to perform `Syll`, `Comp`, etc. is setting up a intermediate goal and clear irrevalent hypotheses. Safely using `Conj`, `Syll`, and `MP` with `assert` and `clear`
-
-Alternatives to mere deductions and substitutions, and how they works
+Throughout chapter 1 - 5, there are several custom tactics defined to use the primitive ideas conveniently. However, their current design is bugged: when we're trying to use them, they might not find the exact propositions that we are referring to. If things has went very bad, here is the full routine just for applying such a tactic:
+1. `assert` a subgoal for the desired proposition
+2. `clear` every unrelated hypotheses
+3. `move` the propositions `before` or `after`, into the right order. For example, if we want to `MP S2 S1`, then we have to `move S1 after S2`.
+4. perform the tactic and immediately conclude the subproof.
+Since we don't always need to go through the full routine, we're only requiring that
+- above tactics are allowed, when they are the necessary preparations for performing a custom Ltac.
