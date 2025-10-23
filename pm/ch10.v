@@ -11,6 +11,7 @@ Require Import PM.pm.ch9.
 - slightly rewrite the introduction below
 - examine how Pps of chapter 9 are being deduced. Mark them
 - check the order of `MP`s
+- check `n10_13` and `n11_13`
  *)
 
 (* TODO: 
