@@ -22,25 +22,25 @@ Proof.
 Qed.
 ```
 
-There are several reasons for organizing proofs like this. The most significant one is readability. Besides, we can have several equivalant forms for a proposition, i.e. `(fun x => x) x` is not very far from just `x` or `(fun y => y) x`. When we're using tactics to push on the proof, we might just get a result that is equivalent to `x`, but a further reorganization into `x` might be extremely tedious. By using `assert X` we're actually only require the proof ends at a proposition equivalent to `X`, and skip the tedious transformations into `X`. One last thing for `assert` is that it help us limit the scope of theorems we use. When we leave the scope, these theorems are automatically cleared away, and only the intermediate steps as `S1` `S2` are being pertained. As a result, the proof window becomes extremely clean.
+There are several reasons for organizing proofs like this. The most significant one is readability. Besides, we can have several equivalant forms for a proposition, i.e. `(fun x => x) x` is not very far from just `x` or `(fun y => y) x`. Switching between them requires delicate application with tactics for all different cases. If we set the desired form as a subgoal, we only need to use tactics to prove for a equivalent form to `x`, and skip the tedious transformations. One last thing for `assert` is that it limits the scope of theorems we use. When we leave the scope, these theorems are automatically cleared away, and only the intermediate steps as `S1` `S2` are being pertained. As a result, the proof window becomes extremely clean.
 
-- Proof for a theorem should be organized with `assert` with the template above.
+- Proof for a theorem is **required** to be organized with `assert` with the template above.
 
 By using `assert`, the propositions being asserted is introduced into the hypotheses.
 
 ## 2. How to use(deduce on) a theorem
 `pose proof (thm x y z) as thm` should be almost the only way to *introduce* a theorem into the hypotheses. In Principia starting from chapter 9, propositions are further come with a special kind of "type", basically the order of the proposition, and at base case we're only allowed to use elementary propositions as parameters, for elementary functions. That being said,
-- `pose proof` on a theorem is allowed.
-- `pose` on a theorem is strictly not allowed.
-- All parameters for the theorem at the *lhs* of its definition, are required.
-- All parameters for the theorem are limited to those at the *lhs* of theorem's definition.
-- All parameters for the theorem are limited their "type" to elementary propositions, as the default in chapter 9. Every chapter after chapter 9 enables a new class of proposition to be passed in as parameters. Fundamentally however, whether they starts with a `forall` matters. Restriction on parameters is something our current formalization failed to model on.
-- If a goal can be solved immediately, we might just `apply` the theorem to end it.
+- `pose proof` on a theorem is **allowed**.
+- `pose` on a theorem is strictly **not allowed**.
+- All parameters for the theorem at the *lhs* of its definition, are **required**.
+- All parameters for the theorem are **required** to limit to the *lhs* of theorem's definition.
+- All parameters for the theorem are **recommended**(optional) to limited their "type" to elementary propositions, as the default in chapter 9. Every chapter after chapter 9 enables a new class of proposition to be passed in as parameters. Fundamentally however, whether they starts with a `forall` matters. Restriction on parameters is something our current formalization failed to model on.
+- If a goal can be solved immediately, it is **recommended** to just `apply` the theorem to end it.
 
 ## 3. How to use a `->` proposition(rewrite)
 A `->` proposition means that we can derive a conclusion from its premise. Immediately from above, below are almost the only allowed rules on `->` propositions:
-- `MP p1 p2`, using the `MP` tactic, is allowed, where `p1` and `p2` are both propositions posed in the hypotheses. This is also how we treat "parameters" at the *rhs* of a theorem.
-- `Syll p1 p2 Sy` for deriving a new "composed" proposition `Sy`, by using `Syll` tactic, is allowed. This is a tactic similar to `MP` and its exact meaning is given in chapter 2.
+- `MP p1 p2`, using the `MP` tactic, is **allowed**, where `p1` and `p2` are both propositions posed in the hypotheses. This is also how we treat "parameters" at the *rhs* of a theorem.
+- `Syll p1 p2 Sy` for deriving a new "composed" proposition `Sy`, by using `Syll` tactic, is **allowed**. This is a tactic similar to `MP` and its exact meaning is given in chapter 2.
 
 ## 4. How to use a `<->` proporition(rewrite)
 Technically speaking, if we completely follow the deduction rules in PM's logic system, we need to
@@ -51,31 +51,31 @@ Technically speaking, if we completely follow the deduction rules in PM's logic 
 5. Apply `Conj`, `Equiv` sequencially to combine them into `R <-> S`
 
 For just a single step on deduction, all the routine above seems pretty tedious. To simplify the procedure, we're allowed to use `rewrite` directly on theorems made up of `<->`s, providing that we can always expand these `rewrite` into a sequence of `Simp`, `MP`, `Conj` and `Equiv`.
-- `rewrite -> thm` on `<->` is allowed
-- `rewrite <- thm` on `<->` is allowed
-- The `thm` for rewrite is recommended to provided its full parameter list, but can be omitted.
+- `rewrite -> thm` on `<->` is **allowed**.
+- `rewrite <- thm` on `<->` is **allowed**.
+- The `thm` for rewrite is **recommended** to provide its full parameter list, but can be omitted.
 
 Besides construction part on `<->`, we also have destruction parts on `<->`. `Equiv` theorem(not tactic) in this sense, changes `P <-> Q` back to `P -> Q /\ Q -> P`. For this proposition, we can use `Simp` to choose the direction we want to use. But a more convinient way is seamlessly use the Rocq's `destruct` tactic.
-- `destruct` on `<->` is allowed
+- `destruct` on `<->` is **allowed**
 
 Explicit examples, sometimes with comments, on reducing these routines with Rocq native tactics, are provided through chapter 9 & 10.
 
 ## How to use a `=` proposition(rewrite)
 Aka. the root of all evils. A clear way how `=` proposition interacts with other types of proposition is not clearly defined. On elementary propositions, Rocq's default preference `rewrite` works perfectly.
-- `rewrite ->` on `=` is allowed
-- `rewrite <-` on `=` is allowed
-- Same as above, providing the parameter list is optional
+- `rewrite ->` on `=` is **allowed**
+- `rewrite <-` on `=` is **allowed**
+- Same as above, providing the parameter list is **recommended**.
 
 But when things become complicated, more problems will come to surface. a `forall x` is enough to bring `rewrite` down - it cannot identify the variable `x`. `setoid_rewrite` is a enhanced version of `rewrite` that can penetrate through `forall`s and `exist`s, with the only drawback that it works on `<->` relations. For this, we made the following rule:
-- `=` propositions can be turned into `<->` propositions using `eq_to_equiv`
-- `setoid_rewrite ->` on `<->` is allowed
-- `setoid_rewrite <-` on `<->` is allowed
-- Providing the parameter list is optional
+- `=` propositions is **allowed** to be turned into `<->` propositions using `eq_to_equiv`
+- `setoid_rewrite ->` on `<->` is **allowed**
+- `setoid_rewrite <-` on `<->` is **allowed**
+- Providing the full parameter list is **recommended**
 
 WARNING: thanks to the `rewrite` tactic in Rocq, `<->` is usually more useful than `->` theorems - a `rewrite` on `<->` is way simpler than `MP` or `Syll` on `->`. We might *slightly overuse* the `<->` theorems. There exists cases original proof `MP`s on its single-direction version, but for simplicity we still apply the `<->` version with a `rewrite` or `setoid_rewrite` on a proposition.
 
 ## Rules for technical hacks 
-Either for "historical reasons"(this project really doesn't have a history), or when we want to work thourgh a proof quickly, and we didn't figure out the correct way to write the proof, "technical hacks" arises for proof completions. The most common ones are listed below.
+Either for "historical reasons"(this project really doesn't have a history), or when we want to work thourgh a proof quickly, and we didn't figure out the correct way to write the proof, "technical hacks" arises for proof completions. The most common ones are listed below. Unless it gets a severe technical barrier, they are **recommended** to be taken down.
 - `replace...with` is a valid and flexible substitution for rewriting, but it's too heavy. We should delete occurences of `replace...with` as much as possible.
 - `apply propositional_extentionality` might occur inside `replace...with` blocks. Its purpose is to change the goal of `=` form into a goal of `<->` form for easier reasoning. It might work against original text and is not recommended.
 - `intro` introduces the premise as a hypothesis. `intro Hp`, as utilized in chapter 5 & 10, has proven its harmlessness. Other from this usage directly sourced back to the text, it's not recommended to used. Their occurences are supposed to be eliminated.
@@ -88,4 +88,4 @@ Throughout chapter 1 - 5, there are several custom tactics defined to use the pr
 3. `move` the propositions `before` or `after`, into the right order. For example, if we want to `MP S2 S1`, then we have to `move S1 after S2`.
 4. perform the tactic and immediately conclude the subproof.
 Since we don't always need to go through the full routine, we're only requiring that
-- above tactics are allowed, when they are the necessary preparations for performing a custom Ltac.
+- Tactics above are **allowed** to use, when they are the necessary preparations to perform a custom Ltac.
