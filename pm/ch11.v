@@ -415,28 +415,70 @@ Proof.
   assert (S1 : (P -> forall x y, Phi x y) 
     <-> (forall x, P -> forall y, Phi x y)).
   {
-    
+    pose proof (n10_21 (fun x => forall y, Phi x y) P) as n10_21.
+    now symmetry in n10_21. 
   }
-Admitted.
+  assert (S2 : (P → (∀ x y, Phi x y)) ↔ (∀ x y, P → Phi x y)).
+  {
+    now setoid_rewrite <- n10_21 in S1 at 2.
+    (* n10_271 ignored *)
+  }
+  exact S2.
+Qed.
 
 Theorem n11_31 (Phi Psi : Prop → Prop → Prop) :
   ((∀ x y, Phi x y) ∧ (∀ x y, Psi x y))
   ↔
   (∀ x y, Phi x y ∧ Psi x y).
 Proof.
-Admitted.
+  assert (S1 : ((∀ x y, Phi x y) ∧ (∀ x y, Psi x y))
+    ↔ (forall x, (forall y, Phi x y) /\ (forall y, Psi x y))).
+  {
+    pose proof (n10_22 (fun x => forall y, Phi x y)
+      (fun x => forall y, Psi x y)) as n10_22.
+    now symmetry in n10_22.
+  }
+  assert (S2 : ((∀ x y, Phi x y) ∧ (∀ x y, Psi x y))
+    ↔
+    (∀ x y, Phi x y ∧ Psi x y)).
+  {
+    now setoid_rewrite <- n10_22 in S1 at 2.
+    (* n10_271 ignored *)
+  }
+  exact S2.
+Qed.
 
-(* Thm *11.311: to be filled *)
+(* Thm *11.311: If `Phi(x^, y^)`, `Psi(x^, y^)` take arguments of the same type, and we have `|- Phi(x, y)` and `|- Psi(x, y)`, we shall have `|- Phi(x, y) /\ Psi(x, y)`. *)
+
 Theorem n11_32 (Phi Psi : Prop → Prop → Prop) :
   (∀ x y, Phi x y → Psi x y) 
   → ((∀ x y, Phi x y) → ∀ x y, Psi x y).
 Proof.
-Admitted.
+  set (X := Real "x").
+  set (Z := Real "z").
+  pose proof (n10_27 (fun y => Phi X y) (fun y => Psi X y)) 
+    as n10_27a.
+  pose proof (n10_11 X (fun x =>
+    (∀ y, Phi x y → Psi x y)
+      → (∀ y, Phi x y) → ∀ y, Psi x y
+  )) as n10_11a.
+  MP n10_11a n10_27a.
+  pose proof (n10_27 (fun x => (∀ y : Prop, Phi x y → Psi x y))
+    (fun x => (∀ y : Prop, Phi x y) → ∀ y : Prop, Psi x y))
+    as n10_27b.
+  MP n10_27b n10_11a.
+  pose proof (n10_27 (fun x => forall y, Phi x y)
+    (fun x => forall y, Psi x y)) as n10_27c.
+  now Syll n10_27b n10_27c Sy1.
+Qed.
 
 Theorem n11_33 (Phi Psi : Prop → Prop → Prop) :
   (∀ x y, Phi x y ↔ Psi x y) 
   → ((∀ x y, Phi x y) ↔ (∀ x y, Psi x y)).
 Proof.
+  pose proof (n10_271 (fun x => forall y, Phi x y)
+    (fun x => forall y, Psi x y)) as n10_271.
+  
 Admitted.
 
 Theorem n11_34 (Phi Psi : Prop → Prop → Prop) :
