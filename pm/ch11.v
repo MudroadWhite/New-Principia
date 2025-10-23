@@ -75,8 +75,8 @@ Admitted.
 Theorem n11_1 (Z W : Prop) (Phi : Prop → Prop → Prop) : 
   (∀ x y, Phi x y) → Phi Z W.
 Proof.
-  assert (S1 : (∀ x y, Phi x y) -> forall y, (Phi Z y)).
-  { exact (n10_1 (fun x => forall y, Phi x y) Z). }
+  assert (S1 : (∀ x y, Phi x y) -> ∀ y, (Phi Z y)).
+  { exact (n10_1 (fun x => ∀ y, Phi x y) Z). }
   assert (S2 : (∀ x y, Phi x y) → Phi Z W).
   { 
     pose proof (n10_1 (fun y => Phi Z y) W) as n10_1.
@@ -86,9 +86,9 @@ Proof.
 Qed.
 
 (* Thm *11.11 : If `Phi(z, w)` is true whatever possible arguments `z` and `w` 
-  may be, then `forall x y, Phi x y` is true. *)
+  may be, then `∀ x y, Phi x y` is true. *)
 Theorem n11_11 (Z W : Prop) (Phi : Prop → Prop → Prop) : 
-  (Phi Z W) → (forall x y, Phi x y).
+  (Phi Z W) → (∀ x y, Phi x y).
 Admitted.
 
 Theorem n11_12 (P : Prop) (Phi : Prop → Prop → Prop) : 
@@ -100,15 +100,15 @@ Proof.
   Close Scope double_app_impl.
   Close Scope double_app_equiv.
 
-  assert (S1 : (forall y, P \/ Phi X y) -> (P \/ forall y, Phi X y)).
+  assert (S1 : (∀ y, P \/ Phi X y) -> (P \/ ∀ y, Phi X y)).
   { apply n10_12. }
-  assert (S2 : (forall x y, P \/ Phi x y) -> (forall x, P \/ (forall y, Phi x y))).
+  assert (S2 : (∀ x y, P \/ Phi x y) -> (∀ x, P \/ (∀ y, Phi x y))).
   {
     pose proof (n10_11 X (fun x =>
-      (forall y, P \/ Phi x y) -> (P \/ forall y, Phi x y))) as n10_11.
+      (∀ y, P \/ Phi x y) -> (P \/ ∀ y, Phi x y))) as n10_11.
     MP n10_11 S1.
-    pose proof (n10_27 (fun x => (forall y, P \/ Phi x y))
-      (fun x => (P \/ forall y, Phi x y))) as n10_27.
+    pose proof (n10_27 (fun x => (∀ y, P \/ Phi x y))
+      (fun x => (P \/ ∀ y, Phi x y))) as n10_27.
     now MP n10_27 n10_11.
   }
   assert (S3 : (∀ x y, P ∨ Phi x y) → (P ∨ ∀ x y, Phi x y)).
@@ -129,10 +129,10 @@ Theorem n11_14 (Z W : Prop) (Phi Psi : Prop → Prop → Prop) :
   → (Phi Z W ∧ Psi Z W).
 Proof.
   assert (S1 : ((∀ x y, Phi x y) ∧ (∀ x y, Psi x y)) 
-    -> ((forall y, Phi Z y) /\ (forall y, Psi Z y))).
+    -> ((∀ y, Phi Z y) /\ (∀ y, Psi Z y))).
   {
-    exact (n10_14 (fun x => forall y, Phi x y) 
-      (fun x => forall y, Psi x y) Z).
+    exact (n10_14 (fun x => ∀ y, Phi x y) 
+      (fun x => ∀ y, Psi x y) Z).
   }
   assert (S2 : ((∀ x y, Phi x y) ∧ (∀ x y, Psi x y)) -> (Phi Z W ∧ Psi Z W)).
   {
@@ -154,31 +154,31 @@ Proof.
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
   (* ******** *)
-  assert (S1 : (forall x y, Phi x y) -> (Phi Z W)).
+  assert (S1 : (∀ x y, Phi x y) -> (Phi Z W)).
   { apply n11_1. }
-  assert (S2 : forall w z, (forall x y, Phi x y) -> Phi z w).
+  assert (S2 : ∀ w z, (∀ x y, Phi x y) -> Phi z w).
   {
     (* Here I think the order of theorems is reversed..? 
       Also why we need `z w` in reversed order? *)
-    pose proof (n11_11 Z W (fun z w => (forall x y, Phi x y) -> Phi z w))
+    pose proof (n11_11 Z W (fun z w => (∀ x y, Phi x y) -> Phi z w))
       as n11_11.
     MP n11_11 S1.
-    pose proof (n11_07 (fun z w => (forall x y, Phi x y) -> Phi z w)) as n11_07.
+    pose proof (n11_07 (fun z w => (∀ x y, Phi x y) -> Phi z w)) as n11_07.
     now MP n11_07 n11_11.
   }
-  assert (S3 : (forall x y, Phi x y) -> (forall w z, Phi z w)).
+  assert (S3 : (∀ x y, Phi x y) -> (∀ w z, Phi z w)).
   {
-    pose proof (n11_12 (~forall x y, Phi x y) (fun z w => Phi w z)) as n11_12.
+    pose proof (n11_12 (~∀ x y, Phi x y) (fun z w => Phi w z)) as n11_12.
     setoid_rewrite <- Impl1_01a in n11_12.
     now MP n11_12 S2.
   }
-  assert (S4 : (forall w z, Phi z w) -> (forall x y, Phi x y)).
+  assert (S4 : (∀ w z, Phi z w) -> (∀ x y, Phi x y)).
   {
-    assert (S4_1 : (forall w z, Phi z w) -> Phi X Y).
+    assert (S4_1 : (∀ w z, Phi z w) -> Phi X Y).
     { exact (n11_1 Y X (fun w z => Phi z w)). }
-    assert (S4_2 : forall x y, (forall w z, Phi z w) -> Phi x y).
+    assert (S4_2 : ∀ x y, (∀ w z, Phi z w) -> Phi x y).
     {
-      pose proof (n11_11 X Y (fun x y => (forall w z, Phi z w) -> Phi x y)) 
+      pose proof (n11_11 X Y (fun x y => (∀ w z, Phi z w) -> Phi x y)) 
         as n11_11.
       now MP n11_11 S4_1.
     }
@@ -196,17 +196,17 @@ Proof.
 Qed.  
 
 Theorem n11_21 (Phi : Prop → Prop → Prop → Prop) :
-  (∀ x y z, Phi x y z) <-> (∀ y z x, Phi x y z).
+  (∀ x y z, Phi x y z) ↔ (∀ y z x, Phi x y z).
 Proof.
   (* TOOLS *)
   set (Y := Real "y").
   (* ******** *)
   (* We can see that Rocq really doesn't make a distinction here... *)
-  assert (S1 : (forall x y z, Phi x y z) <-> 
-    (forall x, forall y, forall z, Phi x y z)).
+  assert (S1 : (∀ x y z, Phi x y z) ↔ 
+    (∀ x, ∀ y, ∀ z, Phi x y z)).
   {
     (* n11_01 ignored *)
-    (* It seems that here we're getting a `<->` relation directly 
+    (* It seems that here we're getting a `↔` relation directly 
     from a `=` definition, from original text.
     I'm assumning that the original routine is set up 
     (Phi X Y Z -> Phi X Y Z), instantiate by repeatly applying n11_1,
@@ -215,16 +215,16 @@ Proof.
     pose proof (n11_02 Phi) as n11_02.
     reflexivity.
   }
-  assert (S2 : (forall x y z, Phi x y z) <-> 
-    (forall y, forall x, forall z, Phi x y z)).
+  assert (S2 : (∀ x y z, Phi x y z) ↔ 
+    (∀ y, ∀ x, ∀ z, Phi x y z)).
   {
-    pose proof (n11_2 (fun x y => forall z, Phi x y z)) as n11_2.
+    pose proof (n11_2 (fun x y => ∀ z, Phi x y z)) as n11_2.
     (* Since Rocq doesn't make a difference, we here still try to stick to 
     original routine, with all the `Syll` treatment omitted... *)
     now rewrite -> n11_2 in S1 at 2.
   }
-  assert (S3 : (forall x y z, Phi x y z) <-> 
-    (forall y, forall z, forall x, Phi x y z)).
+  assert (S3 : (∀ x y z, Phi x y z) ↔ 
+    (∀ y, ∀ z, ∀ x, Phi x y z)).
   {
     pose proof (n11_2 (fun x z => Phi x Y z)) as n11_2.
     pose proof (n10_11 Y (fun y => (∀ x z : Prop, Phi x y z) ↔ ∀ z x : Prop, Phi x y z)) 
@@ -234,7 +234,7 @@ Proof.
       (fun y => (∀ z x : Prop, Phi x y z))) as n10_271.
     now MP n10_271 n10_11.
   }
-  assert (S4 : (∀ x y z, Phi x y z) <-> (∀ y z x, Phi x y z)).
+  assert (S4 : (∀ x y z, Phi x y z) ↔ (∀ y z x, Phi x y z)).
   {
     (* Since it only involves n11_01 and n11_02, we skip the routine *)
     exact S3.
@@ -243,48 +243,54 @@ Proof.
 Qed.
 
 Theorem n11_22 (Phi : Prop → Prop → Prop) :
-  (∃ x y, Phi x y) <-> (¬ (∀ x y, ¬ Phi x y)).
+  (∃ x y, Phi x y) ↔ (¬ (∀ x y, ¬ Phi x y)).
 Proof.
-  assert (S1 : (exists x y, Phi x y) <-> (~forall x, ~exists y, Phi x y)).
+  assert (S1 : (∃ x y, Phi x y) ↔ (~∀ x, ~∃ y, Phi x y)).
   {
-    (* The `exists` are currently separated, i.e. in the form of 
-      `exists x, exists y` *)
-    pose proof (n10_252 (fun x => exists y, Phi x y)) as n10_252.
+    (* The `∃` are currently separated, i.e. in the form of 
+      `∃ x, ∃ y` *)
+    pose proof (n10_252 (fun x => ∃ y, Phi x y)) as n10_252.
     (* TODO: check if it is elligible to use theorems in chapter 4 *)
     rewrite -> Transp4_11 in n10_252.
     rewrite <- n4_13 in n10_252.
-    (* Now we use n11_03 to merge the exists. Since it's pretty tedious, I
+    (* Now we use n11_03 to merge the ∃. Since it's pretty tedious, I
     want to ignore this in the future. We can see that Rocq doesn't even 
     allow such rewrite to perform. *)
     (* rewrite <- (n11_03 Phi) in n10_252. *)
     exact n10_252.
   }
-  assert (S2 : (exists x y, Phi x y) <-> (~forall x, forall y, ~Phi x y)).
+  assert (S2 : (∃ x y, Phi x y) ↔ (~∀ x, ∀ y, ~Phi x y)).
   {
     (* n10_271 ignored as in ch10 *)
     now setoid_rewrite -> n10_252 in S1.
   }
-  assert (S3 : (∃ x y, Phi x y) <-> (¬ (∀ x y, ¬ Phi x y))).
+  assert (S3 : (∃ x y, Phi x y) ↔ (¬ (∀ x y, ¬ Phi x y))).
   {
-    (* n11_01 ignored for merging `forall`s *)
+    (* n11_01 ignored for merging `∀`s *)
     exact S2.
   }
   exact S3.
 Qed.
 
 Theorem n11_23 (Phi : Prop → Prop → Prop) :
-  (∃ x y, Phi x y) <-> (∃ y x, Phi x y).
+  (∃ x y, Phi x y) ↔ (∃ y x, Phi x y).
 Proof.
-  
+  assert (S1 : (∃ x y, Phi x y) ↔ ~(∀ x y, ~Phi x y)).
+  { apply n11_22. }
+  assert (S2 : (∃ x y, Phi x y) ↔ ~(∀ y x, ~Phi x y)).
+  {
+    rewrite -> n11_2 in S1.
+    rewrite <- Transp4_11 in S1.
+  }
 Admitted.
 
 Theorem n11_24 (Phi : Prop → Prop → Prop → Prop) :
-  (∃ x y z, Phi x y z) <-> (∃ y x z, Phi x y z).
+  (∃ x y z, Phi x y z) ↔ (∃ y x z, Phi x y z).
 Proof.
 Admitted.
 
 Theorem n11_25 (Phi : Prop → Prop → Prop) :
-  (¬∃ x y, Phi x y) <-> ∀ x y, ¬ Phi x y.
+  (¬∃ x y, Phi x y) ↔ ∀ x y, ¬ Phi x y.
 Proof.
 Admitted.
 
