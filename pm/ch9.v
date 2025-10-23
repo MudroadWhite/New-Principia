@@ -308,7 +308,7 @@ Proof.
   { 
     now rewrite <- n9_01, <- Impl1_01,
     (* NOTE: currently we're technically not allowed for 1st order propositions to appear
-    as parameters. This proof might be flawed. *)
+    as parameters. Technically speaking, this is not allowed and this proof might be flawed *)
             -> (n4_13 (∀ y, ¬ φ y)),
             <- n9_02, <- Impl1_01,
             <- (n4_13 (∃ x, φ x)) in S7.
@@ -317,7 +317,6 @@ Proof.
 Qed.
 
 Theorem n9_23 (φ : Prop → Prop) : (∀ x, φ x) → (∀ x, φ x).
-(* TODO: obtain the proof in original way, restricting the variable to be only eprops *)
 (* Original proof uses Id, 9.13, 9.21 *)
 Proof. 
   set (X := Real "x").
