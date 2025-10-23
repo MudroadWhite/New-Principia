@@ -25,6 +25,7 @@ Qed.
 There are several reasons for organizing proofs like this. The most significant one is readability. Besides, we can have several equivalant forms for a proposition, i.e. `(fun x => x) x` is not very far from just `x` or `(fun y => y) x`. Switching between them requires delicate application with tactics for all different cases. If we set the desired form as a subgoal, we only need to use tactics to prove for a equivalent form to `x`, and skip the tedious transformations. One last thing for `assert` is that it limits the scope of theorems we use. When we leave the scope, these theorems are automatically cleared away, and only the intermediate steps as `S1` `S2` are being pertained. As a result, the proof window becomes extremely clean.
 
 - Proof for a theorem is **required** to be organized with `assert` with the template above.
+- As it pertains a nice style, `exact` at the end of the proof is **not allowed** to be deleted or simplified.
 
 By using `assert`, the propositions being asserted is introduced into the hypotheses.
 
@@ -34,7 +35,7 @@ By using `assert`, the propositions being asserted is introduced into the hypoth
 - `pose` on a theorem is strictly **not allowed**.
 - All parameters for the theorem at the *lhs* of its definition, are **required**.
 - All parameters for the theorem are **required** to limit to the *lhs* of theorem's definition.
-- All parameters for the theorem are **recommended**(optional) to limited their "type" to elementary propositions, as the default in chapter 9. Every chapter after chapter 9 enables a new class of proposition to be passed in as parameters. Fundamentally however, whether they starts with a `forall` matters. Restriction on parameters is something our current formalization failed to model on.
+- All parameters for the theorem are **recommended**(a.k.a. optional) to limited their "type" to elementary propositions, as the default in chapter 9. Every chapter after chapter 9 enables a new class of proposition to be passed in as parameters. Fundamentally however, whether they starts with a `forall` matters. Restriction on parameters is something our current formalization failed to model on.
 - If a goal can be solved immediately, it is **recommended** to just `apply` the theorem to end it.
 
 ## 3. How to use a `->` proposition(rewrite)
@@ -53,10 +54,11 @@ Technically speaking, if we completely follow the deduction rules in PM's logic 
 For just a single step on deduction, all the routine above seems pretty tedious. To simplify the procedure, we're allowed to use `rewrite` directly on theorems made up of `<->`s, providing that we can always expand these `rewrite` into a sequence of `Simp`, `MP`, `Conj` and `Equiv`.
 - `rewrite -> thm` on `<->` is **allowed**.
 - `rewrite <- thm` on `<->` is **allowed**.
+- Using `at` to specify the subterm is **allowed**. Alternatively, we provide the full parameter list for `thm` to `rewrite`.
 - The `thm` for rewrite is **recommended** to provide its full parameter list, but can be omitted.
 
-Besides construction part on `<->`, we also have destruction parts on `<->`. `Equiv` theorem(not tactic) in this sense, changes `P <-> Q` back to `P -> Q /\ Q -> P`. For this proposition, we can use `Simp` to choose the direction we want to use. But a more convinient way is seamlessly use the Rocq's `destruct` tactic.
-- `destruct` on `<->` is **allowed**
+Besides the construction procedure on `<->`, we also have destruction procedure on `<->`. `Equiv` theorem(not tactic) in this sense, changes `P <-> Q` back to `P -> Q /\ Q -> P`. For this proposition, we can use `Simp` to choose the direction we want to use. But a more convinient way is seamlessly use the Rocq's `destruct` tactic.
+- `destruct` on `<->` is **allowed** to simplify this routine.
 
 Explicit examples, sometimes with comments, on reducing these routines with Rocq native tactics, are provided through chapter 9 & 10.
 
@@ -64,12 +66,14 @@ Explicit examples, sometimes with comments, on reducing these routines with Rocq
 Aka. the root of all evils. A clear way how `=` proposition interacts with other types of proposition is not clearly defined. On elementary propositions, Rocq's default preference `rewrite` works perfectly.
 - `rewrite ->` on `=` is **allowed**
 - `rewrite <-` on `=` is **allowed**
-- Same as above, providing the parameter list is **recommended**.
+- Same as above, using `at` is **allowed**.
+- Providing the parameter list is **recommended**.
 
 But when things become complicated, more problems will come to surface. a `forall x` is enough to bring `rewrite` down - it cannot identify the variable `x`. `setoid_rewrite` is a enhanced version of `rewrite` that can penetrate through `forall`s and `exist`s, with the only drawback that it works on `<->` relations. For this, we made the following rule:
 - `=` propositions is **allowed** to be turned into `<->` propositions using `eq_to_equiv`
 - `setoid_rewrite ->` on `<->` is **allowed**
 - `setoid_rewrite <-` on `<->` is **allowed**
+- Similar to above, using `at` is **allowed**.
 - Providing the full parameter list is **recommended**
 
 WARNING: thanks to the `rewrite` tactic in Rocq, `<->` is usually more useful than `->` theorems - a `rewrite` on `<->` is way simpler than `MP` or `Syll` on `->`. We might *slightly overuse* the `<->` theorems. There exists cases original proof `MP`s on its single-direction version, but for simplicity we still apply the `<->` version with a `rewrite` or `setoid_rewrite` on a proposition.
@@ -89,3 +93,8 @@ Throughout chapter 1 - 5, there are several custom tactics defined to use the pr
 4. perform the tactic and immediately conclude the subproof.
 Since we don't always need to go through the full routine, we're only requiring that
 - Tactics above are **allowed** to use, when they are the necessary preparations to perform a custom Ltac.
+
+## Debugging the proof
+It happens that users might want to check the proofs in more detail. How to debug the proof is completely personal for completely personal purposes, but there are some tactics I commonly use:
+- `simpl`s to simplify a hypothesis
+- `Close Scope`/`Open Scope` to enable specific notations
