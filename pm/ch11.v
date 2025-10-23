@@ -279,14 +279,30 @@ Proof.
   { apply n11_22. }
   assert (S2 : (∃ x y, Phi x y) ↔ ~(∀ y x, ~Phi x y)).
   {
-    rewrite -> n11_2 in S1.
-    rewrite <- Transp4_11 in S1.
+    pose proof (n11_2 (fun x y => ¬ Phi x y)) as n11_2.
+    (* TODO: investigate if this proposition is correctly used *)
+    rewrite -> Transp4_11 in n11_2.
+    now rewrite -> n11_2 in S1.
   }
-Admitted.
+  assert (S3 : (∃ x y, Phi x y) ↔ (exists y x, Phi x y)).
+  { now rewrite <- n11_22 in S2. }
+  exact S3.
+Qed.
 
 Theorem n11_24 (Phi : Prop → Prop → Prop → Prop) :
   (∃ x y z, Phi x y z) ↔ (∃ y x z, Phi x y z).
 Proof.
+  assert (S1 : (∃ x y z, Phi x y z) ↔ (exists x, exists y, exists z, Phi x y z)).
+  {
+    (* n11_03, n11_04 ignored *)
+    reflexivity.
+  }
+  assert (S2 : (∃ x y z, Phi x y z) ↔ (exists y, exists x, exists z, Phi x y z)).
+  { now rewrite -> n11_23 in S1 at 2. }
+  assert (S3 : (exists y, exists z, exists x, Phi x y z)).
+  {
+    pose proof n10_281 as n10_281.
+  }
 Admitted.
 
 Theorem n11_25 (Phi : Prop → Prop → Prop) :
