@@ -71,24 +71,44 @@ Admitted.
 Theorem n11_1 (W Z : Prop) (Phi : Prop → Prop → Prop) : 
   (∀ x y, Phi x y) → Phi W Z.
 Proof.
-Admitted.
+  assert (S1 : (∀ x y, Phi x y) -> forall y, (Phi W y)).
+  { exact (n10_1 (fun x => forall y, Phi x y) W). }
+  assert (S2 : (∀ x y, Phi x y) → Phi W Z).
+  { 
+    pose proof (n10_1 (fun y => Phi W y) Z) as n10_1.
+    now Syll S1 n10_1 S2.
+  }
+  exact S2.
+Qed.
 
-(* Thm *11.11 : to be filled *)
+(* Thm *11.11 : If `Phi(z, w)` is true whatever possible arguments `z` and `w` 
+  may be, then `forall x y, Phi x y` is true. *)
 
 Theorem n11_12 (P : Prop) (Phi : Prop → Prop → Prop) : 
   (∀ x y, P ∨ Phi x y) → (P ∨ ∀ x y, Phi x y).
 Proof.
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
+  Close Scope double_app_impl.
+  Close Scope double_app_equiv.
+
+  assert (S1 : (forall y, P \/ Phi X y) -> (P \/ forall y, Phi X y)).
+  { apply n10_12. }
+  assert (S2 : )
 Admitted.
 
+(* Similar to *10.13 *)
 (* Thm *11.13 : to be filled *)
 
-(* An alternative version of *11.13, but with more limited usages 
-  than *11.13 *)
+(* An alternative version of *11.13, but can only be used during formal 
+  inference. Similar to *10.14 *)
 Theorem n11_14 (W Z : Prop) (Phi Psi : Prop → Prop → Prop) : 
   ((∀ x y, Phi x y) ∧ (∀ x y, Psi x y))
   → (Phi W Z ∧ Psi W Z).
 Proof.
 Admitted.
+
 
 Theorem n11_2 (Phi : Prop → Prop → Prop) : 
   (∀ x y, Phi x y) ↔ (∀ y x, Phi x y).
