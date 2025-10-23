@@ -3,7 +3,7 @@
 This chapter describes the tactics we generally use in further detail.
 
 ## 1. `assert` for intermediate steps
-When proofs are "long enough", the first tactic that should come to one's view should be `assert` to specify the intermediate steps. This tactics modularizes the proofs so that they usually have the following structure:
+When proofs are "long enough", the first tactic that should come to one's view should be `assert` to specify the intermediate steps. This tactic modularizes the proofs so that they usually have the following structure:
 
 ```Coq
 Proof.
@@ -20,7 +20,7 @@ Proof.
 Qed.
 ```
 
-There are several reasons for organizing proofs like this. The most significant one is readability. Besides, we can have several equivalant forms for a proposition, i.e. `(fun x => x) x` is not very far from just `x` or `(fun y => y) x`. When we're using tactics to push on the proof, we might just get a result that is equivalent to `x`, but a further reorganization into `x` might be extremely tedious. By using `assert X` we're actually only require the proof ends at a proposition equivalent to `X`, and skip the tedious transformations into `X`. One last thing for `assert` is that it help us limit the scope of theorems we use. When we leave the scope, these theorems are automatically cleared away, and only the results as `S1` `S2` are being pertained. As a result, the proof window becomes extremely clean.
+There are several reasons for organizing proofs like this. The most significant one is readability. Besides, we can have several equivalant forms for a proposition, i.e. `(fun x => x) x` is not very far from just `x` or `(fun y => y) x`. When we're using tactics to push on the proof, we might just get a result that is equivalent to `x`, but a further reorganization into `x` might be extremely tedious. By using `assert X` we're actually only require the proof ends at a proposition equivalent to `X`, and skip the tedious transformations into `X`. One last thing for `assert` is that it help us limit the scope of theorems we use. When we leave the scope, these theorems are automatically cleared away, and only the intermediate steps as `S1` `S2` are being pertained. As a result, the proof window becomes extremely clean.
 
 - Proof for a theorem should be organized with `assert` with the template above.
 
