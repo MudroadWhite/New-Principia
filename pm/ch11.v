@@ -97,9 +97,20 @@ Proof.
   { apply n10_12. }
   assert (S2 : (forall x y, P \/ Phi x y) -> (forall x, P \/ (forall y, Phi x y))).
   {
-  
+    pose proof (n10_11 X (fun x =>
+      (forall y, P \/ Phi x y) -> (P \/ forall y, Phi x y))) as n10_11.
+    MP n10_11 S1.
+    pose proof (n10_27 (fun x => (forall y, P \/ Phi x y))
+      (fun x => (P \/ forall y, Phi x y))) as n10_27.
+    now MP n10_27 n10_11.
   }
-Admitted.
+  assert (S3 : (∀ x y, P ∨ Phi x y) → (P ∨ ∀ x y, Phi x y)).
+  {
+    pose proof (n10_12 (fun x => ∀ y : Prop, Phi x y) P) as n10_12.
+    now Syll n10_12 S2 S3.
+  }
+  exact S3.
+Qed.
 
 (* Similar to *10.13 *)
 (* Thm *11.13 : to be filled *)
