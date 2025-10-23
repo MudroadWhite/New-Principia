@@ -15,8 +15,8 @@ Require Import PM.pm.ch9.
  *)
 
 (* TODO: 
-Type of theorems allowed: first order propositions
-Type of parameters allowed: from elementary propositions to first order propositions
+Type of theorems allowed: 
+Type of parameters allowed: 
 *)
 
 (* The goal of chapter 10 is extend the propositions from `p → q` 
