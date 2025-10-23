@@ -7,6 +7,11 @@ Require Import PM.pm.ch5.
 Require Import PM.pm.ch9.
 Require Import PM.pm.ch10.
 
+(* TODO: 
+Type of theorems allowed: 
+Type of parameters allowed: 
+*)
+
 (* TODO: change the name of these scopes *)
 Declare Scope double_app_impl.
 Declare Scope double_app_equiv.
