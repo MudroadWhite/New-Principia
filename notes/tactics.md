@@ -113,5 +113,7 @@ Since we don't always need to go through the full routine, we're only requiring 
 
 ## Debugging the proof
 It happens that users might want to check the proofs in more detail. How to debug the proof is completely personal for completely personal purposes, but there are some tactics I commonly use:
-- `simpl`s to simplify a hypothesis
+- `simpl` to simplify a hypothesis
 - `Close Scope`/`Open Scope` to enable specific notations
+- `pose proof` another theorem to see how it looks like
+
