@@ -13,6 +13,11 @@ Require Import PM.pm.ch9.
 - check the order of `MP`s
  *)
 
+(* TODO: 
+Type of theorems allowed: first order propositions
+Type of parameters allowed: from elementary propositions to first order propositions
+*)
+
 (* The goal of chapter 10 is extend the propositions from `p → q` 
 to `∀ x, p x→ q x`. In order to do this, we mostly don't use the 
 definitions in chapter 9 and develop a new way to interpret `∃` 

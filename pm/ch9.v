@@ -11,6 +11,11 @@ Require Import PM.pm.ch5.
 *)
 
 (* 
+Type of theorems allowed: first order propositions
+Type of parameters allowed: from elementary propositions to first order propositions
+*)
+
+(* 
 Every propositions, variables in chapter 9 are supposed to be elementary propositions,
 which doesn't contain any quantifiers. That being said, in a rigorous sense, 
 `P := ∀ x, F x` shouldn't be allowed, but `P := X ∨ Y` is allowed. Currently we 
