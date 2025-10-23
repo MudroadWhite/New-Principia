@@ -28,12 +28,12 @@ By using `assert`, the propositions being asserted is introduced into the hypoth
 
 ## 2. What does it mean to use(deduce on) a theorem
 `pose proof (thm x y z) as thm` should be almost the only way to *introduce* a theorem into the hypotheses. In Principia starting from chapter 9, propositions are further come with a special kind of "type", basically the order of the proposition, and at base case we're only allowed to use elementary propositions as parameters, for elementary functions. That being said,
-- Whether the parameters of `thm` is a `forall` proposition *matters*. If no context is provided, theorems can only accept elementary propositions as parameters.
-- `thm` cannot be applied to parameters more than the ones at lhs.
-- Parameters at the rhs of the `thm` are supposed to be passed in via *modus ponens* rule.
+- Whether the parameter of `thm` is a `forall` proposition *matters*. If no context is provided, theorems can only accept elementary propositions as parameters.
+- `thm` cannot be applied to parameters more than the ones at lhs. These are for substitutions.
+- "Parameters" at the rhs of the `thm` are for the actual deduction, and can be only performed via *modus ponens*.
 
 ## 3. How to use a `->` proposition(rewrite)
-A `->` proposition means that we can derive a conclusion from its premise. Immediately from above, below are almost the only allowed form on `->` propositions:
+A `->` proposition means that we can derive a conclusion from its premise. Immediately from above, below are almost the only allowed rules on `->` propositions:
 - `MP p1 p2`, using the `MP` tactic, is allowed, where `p1` and `p2` are both propositions posed in the hypotheses.
 - `Syll p1 p2 Sy` for deriving a new "composed" proposition `Sy`, by using `Syll` tactic, is allowed. This is a tactic similar to `MP` and its exact meaning is given in chapter 2.
 
@@ -53,12 +53,12 @@ For just a single step on deduction, all the routine above seems pretty tedious.
 Some of the examples showing how they can be simplified, are provided through chapter 9 & 10.
 
 ## How to use a `=` proposition(rewrite)
-Aka. the root of all evils. A clear way how `=` proposition interacts with other types of proposition is not clearly defined. By default, the best way to apply these propositions in Rocq is through `rewrite`.
+Aka. the root of all evils. A clear way how `=` proposition interacts with other types of proposition is not clearly defined. On elementary propositions, Rocq's default preference `rewrite` works perfectly.
 - `rewrite ->` on `=` is allowed
 - `rewrite <-` on `=` is allowed
 - Same as above, providing the parameter list is optional
 
-But when things become complicated, more problems will come to surface. `rewrite` only works on *elementary propositions*, and a `forall x` is enough to bring it down - it cannot identify the variable `x`. `setoid_rewrite` is a enhanced version of `rewrite` that can penetrate through `forall`s and `exist`s, with the only drawback that it works on `<->` relations. For this, we made the following rule:
+But when things become complicated, more problems will come to surface. a `forall x` is enough to bring `rewrite` down - it cannot identify the variable `x`. `setoid_rewrite` is a enhanced version of `rewrite` that can penetrate through `forall`s and `exist`s, with the only drawback that it works on `<->` relations. For this, we made the following rule:
 - `=` propositions can be turned into `<->` propositions using `eq_to_equiv`
 - `setoid_rewrite ->` on `<->` is allowed
 - `setoid_rewrite <-` on `<->` is allowed
