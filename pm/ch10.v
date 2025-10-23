@@ -16,7 +16,7 @@ Require Import PM.pm.ch9.
 
 (* TODO: 
 Type of theorems allowed: 
-Type of parameters allowed: 
+Type of parameters allowed: (each forall is quantified over at most one variable?)
 *)
 
 (* The goal of chapter 10 is extend the propositions from `p → q` 
