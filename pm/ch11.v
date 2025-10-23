@@ -290,8 +290,11 @@ Proof.
 Qed.
 
 Theorem n11_24 (Phi : Prop → Prop → Prop → Prop) :
-  (∃ x y z, Phi x y z) ↔ (∃ y x z, Phi x y z).
+  (∃ x y z, Phi x y z) ↔ (∃ y z x, Phi x y z).
 Proof.
+  (* TOOLS *)
+  set (Y := Real "y").
+  (* ******** *)
   assert (S1 : (∃ x y z, Phi x y z) ↔ (exists x, exists y, exists z, Phi x y z)).
   {
     (* n11_03, n11_04 ignored *)
@@ -299,33 +302,121 @@ Proof.
   }
   assert (S2 : (∃ x y z, Phi x y z) ↔ (exists y, exists x, exists z, Phi x y z)).
   { now rewrite -> n11_23 in S1 at 2. }
-  assert (S3 : (exists y, exists z, exists x, Phi x y z)).
+  assert (S3 : (∃ x y z, Phi x y z) ↔ (exists y, exists z, exists x, Phi x y z)).
   {
-    pose proof n10_281 as n10_281.
+    pose proof (n11_23 (fun x z => Phi x Y z)) as n11_23.
+    pose proof (n10_11 Y (fun y =>
+      (∃ x z : Prop, Phi x y z) ↔ (∃ z x : Prop, Phi x y z))) as n10_11.
+    MP n10_11 n11_23.
+    pose proof (n10_281 (fun y => ∃ x z, Phi x y z) (fun y => (∃ z x, Phi x y z))
+      ) as n10_281.
+    MP n10_281 n10_11.
+    now rewrite -> n10_281 in S2.
   }
-Admitted.
+  assert (S4 : (∃ x y z, Phi x y z) ↔ (∃ y z x, Phi x y z)).
+  {
+    (* n11_03, n11_04 ignored *)
+    exact S3.
+  }
+  exact S4.
+Qed.
 
 Theorem n11_25 (Phi : Prop → Prop → Prop) :
   (¬∃ x y, Phi x y) ↔ ∀ x y, ¬ Phi x y.
 Proof.
-Admitted.
+  pose proof (n11_22 Phi) as n11_22.
+  rewrite -> Transp4_11 in n11_22.
+  now rewrite <- n4_13 in n11_22.
+Qed.
 
 Theorem n11_26 (Phi : Prop → Prop → Prop) :
   (∃ x, ∀ y, Phi x y) → (∀ y, ∃ x, Phi x y).
 Proof.
-Admitted.
+  (* TOOLS *)
+  set (X := Real "x").
+  set (Y := Real "y").
+  (* ******** *)
+  assert (S1 : (exists x, forall y, Phi x y) -> (exists x, Phi x Y)).
+  {
+    pose proof (n10_1 (fun y => Phi X y) Y) as n10_1.
+    simpl in n10_1.
+    pose proof (n10_11 X (fun x => (∀ y, Phi x y) → Phi x Y))
+      as n10_11.
+    MP n10_11 n10_1.
+    pose proof (n10_28 (fun x => ∀ y, Phi x y)
+      (fun x => Phi x Y)) as n10_28.
+    now MP n10_28 n10_11.
+  }
+  assert (S2 : (∃ x, ∀ y, Phi x y) → (∀ y, ∃ x, Phi x y)).
+  {
+    pose proof (n10_11 Y (fun y0 =>
+        (∃ x : Prop, ∀ y : Prop, Phi x y) → ∃ x : Prop, Phi x y0
+      )) as n10_11.
+    MP n10_11 S1.
+    pose proof n10_21 as n10_21.
+    pose proof (n10_21 (fun y => ∃ x : Prop, Phi x y)
+      (∃ x : Prop, ∀ y : Prop, Phi x y)) as n10_21.
+    now rewrite -> n10_21 in n10_11.
+  }
+  exact S2.
+Qed.
 
-(* NOTE: here the format is slightly different from original text *)
+(* Here the format is slightly different from original text. Also, since 
+we cannot split the quantifiers in Rocq, here we only try to simulate the 
+proof procedure. *)
 Theorem n11_27 (Phi : Prop → Prop → Prop → Prop) :
   ((∃ x y, ∃ z, Phi x y z) ↔ (∃ x, ∃ y z, Phi x y z))
   ∧
   ((∃ x, ∃ y z, Phi x y z) ↔ (∃ x y z, Phi x y z)).
 Proof.
-Admitted.
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
+  assert (S1 : (∃ x y, ∃ z, Phi x y z) 
+    ↔ (exists x, exists y, exists z, Phi x y z)).
+  {
+    pose proof (n4_2 ((∃ x y, ∃ z, Phi x y z))) as n4_2.
+    (* n11_03 ignored *)
+    exact n4_2.
+  }
+  assert (S2 : (exists y, exists z, Phi X y z) <-> (exists y z, Phi X y z)).
+  {
+    pose proof (n4_2 (exists y, exists z, Phi X y z)) as n4_2.
+    (* n11_03 ignored *)
+    exact n4_2.
+  }
+  assert (S3 : (exists x, exists y, exists z, Phi x y z) 
+    <-> (exists x, exists y z, Phi x y z)).
+  {
+    pose proof (n10_11 X (fun x =>
+      (exists y, exists z, Phi x y z) <-> (exists y z, Phi x y z)
+    )) as n10_11.
+    MP n10_11 S2.
+    pose proof (n10_281
+      (fun x => exists y, exists z, Phi x y z)
+      (fun x => exists y z, Phi x y z)
+    ) as n10_281.
+    now MP n10_281 n10_11.
+  }
+  assert (S4 : ((∃ x y, ∃ z, Phi x y z) ↔ (∃ x, ∃ y z, Phi x y z))
+    ∧
+    ((∃ x, ∃ y z, Phi x y z) ↔ (∃ x y z, Phi x y z))).
+  {
+    (* n11_04 ignored. It should be applied on the `∃ x, ∃ y, ∃ z`
+    side of S1 and S3. *)
+    now Conj S1 S3 S4.
+  }
+  exact S4.
+Qed.
 
 Theorem n11_3 (P : Prop) (Phi : Prop → Prop → Prop) :
   (P → (∀ x y, Phi x y)) ↔ (∀ x y, P → Phi x y).
 Proof.
+  assert (S1 : (P -> forall x y, Phi x y) 
+    <-> (forall x, P -> forall y, Phi x y)).
+  {
+    
+  }
 Admitted.
 
 Theorem n11_31 (Phi Psi : Prop → Prop → Prop) :
