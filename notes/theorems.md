@@ -11,6 +11,8 @@ Similarly, `Theorem`s are used to define theorems in Principia, and are intended
 
 ## Naming convention: functions, apparent variables and real variables
 
+TODO: state clearly what are parameters at lhs; for substitution vs for inference/deduction
+
 Functions as parameters are supposed to be named as the same style of original text: either greek letters like `φ` or their upper-cased English equivalent like `Phi`.
 
 By original text, apparent variables are quantified variables in `forall`, `exists` and so on. As parameters, they're usually lower case literals like `x`.
