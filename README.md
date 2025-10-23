@@ -2,9 +2,9 @@
 Continuation of [Principia Mathematica's formalization](https://github.com/LogicalAtomist/principia) by Landon Elkind.
 
 This project is currently focused on the following parts:
-- [x] Chapter 9 - Theorems now extend beyond propositions with "real variables". Now they involve functions and quantified propositions(with single "apparent variable")
+- [x] Chapter 9 - Theorems now extend beyond propositions with "real variables", involving functions and quantified propositions(with single "apparent variable"). Basic support for a predicate called "IsSameType".
 - [x] Chapter 10 - Added a special notation for `->` and `<->` with single apparent variable. One theorem seems to be unprovable
-- [ ] Chapter 11 - Notations for quantified propositions are extended to multiple apparent variables
+- [ ] Chapter 11 - Notations for quantified propositions now extend to multiple apparent variables
 
 ## Why working on it
 - Principia Mathematica has a stable version
