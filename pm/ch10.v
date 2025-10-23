@@ -6,6 +6,13 @@ Require Import PM.pm.ch4.
 Require Import PM.pm.ch5.
 Require Import PM.pm.ch9.
 
+(* TODO: 
+- understand what's the extra kind of proposition allowed in ch10 from ch9
+- slightly rewrite the introduction below
+- examine how Pps of chapter 9 are being deduced. Mark them
+- check the order of `MP`s
+ *)
+
 (* The goal of chapter 10 is extend the propositions from `p → q` 
 to `∀ x, p x→ q x`. In order to do this, we mostly don't use the 
 definitions in chapter 9 and develop a new way to interpret `∃` 
@@ -56,7 +63,7 @@ Definition n10_03 (φ ψ : Prop → Prop) :
   φ x <[- x -]> ψ x = ∀ x, (φ x ↔ ψ x). Admitted.
 
 Theorem n10_1 (φ : Prop → Prop) (Y : Prop) : (∀ x, φ x) → φ Y.
-Proof.  exact (n9_2 φ Y). Qed.
+Proof. exact (n9_2 φ Y). Qed.
 
 (* Thm 10.11: If φ y is true whatever possible argument y may be, then ∀ x, φ x is true. [*9.13] *)
 Theorem n10_11 (Y : Prop) (φ : Prop → Prop) : φ Y → ∀ x, φ x.
@@ -134,8 +141,12 @@ Proof.
   assert (S4 : (∀ y, (P ∨ φ y)) → P ∨ (∀ x, φ x)).
   { exact (n10_12 φ P). }
   assert (S5 : (∀ x, P ∨ φ x) ↔ P ∨ (∀ x, φ x)).
-  (* TODO: use `Equiv` for rigor *)
-  { split; [exact S4 | exact S3]. }
+  { 
+    move S3 after S4.
+    clear S1 S2.
+    Conj S4 S3 C1.
+    now Equiv C1.
+   }
   exact S5.
 Qed.
 
@@ -782,6 +793,8 @@ Proof.
     → ∀ x, (φ x → ψ x) ∧ (ψ x → χ x)).
   {
     (* n10_221 ignored *)
+    (* Technically we need to use `Equiv` and `Simp`. For convinience we use 
+    `destruct` immediately *)
     destruct n10_22a as [n10_22l n10_22r].
     exact n10_22r.
   }
@@ -791,7 +804,6 @@ Proof.
     intro Hp.
     pose proof (S1 Hp) as S1_1.
     (* Original proof here has abbreviated a lot of proofs being explained separately *)
-    (* Note how the original proof here introduces a real variable *)
     assert (Sy1 : (φ X → ψ X) ∧ (ψ X → χ X) → (φ X → χ X)).
     {
       pose proof (Syll2_06 (φ X) (ψ X) (χ X)) as Syll2_06.
@@ -916,6 +928,8 @@ Proof.
       (fun x => (φ x → ψ x))
       (fun x => (ψ x → φ x))) as n10_22.
     simpl in n10_22.
+    (* Here we have a special case where `Equiv` doesn't work 
+      perfectly *)
     setoid_rewrite <- Equiv4_01a in n10_22.
     2: { apply Equiv4_01. }
     exact n10_22.
@@ -1110,7 +1124,7 @@ Proof.
   }
   assert (S2 : (∃ x, φ x → P) ↔ ¬(∀ x, φ x ∧ ¬P)).
   {
-    (* n10_271 ignored - idk how should it be used *)
+    (* n10_271 ignored *)
     now setoid_rewrite -> n4_61 in S1.
   }
   assert (S3 : (∃ x, φ x → P) ↔ ¬((∀ x, φ x) ∧ ¬P)).
@@ -1166,7 +1180,7 @@ Proof.
     pose proof (n10_11 X (fun x => φ x → (P ∧ φ x))) as n10_11.
     simpl in n10_11.
     Syll n10_11 S7 S8.
-    (* n10_21 ignored - the difference isn't significant *)
+    (* n10_21 ignored - seems completely unnecessary *)
     exact S8.
   }
   assert (S9 : P → ((∃ x, φ x) → (∃ x, P ∧ φ x))).
@@ -1250,6 +1264,9 @@ Theorem n10_39 (φ ψ χ θ : Prop → Prop) :
   ((φ x -[ x ]> χ x) ∧ (ψ x -[ x ]> θ x)) 
   → (φ x ∧ ψ x) -[ x ]> (χ x ∧ θ x).
 Proof.
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
   assert (S1 : ((φ x -[ x ]> χ x) ∧ (ψ x -[ x ]> θ x))
     → (∀ x, (φ x → χ x) ∧ (ψ x → θ x))).
   {
@@ -1261,14 +1278,18 @@ Proof.
   assert (S2 : ((φ x -[ x ]> χ x) ∧ (ψ x -[ x ]> θ x))
     → (∀ x, (φ x ∧ ψ x) → (χ x ∧ θ x))).
   {
-    intro Hp.
-    (* TODO: figure out if `intro x` can be done according to original proof *)
-    intro x.
-    pose proof (S1 Hp x) as S1_1.
-    pose proof (n3_47 (φ x) (ψ x) (χ x) (θ x)) as n3_47.
-    MP n3_47 S1_1.
-    (* pose proof n10_27 as n10_27. *)
-    exact n3_47.
+    (* intro Hp. *)
+    pose proof (n3_47 (φ X) (ψ X) (χ X) (θ X)) as n3_47.
+    pose proof (n10_11 X 
+      (fun x => (φ x → χ x) ∧ (ψ x → θ x) → φ x ∧ ψ x → χ x ∧ θ x)) 
+      as n10_11.
+    MP n10_11 n3_47.
+    pose proof (n10_27
+      (fun x => (φ x → χ x) ∧ (ψ x → θ x))
+      (fun x => (φ x ∧ ψ x → χ x ∧ θ x))
+    ) as n10_27.
+    MP n10_27 n10_11.
+    now Syll S1 n10_27 S2.
   }
   exact S2.
 Qed.
@@ -1553,12 +1574,16 @@ Proof.
     ↔ (¬(∀ x, (¬ φ x) ∧ (¬ ψ x)))).
   { now rewrite -> Transp4_11 in S1. }
   assert (S3 : ((¬(∀ x, ¬ φ x)) ∨  (¬(∀ x, ¬ ψ x)))
-    ↔ (¬(∀ x, ¬(φ x ∨   ψ x)))).
+    ↔ (¬(∀ x, ¬(φ x ∨ ψ x)))).
   {
     rewrite -> n4_51 in S2.
+    pose proof n4_56 as n4_56.
+    (* The definition of `n4_56` is `∀ P Q : Prop, ¬ P ∧ ¬ Q ↔ ¬ (P ∨ Q)`.
+    we use `n10_11` to get roughly a `∀ x, ¬ P x ∧ ¬ Q x ↔ ¬ (P x ∨ Q x)`, 
+    and then use `n10_271` to get `(∀ x, ¬ P x ∧ ¬ Q x) ↔ (∀ x, ¬ (P x ∨ Q x))`.
+    There are many places in this chapter, where both `n10_271` and `n10_11` 
+    is ignored, and we only perform a `setoid_rewrite`. *)
     setoid_rewrite -> n4_56 in S2.
-    (* n10_271 ignored - does it have something to do with 
-      `setoid_rewrite`?! *)
     exact S2.
   }
   assert (S4 : (∃ x, φ x) ∨ (∃ x, ψ x) ↔ (∃ x, φ x ∨ ψ x)).
@@ -1683,8 +1708,6 @@ Proof.
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
-  (* A specific `Assoc1_5` form that comes as a equiv relation, which will be later 
-    used *)
   assert (Assoc1_5Eq : forall P Q R, P ∨ Q ∨ R ↔ Q ∨ P ∨ R).
   { split; apply Assoc1_5. }
   (* ******** *)
