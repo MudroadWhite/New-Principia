@@ -58,7 +58,7 @@ Definition n10_03 (φ ψ : Prop → Prop) :
 Theorem n10_1 (φ : Prop → Prop) (Y : Prop) : (∀ x, φ x) → φ Y.
 Proof.  exact (n9_2 φ Y). Qed.
 
-(* Thm 10.11: If φ y is true whatever possible argument y may be, then ∀, φ x is true. [*9.13] *)
+(* Thm 10.11: If φ y is true whatever possible argument y may be, then ∀ x, φ x is true. [*9.13] *)
 Theorem n10_11 (Y : Prop) (φ : Prop → Prop) : φ Y → ∀ x, φ x.
 Proof.
 Admitted.
