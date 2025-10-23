@@ -270,30 +270,20 @@ Proof.
   {
     pose proof (Transp2_16 (∃ x, φ x) P) as Transp2_16.
     rewrite -> n10_01 in Transp2_16 at 2.
-    (* This can be able to be broken down into nests of `Syll`s. See S9
-      Here for simplicity we use `n2_14` at the very end of the proof *)
-    replace (¬ ¬ ∀ x, ¬ φ x) with (∀ x, ¬ φ x)
-      in Transp2_16.
+    rewrite <- n4_13 in Transp2_16.
     pose proof (Transp2_17 (∃ x, φ x) P) as Transp2_17.
     rewrite -> n10_01 in Transp2_17 at 1.
-    replace (¬ ¬ ∀ x, ¬ φ x) with (∀ x, ¬ φ x)
-      in Transp2_17.
+    rewrite <- (n4_13 (∀ x, ¬ φ x)) in Transp2_17.
     assert (C1 : (((∃ x, φ x) → P) → (¬ P → ∀ x, ¬ φ x))
       ∧ ((¬ P → ∀ x, ¬ φ x) → ((∃ x, φ x) → P))).
     { now Conj Transp2_16 Transp2_17 C1. }
     Equiv C1.
     exact C1.
-    all: (
-      apply propositional_extensionality;
-      split; [ apply n2_12 | apply (n2_14 (∀ x, ¬ φ x)) ]
-    ).
   }
   assert (S2 : ((∃ x, φ x) → P) ↔ (∀ x, ¬ P → ¬ φ x)).
   {
-    (* For simplicity *)
-    replace (¬ P → ∀ x, ¬ φ x) with (∀ x, ¬ P → ¬ φ x)
-      in S1 by (apply propositional_extensionality; apply n10_21).
-    exact S1.
+    pose proof n10_21 as n10_21.
+    now rewrite <- n10_21 in S1.
   }
   (* WTF???? *)
   assert (S3 : ((∃ x, φ x) → P) → ((¬ P) → ¬ φ X)).
@@ -1252,12 +1242,7 @@ Proof.
   pose proof (n10_36 φ (¬P)) as n10_36.
   rewrite -> n4_31 in n10_36.
   rewrite <- Impl1_01 in n10_36.
-  replace (∃ x, φ x ∨ ¬ P) with 
-    (∃ x, ¬ P ∨ φ x) in n10_36.
-  2: {
-    apply propositional_extensionality.
-    split; now setoid_rewrite -> n4_31 at 1.
-  }
+  setoid_rewrite -> n4_31 in n10_36.
   now setoid_rewrite <- Impl1_01a in n10_36.
 Qed.
 
@@ -1743,9 +1728,8 @@ Proof.
   assert (S1 : (φ X → ψ X) → ((φ X ∧ ψ X) ↔ φ X)).
   {
     pose proof (n4_71 (φ X) (ψ X)) as n4_71.
-    replace (φ X ↔ φ X ∧ ψ X) with (φ X ∧ ψ X ↔ φ X)
-      in n4_71.
-    2: { apply propositional_extensionality. apply n4_21. }
+    rewrite -> (n4_21 (φ X) (φ X ∧ ψ X)) in n4_71.
+    (* Here we skip the `Simp` to select the branch *)
     now destruct n4_71.
   }
   assert (S2 : (φ x -[x]> ψ x) 
@@ -1769,10 +1753,8 @@ Proof.
   {
     rewrite -> n5_32 in S3.
     rewrite -> n4_3 in S3.
-    replace (( φ x-[x]>ψ x ) ∧ ∃ x, φ x)
-      with ((∃ x, φ x) ∧ ( φ x-[x]>ψ x )) in S3.
-    2: { apply propositional_extensionality. now rewrite -> n4_3. }
-    exact S3.
+    pose proof n4_3.
+    now rewrite -> (n4_3 ( φ x-[x]>ψ x ) (∃ x, φ x)) in S3.
   }
   exact S4.
 Qed.
@@ -1816,11 +1798,8 @@ Proof.
       (φ x-[x]>(ψ x ∨ χ x))) as Fact3_45.
     MP n10_51r Fact3_45.
     rewrite -> n4_3 in Fact3_45.
-    replace (( φ x-[x]>¬ χ x ) ∧  φ x-[x]>(ψ x ∨ χ x))
-      with ((φ x-[x]>(ψ x ∨ χ x)) ∧ ( φ x-[x]>¬ χ x ))
+    now rewrite -> (n4_3 ( φ x-[x]>¬ χ x ) (φ x-[x]>(ψ x ∨ χ x)))
       in Fact3_45.
-    2: { apply propositional_extensionality. now rewrite -> n4_3. }
-    exact Fact3_45.
   }
   assert (S2 : ((φ x -[ x ]> (ψ x ∨ χ x)) 
       ∧ (¬ ∃ x, φ x ∧ χ x))
