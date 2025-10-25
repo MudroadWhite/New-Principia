@@ -85,6 +85,7 @@ But when things become complicated, more problems will come to surface. a `foral
 - \[Simplification\]`setoid_rewrite ->` on `<->` is **allowed**. Even for original `<->` theorems, this is a simplification.
 - \[Simplification\]`setoid_rewrite <-` on `<->` is **allowed**.
 - Similar to above, using `at` is **allowed**.
+- \[Simplification\]`setoid_rewrite` on `=` is **allowed**, with `eq_to_equiv` set up on that proposition. If we need to derive the quantified version of a `=` proposition, this becomes a necessity.
 - Providing the full parameter list is **recommended**
 
 WARNING: thanks to the `rewrite` tactic in Rocq, `<->` is usually more useful than `->` theorems - a `rewrite` on `<->` is way simpler than `MP` or `Syll` on `->`. We might *slightly overuse* the `<->` theorems. There exists cases original proof `MP`s on its single-direction version, but for simplicity we still apply the `<->` version with a `rewrite` or `setoid_rewrite` on a proposition.
