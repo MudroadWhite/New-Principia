@@ -7,6 +7,9 @@ Require Import PM.pm.ch5.
 Require Import PM.pm.ch9.
 Require Import PM.pm.ch10.
 
+(* TODO: design a `comma` predicate  which works like a `id` 
+`to enforce "lazy evaluation" on quantifiers *)
+
 (* TODO: 
 Type of theorems allowed: 
 Type of parameters allowed: 
@@ -566,17 +569,47 @@ Proof.
 Qed.
 
 Theorem n11_37 (Phi Psi Chi : Prop → Prop → Prop) :
-  ((∀ x y, Phi x y → Psi x y) 
-  ∧ (∀ x y, Psi x y → Chi x y))
-  → (∀ x y, Phi x y → Chi x y).
+  ((∀ x y, Phi x y → Psi x y) ∧ (∀ x y, Psi x y → Chi x y))
+    → (∀ x y, Phi x y → Chi x y).
 Proof.
-Admitted.
+  assert (S1 : ((∀ x y, Phi x y → Psi x y) ∧ (∀ x y, Psi x y → Chi x y))
+    -> (forall x y, (Phi x y -> Psi x y) /\ (Psi x y -> Chi x y))).
+  { apply n11_31. }
+  assert (S2 : forall x y, (Phi x y -> Psi x y) /\ (Psi x y -> Chi x y)
+    -> (Phi x y -> Chi x y)).
+  {
+    set (X := Real "x").
+    set (Y := Real "y").
+    pose proof (Syll3_33 (Phi X Y) (Psi X Y) (Chi X Y)) as Syll3_33.
+    pose proof (n11_11 X Y 
+      (fun x y =>
+        (Phi x y → Psi x y) ∧ (Psi x y → Chi x y)
+        → Phi x y → Chi x y)) as n11_11.
+    now MP Syll3_33 n11_11.
+  }
+  assert (S3 : (forall x y, (Phi x y -> Psi x y) /\ (Psi x y -> Chi x y))
+    -> (forall x y, (Phi x y -> Chi x y))).
+  {
+    pose proof (n11_32
+      (fun x y => (Phi x y -> Psi x y) /\ (Psi x y -> Chi x y))
+      (fun x y => (Phi x y -> Chi x y))) as n11_32.
+    now MP n11_32 S2.
+  }
+  assert (S4 : ((∀ x y, Phi x y → Psi x y) ∧ (∀ x y, Psi x y → Chi x y))
+    → (∀ x y, Phi x y → Chi x y)).
+  { now Syll S1 S3 S4. }
+  exact S4.
+Qed.
 
 Theorem n11_371 (Phi Psi Chi : Prop → Prop → Prop) :
-  ((∀ x y, Phi x y ↔ Psi x y) 
-  ∧ (∀ x y, Psi x y ↔ Chi x y))
+  ((∀ x y, Phi x y ↔ Psi x y) ∧ (∀ x y, Psi x y ↔ Chi x y))
   → (∀ x y, Phi x y ↔ Chi x y).
 Proof.
+  set (X := Real "x").
+  set (Y := Real "y").
+  pose proof n11_31 as n11_31.
+  pose proof n11_11 as n11_11.
+  pose proof n11_33 as n11_33.
 Admitted.
 
 Theorem n11_38 (Phi Psi Chi : Prop → Prop → Prop) :
