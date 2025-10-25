@@ -10,11 +10,9 @@ Require Import PM.pm.ch9.
 - understand what's the extra kind of proposition allowed in ch10 from ch9
 - slightly rewrite the introduction below
 - examine how Pps of chapter 9 are being deduced. Mark them
-- check the order of `MP`s
-- check `n10_13` and `n11_13`
- *)
+*)
 
-(* TODO: 
+(* TODO: TYPE RESTRICTIONS
 Type of theorems allowed: 
 Type of parameters allowed: (each forall is quantified over at most one variable?)
 *)
@@ -25,11 +23,7 @@ definitions in chapter 9 and develop a new way to interpret `∃`
 instead.
 
 Notes on this chapter:
-1. There are several places in this chapter where n10_271 is used, 
-but for all these occurrences I used `setoid_rewrite` to finish the 
-proof instantly and n10_271 is completely unused. Idk how should 
-n10_271 be used
-2. At the very end of this chapter, n10_57 seems to contain one 
+- At the very end of this chapter, n10_57 seems to contain one 
 error that I cannot prove.
 *)
 
@@ -1161,7 +1155,6 @@ Proof.
   assert (S2 : ((φ x -[ x ]> χ x) ∧ (ψ x -[ x ]> θ x))
     → (∀ x, (φ x ∧ ψ x) → (χ x ∧ θ x))).
   {
-    (* intro Hp. *)
     pose proof (n3_47 (φ X) (ψ X) (χ X) (θ X)) as n3_47.
     pose proof (n10_11 X 
       (fun x => (φ x → χ x) ∧ (ψ x → θ x) → φ x ∧ ψ x → χ x ∧ θ x)) 
