@@ -2,10 +2,12 @@
 
 This chapter describes the tactics we generally use in further detail.
 
-Technically speaking, Principia's logic system is very simple, maybe much more simpler than most of the modern typs systems, cf. (SEP entry for Principia Mathematica)[https://plato.stanford.edu/entries/principia-mathematica/]. All it cares about is 1. deducing a theorem either directly or from Modus Ponens and 2. substitute/*rewrite* subparts of a proposition according to some rules. The tactics we use try to follow this flavor as much as possible while pertaining a reasonable level of simplicity.
+Technically speaking, Principia's logic system is very simple, maybe much more simpler than most of the modern type systems, cf. (SEP entry for Principia Mathematica)[https://plato.stanford.edu/entries/principia-mathematica/]. All it cares about is 1. deducing a theorem either directly or from Modus Ponens and 2. substitute/*rewrite* subparts of a proposition according to some rules. 
+
+As a consequence, We don't need fancy tactics to formalize the theorems. We want the tactics to 1. follow the proof; 2. for every places that we simplify, we can prove that it doesn't break the proof.
 
 ## 1. `assert` for intermediate steps
-When proofs are "long enough", the first tactic that should come to one's view should be `assert` to specify the intermediate steps. This tactic modularizes the proofs so that they usually have the following structure:
+When proofs are "long enough", the first tactic that one should see is `assert` to specify intermediate steps. This tactic modularizes the proofs so that they usually have the following structure:
 
 ```Coq
 Proof.
@@ -24,7 +26,7 @@ Qed.
 
 There are several reasons for organizing proofs like this. The most significant one is readability. Besides, we can have several equivalant forms for a proposition, i.e. `(fun x => x) x` is not very far from just `x` or `(fun y => y) x`. Switching between them requires delicate application with tactics for all different cases. If we set the desired form as a subgoal, we only need to use tactics to prove for a equivalent form to `x`, and skip the tedious transformations. One last thing for `assert` is that it limits the scope of theorems we use. When we leave the scope, these theorems are automatically cleared away, and only the intermediate steps as `S1` `S2` are being pertained. As a result, the proof window becomes extremely clean.
 
-- Proof for a theorem is **required** to be organized with `assert` with the template above.
+- If the original proof has been broken down into several steps, it's Rocq formalization is **required** to apply the `assert` template above.
 - As it pertains a nice style, `exact` at the end of the proof is **not allowed** to be deleted or simplified.
 
 By using `assert`, the propositions being asserted is introduced into the hypotheses.
@@ -35,7 +37,7 @@ By using `assert`, the propositions being asserted is introduced into the hypoth
 - `pose` on a theorem is strictly **not allowed**.
 - All parameters for the theorem at the *lhs* of its definition, are **required**.
 - All parameters for the theorem are **required** to limit to the *lhs* of theorem's definition.
-- All parameters for the theorem are **recommended**(a.k.a. optional) to limited their "type" to elementary propositions, as the default in chapter 9. Every chapter after chapter 9 enables a new class of proposition to be passed in as parameters. Fundamentally however, whether they starts with a `forall` matters. Restriction on parameters is something our current formalization failed to model on.
+- All parameters for the theorem are **optional** to limited their "type" to elementary propositions, as the default in chapter 9. Every chapter after chapter 9 enables a new class of proposition to be passed in as parameters. Fundamentally however, whether they starts with a `forall` matters. Restriction on parameters is something our current formalization failed to model on.
 - If a goal can be solved immediately, it is **recommended** to just `apply` the theorem to end it.
 
 ## 3. How to use a `->` proposition(rewrite)
@@ -55,7 +57,7 @@ For just a single step on deduction, all the routine above seems pretty tedious.
 - `rewrite -> thm` on `<->` is **allowed**.
 - `rewrite <- thm` on `<->` is **allowed**.
 - Using `at` to specify the subterm is **allowed**. Alternatively, we provide the full parameter list for `thm` to `rewrite`.
-- The `thm` for rewrite is **recommended** to provide its full parameter list, but can be omitted.
+- The `thm` for rewrite is **recommended** to provide its full parameter list.
 
 Besides the construction procedure on `<->`, we also have destruction procedure on `<->`. `Equiv` theorem(not tactic) in this sense, changes `P <-> Q` back to `P -> Q /\ Q -> P`. For this proposition, we can use `Simp` to choose the direction we want to use. But a more convinient way is seamlessly use the Rocq's `destruct` tactic.
 - `destruct` on `<->` is **allowed** to simplify this routine.
