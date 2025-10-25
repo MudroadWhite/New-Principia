@@ -95,8 +95,10 @@ Theorem n10_14 (φ ψ : Prop → Prop) (Y : Prop) :
   (∀ x, φ x) ∧ (∀ x, ψ x)
   → φ Y ∧ ψ Y.
 Proof.
-  pose proof (n10_1 φ Y) as S1.
-  pose proof (n10_1 ψ Y) as S2.
+  assert (S1 : (∀ x, φ x) → φ Y).
+  { apply n10_1. }
+  assert (S2 : (∀ y, ψ y) → ψ Y).
+  { apply n10_1. }
   assert (S3 : ((∀ x, φ x) → φ Y) ∧ ((∀ x, ψ x) → ψ Y)).
   {
     pose proof (n10_13 (fun x => (∀ x, φ x) → φ Y) 
@@ -816,9 +818,9 @@ Proof.
   (* TOOLS *)
   set (X := Real "x").
   (* ******** *)
-  pose proof (n10_22 (fun x => φ x ↔ ψ x) (fun x => ψ x ↔ χ x))
-    as S1.
-  simpl in S1.
+  assert (S1 : (∀ x, (φ x ↔ ψ x) ∧ (ψ x ↔ χ x))
+    ↔ (∀ x, φ x ↔ ψ x) ∧ ∀ x, ψ x ↔ χ x).
+  { apply n10_22. }
   assert (S2 : (∀ x, φ x ↔ ψ x) ∧ (∀ x, ψ x ↔ χ x) → ∀ x, φ x ↔ χ x).
   {
     pose proof (n4_22 (φ X) (ψ X) (χ X)) as n4_22.
@@ -1798,7 +1800,7 @@ Proof.
   assert (S4 : (φ x -[ x ]> (ψ x ∨ χ x)) 
     → ((φ x -[ x ]> ψ x) ∨ (∃ x, φ x ∧ χ x))).
   {
-    rewrite -> (n5_6 (φ x-[x]>(ψ x ∨ χ x)) (∃ x : Prop, φ x ∧ χ x)
+    rewrite -> (n5_6 (φ x-[x]>(ψ x ∨ χ x)) (∃ x, φ x ∧ χ x)
       (φ x-[x]>ψ x)) in S3.
     now rewrite -> n4_31 in S3.
   }
