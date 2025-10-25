@@ -27,7 +27,6 @@ Qed.
 There are several reasons for organizing proofs like this. The most significant one is readability. Besides, we can have several equivalant forms for a proposition, i.e. `(fun x => x) x` is not very far from just `x` or `(fun y => y) x`. Switching between them requires delicate application with tactics for all different cases. If we set the desired form as a subgoal, we only need to use tactics to prove for a equivalent form to `x`, and skip the tedious transformations. One last thing for `assert` is that it limits the scope of theorems we use. When we leave the scope, these theorems are automatically cleared away, and only the intermediate steps as `S1` `S2` are being pertained. As a result, the proof window becomes extremely clean.
 
 - If the original proof has been broken down into several steps, it's Rocq formalization is **required** to apply the `assert` template above.
-- Whenever a step is obtained just from instantiating a single theorem, we can directly `apply` the theorem without providing parameters.
 - As it pertains a nice style, `exact` at the end of the proof is **not allowed** to be deleted or simplified.
 
 By using `assert`, the propositions being asserted is introduced into the hypotheses.
