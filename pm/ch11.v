@@ -116,7 +116,7 @@ Proof.
   }
   assert (S3 : (∀ x y, P ∨ Phi x y) → (P ∨ ∀ x y, Phi x y)).
   {
-    pose proof (n10_12 (fun x => ∀ y : Prop, Phi x y) P) as n10_12.
+    pose proof (n10_12 (fun x => ∀ y, Phi x y) P) as n10_12.
     now Syll n10_12 S2 S3.
   }
   exact S3.
@@ -190,11 +190,7 @@ Proof.
     now MP n11_12 S4_2.
   }
   assert (S5 : (∀ x y, Phi x y) ↔ (∀ y x, Phi x y)).
-  {
-    clear S1 S2.
-    Conj S3 S4 C1.
-    now Equiv C1.
-  }
+  { clear S1 S2. Conj S3 S4 C1. now Equiv C1. }
   exact S5.
 Qed.  
 
@@ -230,11 +226,11 @@ Proof.
     (∀ y, ∀ z, ∀ x, Phi x y z)).
   {
     pose proof (n11_2 (fun x z => Phi x Y z)) as n11_2.
-    pose proof (n10_11 Y (fun y => (∀ x z : Prop, Phi x y z) ↔ ∀ z x : Prop, Phi x y z)) 
+    pose proof (n10_11 Y (fun y => (∀ x z, Phi x y z) ↔ ∀ z x, Phi x y z)) 
       as n10_11.
     MP n10_11 n11_2.
-    pose proof (n10_271 (fun y => ∀ x z : Prop, Phi x y z)
-      (fun y => (∀ z x : Prop, Phi x y z))) as n10_271.
+    pose proof (n10_271 (fun y => ∀ x z, Phi x y z)
+      (fun y => (∀ z x, Phi x y z))) as n10_271.
     now MP n10_271 n10_11.
   }
   assert (S4 : (∀ x y z, Phi x y z) ↔ (∀ y z x, Phi x y z)).
@@ -309,7 +305,7 @@ Proof.
   {
     pose proof (n11_23 (fun x z => Phi x Y z)) as n11_23.
     pose proof (n10_11 Y (fun y =>
-      (∃ x z : Prop, Phi x y z) ↔ (∃ z x : Prop, Phi x y z))) as n10_11.
+      (∃ x z, Phi x y z) ↔ (∃ z x, Phi x y z))) as n10_11.
     MP n10_11 n11_23.
     pose proof (n10_281 (fun y => ∃ x z, Phi x y z) (fun y => (∃ z x, Phi x y z))
       ) as n10_281.
@@ -353,12 +349,12 @@ Proof.
   assert (S2 : (∃ x, ∀ y, Phi x y) → (∀ y, ∃ x, Phi x y)).
   {
     pose proof (n10_11 Y (fun y0 =>
-        (∃ x : Prop, ∀ y : Prop, Phi x y) → ∃ x : Prop, Phi x y0
+        (∃ x, ∀ y, Phi x y) → ∃ x, Phi x y0
       )) as n10_11.
     MP n10_11 S1.
     pose proof n10_21 as n10_21.
-    pose proof (n10_21 (fun y => ∃ x : Prop, Phi x y)
-      (∃ x : Prop, ∀ y : Prop, Phi x y)) as n10_21.
+    pose proof (n10_21 (fun y => ∃ x, Phi x y)
+      (∃ x, ∀ y, Phi x y)) as n10_21.
     now rewrite -> n10_21 in n10_11.
   }
   exact S2.
@@ -486,8 +482,8 @@ Proof.
       → ((∀ y, Phi x y) ↔ ∀ y, Psi x y)
   )) as n10_11.
   MP n10_11 n10_271a.
-  pose proof (n10_27 (fun x => (∀ y : Prop, Phi x y ↔ Psi x y))
-    (fun x => (∀ y : Prop, Phi x y) ↔ ∀ y : Prop, Psi x y)
+  pose proof (n10_27 (fun x => (∀ y, Phi x y ↔ Psi x y))
+    (fun x => (∀ y, Phi x y) ↔ ∀ y, Psi x y)
   ) as n10_27.
   MP n10_27 n10_11.
   now Syll n10_27 n10_27b S1.
@@ -506,8 +502,8 @@ Proof.
     ((∀ y, Phi x y → Psi x y)
     → (∃ y, Phi x y) → ∃ y, Psi x y))) as n10_11. simpl in n10_11.
   MP n10_11 n10_28a.
-  pose proof (n10_27 (fun x => (∀ y : Prop, Phi x y → Psi x y))
-    (fun x => (∃ y : Prop, Phi x y) → ∃ y : Prop, Psi x y)) as n10_27.
+  pose proof (n10_27 (fun x => (∀ y, Phi x y → Psi x y))
+    (fun x => (∃ y, Phi x y) → ∃ y, Psi x y)) as n10_27.
   MP n10_27a n10_11.
   pose proof (n10_28 (fun x => ∃ y, Phi x y)
     (fun x => ∃ y, Psi x y)) as n10_28b.
@@ -529,8 +525,8 @@ Proof.
   pose proof (n10_27 (fun x => (∀ y, Phi x y ↔ Psi x y))
     (fun x => (∃ y, Phi x y) ↔ ∃ y, Psi x y)) as n10_271.
   MP n10_271 n10_11.
-  pose proof (n10_281 (fun x => (∃ y : Prop, Phi x y))
-    (fun x => ∃ y : Prop, Psi x y)) as n10_281b.
+  pose proof (n10_281 (fun x => (∃ y, Phi x y))
+    (fun x => ∃ y, Psi x y)) as n10_281b.
   now Syll n10_271 n10_281b S1.
 Qed.
 
@@ -544,10 +540,10 @@ Proof.
   pose proof (n10_11 X (fun x => (∀ y, Phi x y → P)
     ↔ ((∃ y, Phi x y) → P))) as n10_11.
   MP n10_11 n10_23a.
-  pose proof (n10_271 (fun x => (∀ y : Prop, Phi x y → P))
-    (fun x => ((∃ y : Prop, Phi x y) → P))) as n10_271.
+  pose proof (n10_271 (fun x => (∀ y, Phi x y → P))
+    (fun x => ((∃ y, Phi x y) → P))) as n10_271.
   MP n10_271 n10_11.
-  pose proof (n10_23 (fun x => (∃ y : Prop, Phi x y)) P)
+  pose proof (n10_23 (fun x => (∃ y, Phi x y)) P)
     as n10_23b.
   now rewrite -> n10_23b in n10_271.
 Qed.
@@ -559,7 +555,7 @@ Proof.
   { exact (n11_1 Z W (fun x y => ~ Phi x y)). }
   assert (S2 : (Phi Z W) → ∃ x y, Phi x y).
   {
-    pose proof (Transp2_03 (∀ x y : Prop, ¬ Phi x y)
+    pose proof (Transp2_03 (∀ x y, ¬ Phi x y)
       (Phi Z W)) as Transp2_03.
     MP Transp2_03 S1.
     now rewrite <- n11_22 in Transp2_03.
