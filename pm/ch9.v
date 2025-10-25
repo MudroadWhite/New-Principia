@@ -7,7 +7,7 @@ Require Import PM.pm.ch5.
 
 (* TODO: Find a way to correctly express "argument in P is of the same type of argument in Q" *)
 
-(* 
+(* TYPE RESTRICTIONS
 Type of theorems allowed: first order propositions
 Type of parameters allowed: from elementary propositions to first order propositions
 *)
@@ -203,19 +203,19 @@ Proof.
   (* ******** *)
   (** S1 **)
   assert (S1 : (φ Z → ψ Z) → φ Z → ψ Z).
-  { apply Id2_08. }
+  { exact (Id2_08 (φ Z → ψ Z)). }
   (** S2 **)
   assert (S2 : ∃ y, (φ Z → ψ Z) → φ y → ψ Z).
   { 
     pose proof (n9_1 (fun x => (φ Z → ψ Z) → φ x → ψ Z) Z) as n9_1.
-    MP n9_1 S1. exact n9_1.
+    now MP n9_1 S1.
   }
   (** S3 **)
   assert (S3 : ∃ x y, (φ x → ψ x) → φ y → ψ Z).
   { 
     (* *1.11 ignored *)
     pose proof (n9_1 (fun x => (∃ z0, (φ x → ψ x) → φ z0 → ψ Z)) Z) as n9_1.
-    MP n9_1 S2. exact n9_1.
+    now MP n9_1 S2.
   }
   (** S4 **)
   assert (S4 : ∀ z, ∃ x y, (φ x → ψ x) → φ y → ψ z).
@@ -229,24 +229,19 @@ Proof.
   {
     setoid_rewrite -> Impl1_01a in S4.
     setoid_rewrite <- n9_06a in S4.
-    setoid_rewrite <- Impl1_01a in S4.
-    exact S4.
+    now setoid_rewrite <- Impl1_01a in S4.
   }
   assert (S6 : ((∃ x, ¬(φ x → ψ x)) ∨ (∀ y, ∃ z, (¬ φ z) ∨ ψ y))).
   {
     setoid_rewrite Impl1_01a in S5.
     setoid_rewrite Impl1_01a in S5 at 3.
-    rewrite <- (n9_08 (fun z1 => (∃ y0, (¬ φ y0) ∨ ψ z1)) 
+    now rewrite <- (n9_08 (fun z1 => (∃ y0, (¬ φ y0) ∨ ψ z1)) 
       (fun x1 => ¬ (φ x1 → ψ x1))) in S5.
-    exact S5.
   }
   assert (S7 : (∃ x, ¬(φ x → ψ x)) ∨ ((∃ y, (¬ φ y)) ∨ (∀ z, ψ z))).
   { rewrite <- n9_08 in S6. exact S6. }
   assert (S8 : (∀ x, φ x → ψ x) → (∀ y, φ y) → ∀ z, ψ z).
-  {
-    repeat rewrite <- n9_01, <- Impl1_01 in S7.
-    exact S7.
-  }
+  { now repeat rewrite <- n9_01, <- Impl1_01 in S7. }
   exact S8.
 Qed.
 
@@ -272,16 +267,16 @@ Proof.
   set (Y := Real "Y").
   (* ******** *)
   assert (S1 : (φ Y → ψ Y) → φ Y → ψ Y).
-  { apply Id2_08. }
+  { exact (Id2_08 (φ Y → ψ Y)). }
   assert (S2 : ∃ z, (φ Y → ψ Y) → (φ Y → ψ z)).
   { 
     pose proof (n9_1 (fun z => (φ Y → ψ Y) → (φ Y → ψ z)) Y) as n9_1.
-    MP n9_1 S1. exact n9_1.
+    now MP n9_1 S1.
   }
   assert (S3 : ∃ x, ∃ z, (φ x → ψ x) → (φ Y → ψ z)).
   { 
     pose proof (n9_1 (fun x => ∃ z, (φ x → ψ x) → (φ Y → ψ z)) Y) as n9_1.
-    MP n9_1 S2. exact n9_1.
+    now MP n9_1 S2.
   }
   assert (S4 : ∀ y, ∃ x, ∃ z, (φ x → ψ x) → (φ y → ψ z)).
   {
@@ -293,20 +288,17 @@ Proof.
   { 
     setoid_rewrite -> Impl1_01a in S4.
     setoid_rewrite <- n9_06a in S4.
-    setoid_rewrite <- Impl1_01a in S4.
-    exact S4.
+    now setoid_rewrite <- Impl1_01a in S4.
   }
   assert (S6 : (∃ x, ¬ (φ x → ψ x)) ∨ ∀ y, (∃ z, (φ y → ψ z))).
   {
     setoid_rewrite -> Impl1_01a in S5.
-    setoid_rewrite <- n9_08a in S5.
-    exact S5.
+    now setoid_rewrite <- n9_08a in S5.
   }
   assert (S7 : (∃ x, ¬ (φ x → ψ x)) ∨ (∀ y, ¬ (φ y)) ∨ ∃ z, ψ z).
   { 
     setoid_rewrite -> Impl1_01a in S6 at 3.
-    setoid_rewrite <- n9_07a in S6.
-    exact S6.
+    now setoid_rewrite <- n9_07a in S6.
   }
   assert (S8 : (∀ x, φ x → ψ x) → (∃ x, φ x) → (∃ x, ψ x)).
   { 
@@ -339,8 +331,7 @@ Theorem n9_25 (P : Prop) (φ : Prop → Prop) :
   (∀ x, P ∨ φ x) → P ∨ (∀ x, φ x).
 Proof.
   pose proof (n9_23 (fun x => P ∨ φ x)) as n9_23; simpl in n9_23.
-  rewrite <- (n9_04 φ P) in n9_23 at 2.
-  exact n9_23.
+  now rewrite <- (n9_04 φ P) in n9_23 at 2.
 Qed.
 (* ******** *)
 
@@ -353,6 +344,14 @@ Proof.
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
+  set (λ (φ0 : Prop → Prop), eq_to_equiv (¬ ∀ x, φ0 x) (∃ x, ¬ φ0 x)
+    (n9_01 φ0)) as n9_01a.
+  set (λ (φ0 : Prop → Prop) (P0 : Prop), eq_to_equiv 
+    (P0 ∨ ∀ x, φ0 x) (∀ x, P0 ∨ φ0 x) (n9_04 φ0 P0))
+    as n9_04a.
+  set (λ (φ0 : Prop → Prop) (P0 : Prop), 
+    eq_to_equiv ((∃ x, φ0 x) ∨ P0) (∃ x, φ0 x ∨ P0) (n9_05 φ0 P0))
+    as n9_05a.
   set (X := Real "x").
   (* ******** *)
   assert (S1 : φ X ∨ φ X → φ X).
@@ -360,8 +359,7 @@ Proof.
   assert (S2 : ∃ y, (φ X ∨ φ y) → φ X).
   { 
     pose proof (n9_1 (fun y => (φ X ∨ φ y) → φ X) X) as n9_1.
-    MP n9_1 S1.
-    exact n9_1. 
+    now MP n9_1 S1.
   }
   assert (S3 : ∀ x, ∃ y, (φ x ∨ φ y) → φ x).
   {
@@ -371,28 +369,21 @@ Proof.
   assert (S4 : ∀ x, (φ x ∨ ∀ y, φ y) → φ x).
   {
     setoid_rewrite -> Impl1_01a in S3.
-    assert (S3_i1 : ∀ x, ¬ (φ x ∨ ∀ y, φ y) ∨ φ x).
-    {
-      (* TODO: reinvestigate this proof to simplify this *)
-      intro x0; pose proof (S3 x0) as S3_1.
-      (* NOTE: similar to the treatment with `n9_13`, we can use `f_equal`
-      to derive a quantified version for all these `=` propositions. Here for 
-      simplicity we omit the technical details *)
-      rewrite <- (n9_05 ((fun x y => ¬ (φ x ∨ φ y)) x0) (φ x0)),
-              <- (n9_01 (fun x => φ x0 ∨ φ x)),
-              <- (n9_04 φ (φ x0)) in S3_1.
-      exact S3_1.
-    }
-    setoid_rewrite <- Impl1_01a in S3_i1.
-    exact S3_i1.
+    (* NOTE: similar to the treatment with `n9_13`, we can use `f_equal`
+    to derive a quantified version for all these `=` propositions. Here for 
+    simplicity we omit the technical details *)
+    setoid_rewrite <- n9_05a in S3.
+    setoid_rewrite <- n9_01a in S3.
+    setoid_rewrite <- n9_04a in S3.
+    now setoid_rewrite <- Impl1_01a in S3.
   }
   assert (S5 : (∀ x, (φ x ∨ ∀ y, φ y)) → (∀ x, φ x)).
   { 
     pose proof (n9_21 (fun x => φ x ∨ (∀ y, φ y)) φ) as n9_21.
-    MP n9_21 S4. exact n9_21. 
+    now MP n9_21 S4.
   }
   assert (S6 : (∀ x, φ x) ∨ (∀ x, φ x) → (∀ x, φ x)).
-  { rewrite <- n9_03 in S5. exact S5. }
+  { now rewrite <- n9_03 in S5. }
   exact S6.
 Qed.
 
@@ -415,8 +406,7 @@ Proof.
   assert (S2 : (∃ y, φ X ∨ φ y) → (∃ z, φ z)).
   {
     setoid_rewrite -> Impl1_01a in S1.
-    rewrite <- n9_03, <- n9_02, <- Impl1_01 in S1.
-    exact S1.
+    now rewrite <- n9_03, <- n9_02, <- Impl1_01 in S1.
   }
   assert (S3 : ∀ x, (∃ y, φ x ∨ φ y) → ∃ z, φ z).
   {
@@ -426,18 +416,13 @@ Proof.
   assert (S4 : (∃ x, (∃ y, φ x ∨ φ y)) → (∃ z, φ z)).
   {
     setoid_rewrite -> Impl1_01a in S3.
-    rewrite <- n9_03, <- n9_02, <- Impl1_01 in S3.
-    exact S3.
+    now rewrite <- n9_03, <- n9_02, <- Impl1_01 in S3.
   }
   assert (S5 : ((∃ x, φ x) ∨ (∃ y, φ y)) → (∃ x, φ x)).
   {
-    (* TODO: Make a demonstration.
-    - derive the `exists` form from ordinary propositions
-    - maybe use `Syll` for the result *)
     setoid_rewrite <- n4_31 in S4.
     setoid_rewrite <- n9_05a in S4.
-    setoid_rewrite <- n9_06 in S4.
-    exact S4.
+    now setoid_rewrite <- n9_06 in S4.
   }
   exact S5.
 Qed.
@@ -465,14 +450,10 @@ Proof.
     pose proof (n9_25 (¬ Q) (fun x => φ x ∨ Q)) as n9_25.
     setoid_rewrite -> Impl1_01a in S2.
     MP n9_25 S2.
-    rewrite <- Impl1_01 in n9_25.
-    exact n9_25.
+    now rewrite <- Impl1_01 in n9_25.
   }
   assert (S4 : Q → (∀ x, φ x) ∨ Q).
-  { 
-    setoid_rewrite <- (n9_03a φ Q) in S3.
-    exact S3.
-  }
+  { now setoid_rewrite <- (n9_03a φ Q) in S3. }
   exact S4.
 Qed.
   
@@ -493,18 +474,16 @@ Proof.
   assert (S2 : ∃ x, Q → (φ x) ∨ Q).
   {
     pose proof (n9_1 (fun x => Q → (φ x) ∨ Q) X) as n9_1.
-    MP n9_1 S1.
-    exact n9_1.
+    now MP n9_1 S1.
   }
   assert (S3 : Q → ∃ x, (φ x) ∨ Q).
   { 
     setoid_rewrite -> Impl1_01a in S2.
     rewrite <- (n9_06 (fun x => (φ x) ∨ Q) (¬ Q)) in S2.
-    rewrite <- Impl1_01 in S2.
-    exact S2.
+    now rewrite <- Impl1_01 in S2.
   }
   assert (S4 : Q → (∃ x, (φ x)) ∨ Q).
-  { rewrite <- n9_05 in S3. exact S3. }
+  { now rewrite <- n9_05 in S3. }
   exact S4.
 Qed.
 
@@ -523,11 +502,10 @@ Proof.
   assert (S3 : (∀ x, φ x) → (∀ x, P ∨ φ x)).
   {
     pose proof (n9_21 φ (fun x => P ∨ φ x)) as n9_21.
-    MP n9_21 S2.
-    exact n9_21.
+    now MP n9_21 S2.
   }
   assert (S4 : (∀ x, φ x) → P ∨ (∀ x, φ x)).
-  { rewrite <- (n9_04 φ P) in S3. exact S3. }
+  { now rewrite <- (n9_04 φ P) in S3. }
   exact S4.
 Qed.
 
@@ -547,14 +525,10 @@ Proof.
   assert (S3 : (∃ x, φ x) → (∃ x, P ∨ φ x)).
   {
     pose proof (n9_22 (fun x => φ x) (fun x => P ∨ φ x)) as n9_22.
-    MP n9_22 S2.
-    exact n9_22.
+    now MP n9_22 S2.
   }
   assert (S6 : (∃ x, φ x) → P ∨ (∃ x, φ x)).
-  {
-    rewrite -> Impl1_01, <- n9_06, <- Impl1_01 in S3.
-    exact S3.
-  }
+  { now rewrite -> Impl1_01, <- n9_06, <- Impl1_01 in S3. }
   exact S6.
 Qed.
 
@@ -568,14 +542,12 @@ Proof.
   assert (S2 : (∀ x, (P ∨ φ x)) → ∀ x, (φ x ∨ P)).
   { 
     pose proof (n9_13 (fun x => P ∨ φ x → φ x ∨ P) X) as n9_13.
-    MP S1 n9_13.
+    MP n9_13 S1.
     pose proof (n9_21 (fun x => P ∨ φ x) (fun x => φ x ∨ P)) as n9_21.
-    simpl in n9_21.
-    MP n9_21 S1.
-    exact n9_21.
+    now MP n9_21 S1.
   }
   assert (S3 : P ∨ (∀ x, φ x) → (∀ x, φ x) ∨ P).
-  { rewrite <- (n9_04 φ P), <- (n9_03 φ P) in S2. exact S2. }
+  { now rewrite <- (n9_04 φ P), <- (n9_03 φ P) in S2. }
   exact S3.
 Qed.
 
@@ -584,7 +556,7 @@ Proof.
   (* TOOLS *)
   set (X := Real "x").
   (* ******** *)
-  assert (S1 : P ∨ φ X → φ X ∨ P).
+  assert (S1 : φ X ∨ P → P ∨ φ X).
   { apply Perm1_4. }
   assert (S2 : (∀ x, φ x ∨ P) → ∀ x, P ∨ φ x).
   {
@@ -594,7 +566,7 @@ Proof.
     now MP n9_21 n9_13.
   }
   assert (S3 : (∀ x, φ x) ∨ P → P ∨ (∀ x, φ x)).
-  { rewrite <- n9_03, <- n9_04 in S2. exact S2. }
+  { now rewrite <- n9_03, <- n9_04 in S2. }
   exact S3.
 Qed.
 
@@ -613,7 +585,7 @@ Proof.
     now MP n9_22 n9_13.
   }
   assert (S3 : P ∨ (∃ x, φ x) → (∃ x, φ x) ∨ P).
-  { rewrite <- n9_06, <- n9_05 in S2. exact S2. }
+  { now rewrite <- n9_06, <- n9_05 in S2. }
   exact S3.
 Qed.
 
@@ -675,8 +647,7 @@ Proof.
       Syll S1 n2_32 S1_1.
       clear S1 n2_32.
       pose proof (n2_31 P Q (∀ x, φ x)) as n2_31.
-      Syll S1_1 n2_31 S1_2.
-      exact S1_2.
+      now Syll S1_1 n2_31 S1_2.
     }
     (* 
     replace ((P ∨ Q) ∨ (∀ x, φ x)) with (P ∨ Q ∨ ∀ x, φ x) in S1.
@@ -705,7 +676,7 @@ Proof.
     now MP n9_22 n9_13.
   }
   assert (S2 : P ∨ Q ∨ (∃ x, φ x) → Q ∨ P ∨ (∃ x, φ x)).
-  { repeat rewrite <- n9_06 in S1. exact S1. }
+  { now repeat rewrite <- n9_06 in S1. }
   exact S2.
 Qed.
 
@@ -726,8 +697,7 @@ Proof.
   assert (S2 : P ∨ (∀ x, φ x) ∨ R → (∀ x, φ x) ∨ P ∨ R).
   {
     rewrite <- n9_04 in S1.
-    repeat rewrite <- n9_03 in S1.
-    exact S1.
+    now repeat rewrite <- n9_03 in S1.
   }
   exact S2.
 Qed.
@@ -749,8 +719,7 @@ Proof.
   assert (S2 : P ∨ (∃ x, φ x) ∨ R → (∃ x, φ x) ∨ P ∨ R).
   {
     rewrite <- n9_06 in S1.
-    repeat rewrite <- n9_05 in S1.
-    exact S1.
+    now repeat rewrite <- n9_05 in S1.
   }
   exact S2.
 Qed.
@@ -772,8 +741,7 @@ Proof.
   assert (S2 : (∀ x, φ x) ∨ Q ∨ R → Q ∨ (∀ x, φ x) ∨ R).
   {
     rewrite <- n9_04 in S1.
-    repeat rewrite <- n9_03 in S1.
-    exact S1.
+    now repeat rewrite <- n9_03 in S1.
   }
   exact S2.
 Qed.
@@ -795,8 +763,7 @@ Proof.
   assert (S2 : (∃ x, φ x) ∨ Q ∨ R → Q ∨ (∃ x, φ x) ∨ R).
   {
     rewrite <- n9_06 in S1.
-    repeat rewrite <- n9_05 in S1.
-    exact S1.
+    now repeat rewrite <- n9_05 in S1.
   }
   exact S2.
 Qed.
@@ -825,18 +792,17 @@ Proof.
   { 
     (* *9.04 ignored - optional *)
     pose proof (n9_13 (fun y => ∃ x, P ∨ φ x → Q ∨ φ y) Y) as n9_13.
-    now Syll n9_13 S2 S3.
+    now Syll S2 n9_13 S3.
   }
   assert (S4 : (P → Q) → (∃ x, ¬ (P ∨ φ x)) ∨ (∀ y, Q ∨ φ y)).
   { 
     setoid_rewrite -> Impl1_01a in S3 at 3.
-    rewrite <- (n9_08 (fun y => Q ∨ φ y) (fun x => ¬(P ∨ φ x))) in S3.
-    exact S3.
+    now rewrite <- (n9_08 (fun y => Q ∨ φ y) (fun x => ¬(P ∨ φ x))) in S3.
   }
   assert (S5 : (P → Q) → (∀ x, (P ∨ φ x)) → (∀ y, Q ∨ φ y)).
-  { rewrite <- n9_01, <- Impl1_01 in S4. exact S4. }
+  { now rewrite <- n9_01, <- Impl1_01 in S4. }
   assert (S6 : (P → Q) → ((P ∨ ∀ x, φ x) → (Q ∨ ∀ x, φ x))).
-  { rewrite <- (n9_04 φ P), <- (n9_04 φ Q) in S5. exact S5. }
+  { now rewrite <- (n9_04 φ P), <- (n9_04 φ Q) in S5. }
   exact S6.
 Qed.
 
@@ -861,13 +827,12 @@ Proof.
   assert (S3 : (P → Q) → ∀ x, ∃ y, (P ∨ φ x) → (Q ∨ φ y)).
   { 
     pose proof (n9_13 (fun x => ∃ y, P ∨ φ x → Q ∨ φ y) Y) as n9_13.
-    now Syll n9_13 S2 S3.
+    now Syll S2 n9_13 S3.
   }
   assert (S4 : (P → Q) → (∀ x, ¬ (P ∨ φ x)) ∨ (∃ y, Q ∨ φ y)).
   {
     setoid_rewrite -> Impl1_01a in S3 at 3.
-    rewrite <- (n9_07 (fun x => ¬ (P ∨ φ x)) (fun y => Q ∨ φ y)) in S3.
-    exact S3.
+    now rewrite <- (n9_07 (fun x => ¬ (P ∨ φ x)) (fun y => Q ∨ φ y)) in S3.
   }
   assert (S5 : (P → Q) → (∃ x, P ∨ φ x) → (∃ y, Q ∨ φ y)).
   { 
@@ -877,7 +842,7 @@ Proof.
     now rewrite <- (n4_13 (∃ x, P ∨ φ x)) in S4.
   }
   assert (S6 : (P → Q) → (P ∨ ∃ x, φ x) → (Q ∨ ∃ y, φ y)).
-  { repeat rewrite <- n9_06 in S5. exact S5. }
+  { now repeat rewrite <- n9_06 in S5. }
   exact S6.
 Qed.
 
@@ -935,8 +900,7 @@ Proof.
     assert (Sy1 : (P → φ X) → (∃ x, (P ∨ R) → (φ x ∨ R))).
     {
       pose proof (n9_1 (fun x => P ∨ R → φ x ∨ R) X) as n9_1.
-      Syll S1 n9_1 Sy1.
-      exact Sy1.  
+      now Syll S1 n9_1 Sy1.
     }
     pose proof (n9_13 (fun y => (P → φ y) → (∃ x, (P ∨ R) → (φ x ∨ R))) X)
       as n9_13.
@@ -950,8 +914,7 @@ Proof.
     setoid_rewrite -> Impl1_01a in S2 at 2.
     setoid_rewrite -> Impl1_01a in S2 at 3.
     rewrite <- n9_06, <- n9_06, <- n9_05 in S2.
-    setoid_rewrite <- Impl1_01a in S2.
-    exact S2.
+    now setoid_rewrite <- Impl1_01a in S2.
   }
   exact S3.
 Qed.
@@ -980,11 +943,10 @@ Proof.
   { 
     setoid_rewrite -> Impl1_01a in S2 at 2.
     setoid_rewrite -> Impl1_01a in S2 at 3.
-    repeat rewrite <- n9_05, <- n9_01, <- Impl1_01 in S2.
-    exact S2.
+    now repeat rewrite <- n9_05, <- n9_01, <- Impl1_01 in S2.
   }
   assert (S4 : ((∀ x, φ x) → Q) → ((∀ x, φ x) ∨ R) → (Q ∨ R)).
-  { rewrite <- n9_03 in S3. exact S3. }
+  { now rewrite <- n9_03 in S3. }
   exact S4.
 Qed.
 
@@ -1015,8 +977,7 @@ Proof.
     repeat rewrite <- n9_03 in S2.
     repeat rewrite <- n9_02 in S2.
     repeat rewrite <- Impl1_01 in S2.
-    rewrite <- n9_05 in S2.
-    exact S2.
+    now rewrite <- n9_05 in S2.
   }
   exact S3.
 Qed.
