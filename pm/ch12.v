@@ -1,6 +1,7 @@
 (* TODO: Do research on ch12
 
 - what is a matrix?
+- Investigate how is [*x.y.z] being used exactly
 
 
 notes:
@@ -16,4 +17,6 @@ https://en.wikipedia.org/wiki/Glossary_of_Principia_Mathematica
 https://randall-holmes.github.io/Drafts/notesonpm.pdf
 https://www.religion-online.org/article/the-axiomatic-matrix-of-whiteheads-process-and-reality/
 https://nap.nationalacademies.org/read/10866/chapter/66
+
+pdf, p.28
 *)
