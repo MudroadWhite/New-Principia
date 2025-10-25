@@ -39,13 +39,13 @@ There are several reasons for organizing proofs like this. The most significant 
 By using `assert`, the propositions being asserted is introduced into the hypotheses.
 
 ## 2. How to use(deduce on) a theorem
-`pose proof (thm x y z) as thm` should be almost the only way to *introduce* a theorem into the hypotheses. In Principia starting from chapter 9, propositions are further come with a special kind of "type", basically the order of the proposition, and at base case we're only allowed to use elementary propositions as parameters, for elementary functions. That being said,
+`pose proof (thm x y z) as thm` should be almost the only way to *introduce* a theorem into the hypotheses. Starting from chapter 9, propositions are further come with a special kind of "type", basically the order of the proposition, and at base case we're only allowed to use elementary propositions as parameters, for elementary functions. That being said,
 - `pose proof` on a theorem is **allowed**.
 - `pose` on a theorem is strictly **not allowed**.
 - All parameters for the theorem at the *lhs* of its definition, are **required**.
 - All parameters for the theorem are **required** to limit to the *lhs* of theorem's definition.
 - All parameters for the theorem are **optional** to limited their "type" to elementary propositions, as the default in chapter 9. Every chapter after chapter 9 enables a new class of proposition to be passed in as parameters. Fundamentally however, whether they starts with a `forall` matters. Restriction on parameters is something our current formalization failed to model on.
-- \[Simplification\]If a goal can be solved immediately, it is **required** to use `exact` providing with all parameters.
+- \[Simplification\]If a goal can be solved immediately, it is **allowed** to use `apply` to solve the goal immediately.
 
 ## 3. How to use a `->` proposition(rewrite)
 A `->` proposition means that we can derive a conclusion from its premise. Immediately from above, below are almost the only allowed rules on `->` propositions:
@@ -85,6 +85,7 @@ But when things become complicated, more problems will come to surface. a `foral
 - \[Simplification\]`setoid_rewrite ->` on `<->` is **allowed**. Even for original `<->` theorems, this is a simplification.
 - \[Simplification\]`setoid_rewrite <-` on `<->` is **allowed**.
 - Similar to above, using `at` is **allowed**.
+- \[Simplification\]`setoid_rewrite` on `=` is **allowed**, with `eq_to_equiv` set up on that proposition. If we need to derive the quantified version of a `=` proposition, this becomes a necessity.
 - Providing the full parameter list is **recommended**
 
 WARNING: thanks to the `rewrite` tactic in Rocq, `<->` is usually more useful than `->` theorems - a `rewrite` on `<->` is way simpler than `MP` or `Syll` on `->`. We might *slightly overuse* the `<->` theorems. There exists cases original proof `MP`s on its single-direction version, but for simplicity we still apply the `<->` version with a `rewrite` or `setoid_rewrite` on a proposition.
@@ -104,7 +105,7 @@ If we have a proposition having the form of `H : forall x, Phi x`, and we only h
 
 As we can see, even without `setoid_rewrite`, "rewriting on quantified propositions" is always viable with a fixed routine and a fixed set of primitive propositions to perform, and this is what exactly we're trying to use `setoid_rewrite` to do.
 
-For `=` case: how does `=` interact with others is mostly undefined. There doesn't exist a single *primitive proposition* in Principia explaining what does it do. We might either treat it as a `=` in Coq's type system. That means we're allowed to use whatever tactics just to perform the right substitution on a proposition. Or, as a common way, we can use `eq_to_equiv` or `apply propositional_extentionality` to change the `=` proposition into a `<->` one. But since these substitution doesn't involve any of the primitive propositions in Principia, using them to guide our rewriting is still not really a necessity.
+For `=` case: how does `=` interact with others is mostly undefined. There doesn't exist a single *primitive proposition* in Principia explaining what does it do. We might either treat it as a `=` in Coq's type system. That means we're allowed to use whatever tactics just to perform the right substitution on a proposition. Or, as a common way, we can use `eq_to_equiv` or `apply propositional_extentionality` to change the `=` proposition into a `<->` one, but they are not a necessity. An exceptional case is when we want to lift a `P = Q` relation to `forall x, P x = forall x, Q x`: we might use `f_equal` on generalization primitive propositions.
 
 ## Rules for technical hacks 
 Either for "historical reasons"(this project really doesn't have a history), or when we want to work thourgh a proof quickly, and we didn't figure out the correct way to write the proof, "technical hacks" arises for proof completions. The most common ones are listed below. Unless it gets a severe technical barrier, they are **recommended** to be taken down.
