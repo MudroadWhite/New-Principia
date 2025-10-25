@@ -100,9 +100,6 @@ Proof.
   (* TOOLS *)
   set (X := Real "x").
   (* ******** *)
-  Close Scope double_app_impl.
-  Close Scope double_app_equiv.
-
   assert (S1 : (∀ y, P \/ Phi X y) -> (P \/ ∀ y, Phi X y)).
   { apply n10_12. }
   assert (S2 : (∀ x y, P \/ Phi x y) -> (∀ x, P \/ (∀ y, Phi x y))).
@@ -759,7 +756,7 @@ Theorem n11_42 (Phi Psi : Prop → Prop → Prop) :
 Proof.
   set (X := Real "x").
   pose proof (n10_5 (fun y => Phi X y) 
-    (fun y => Psi X y)) as n10_5a. simpl in n10_5a.
+    (fun y => Psi X y)) as n10_5a.
   pose proof (n10_11 X (fun x =>
     (∃ y, Phi x y ∧ Psi x y)
       → (∃ y, Phi x y) ∧ ∃ y, Psi x y)) as n10_11.
@@ -793,28 +790,65 @@ Qed.
 Theorem n11_43 (P : Prop) (Phi : Prop → Prop → Prop) :
   (∃ x y, Phi x y → P) ↔ ((∀ x y, Phi x y) → P).
 Proof.
-  pose proof n10_34 as _n10_34.
-  pose proof n10_281 as _n10_281.
+  set (X := Real "x").
+  (* 
+  set (X := Real "x").
+  pose proof (n10_5 (fun y => Phi X y) 
+    (fun y => Psi X y)) as n10_5a.
+  pose proof (n10_11 X (fun x =>
+    (∃ y, Phi x y ∧ Psi x y)
+      → (∃ y, Phi x y) ∧ ∃ y, Psi x y)) as n10_11.
+  MP n10_11 n10_5a.
+  pose proof (n10_28
+    (fun x => (∃ y : Prop, Phi x y ∧ Psi x y))
+    (fun x => (∃ y : Prop, Phi x y) ∧ ∃ y : Prop, Psi x y)
+  ) as n10_28. simpl in n10_28.
+  MP n10_28 n10_11.
+  pose proof (n10_5 (fun x => (∃ y : Prop, Phi x y))
+    (fun x => ∃ y : Prop, Psi x y)) as n10_5b.
+  now Syll n10_28 n10_5b S1.
+  *)
+  pose proof (n10_34 (fun y => Phi X y) P) as n10_34a.
+  simpl in n10_34a.
+  pose proof (n10_11 X (fun x => (∃ y, Phi x y → P)
+    ↔ ((∀ y, Phi x y) → P))) as n10_11.
+  MP n10_11 n10_34a.
+  pose proof (n10_281
+    (fun x => (∃ y, Phi x y → P))
+    (fun x => (∀ y : Prop, Phi x y) → P)) as n10_281.
+  MP n10_281 n10_11.
+  pose proof n11_22 as _n11_22.
+
 Admitted.
 
 Theorem n11_44 (P : Prop) (Phi : Prop → Prop → Prop) :
   (∀ x y, Phi x y ∨ P) ↔ ((∀ x y, Phi x y) ∨ P).
 Proof.
+  set (X := Real "x").
+  pose proof as _.
+  pose proof as _.
 Admitted.
 
 Theorem n11_45 (P : Prop) (Phi : Prop → Prop → Prop) :
   (∃ x y, P ∧ Phi x y) ↔ (P ∧ ∃ x y, Phi x y).
 Proof.
+  set (X := Real "x").
+  pose proof as _.
+  pose proof as _.
 Admitted.
 
 Theorem n11_46 (P : Prop) (Phi : Prop → Prop → Prop) :
   (∃ x y, P → Phi x y) ↔ (P → ∃ x y, Phi x y).
 Proof.
+  pose proof as _.
+  pose proof as _.
 Admitted.
 
 Theorem n11_47 (P : Prop) (Phi : Prop → Prop → Prop) :
   (∀ x y, P ∧ Phi x y) ↔ (P ∧ ∀ x y, Phi x y).
 Proof.
+  pose proof as _.
+  pose proof as _.
 Admitted.
 
 (* different format from original proof *)
