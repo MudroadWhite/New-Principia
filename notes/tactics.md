@@ -22,7 +22,7 @@ Proof.
   {
     (* subproof for S1, where "S" here stands for step *)
   }
-  assert (S2 : x + y = z -> x + y = z).
+  assert (S2 : x + y = z → x + y = z).
   {
     (* subproof for S2 *)
   }
@@ -44,31 +44,31 @@ By using `assert`, the propositions being asserted is introduced into the hypoth
 - `pose` on a theorem is strictly **not allowed**.
 - All parameters for the theorem at the *lhs* of its definition, are **required**.
 - All parameters for the theorem are **required** to limit to the *lhs* of theorem's definition.
-- All parameters for the theorem are **optional** to limited their "type" to elementary propositions, as the default in chapter 9. Every chapter after chapter 9 enables a new class of proposition to be passed in as parameters. Fundamentally however, whether they starts with a `forall` matters. Restriction on parameters is something our current formalization failed to model on.
+- All parameters for the theorem are **optional** to limited their "type" to elementary propositions, as the default in chapter 9. Every chapter after chapter 9 enables a new class of proposition to be passed in as parameters. Fundamentally however, whether they starts with a `∀` matters. Restriction on parameters is something our current formalization failed to model on.
 - \[Simplification\]If a goal can be solved immediately, it is **required** to use `exact` providing with all parameters.
 
-## 3. How to use a `->` proposition(rewrite)
-A `->` proposition means that we can derive a conclusion from its premise. Immediately from above, below are almost the only allowed rules on `->` propositions:
+## 3. How to use a `→` proposition(rewrite)
+A `→` proposition means that we can derive a conclusion from its premise. Immediately from above, below are almost the only allowed rules on `→` propositions:
 - `MP p1 p2`, using the `MP` tactic, is **allowed**, where `p1` and `p2` are both propositions posed in the hypotheses. This is also how we treat "parameters" at the *rhs* of a theorem.
 - `Syll p1 p2 Sy` for deriving a new "composed" proposition `Sy`, by using `Syll` tactic, is **allowed**. This is a tactic similar to `MP` and its exact meaning is given in chapter 2.
 
-## 4. How to use a `<->` proposition(rewrite)
+## 4. How to use a `↔` proposition(rewrite)
 Technically speaking, if we completely follow the deduction rules in PM's logic system, we need to
-1. Apply `Equiv` theorem to destruct `P <-> Q` into `P -> Q /\ Q -> P`
+1. Apply `Equiv` theorem to destruct `P ↔ Q` into `P → Q ∧ Q → P`
 2. Use `Simp` to extract the direction that you want to use
 3. Prove properties from the extracted theorem using `MP` or `Syll`
-4. Optionally get the result as `R -> S` and `S -> R`
-5. Apply `Conj`, `Equiv` sequencially to combine them into `R <-> S`
+4. Optionally get the result as `R → S` and `S → R`
+5. Apply `Conj`, `Equiv` sequencially to combine them into `R ↔ S`
 
-It's straightforward that this routine is a lot just for a single step of deduction. To simplify the procedure, we're allowed to use `rewrite` directly on theorems made up of `<->`s, providing that we can always expand these `rewrite` into a sequence of `Simp`, `MP`, `Conj` and `Equiv`.
-- \[Simplification\]`rewrite -> thm` on `<->` is **allowed**.
-- \[Simplification\]`rewrite <- thm` on `<->` is **allowed**.
+It's straightforward that this routine is a lot just for a single step of deduction. To simplify the procedure, we're allowed to use `rewrite` directly on theorems made up of `↔`s, providing that we can always expand these `rewrite` into a sequence of `Simp`, `MP`, `Conj` and `Equiv`.
+- \[Simplification\]`rewrite -> thm` on `↔` is **allowed**.
+- \[Simplification\]`rewrite <- thm` on `↔` is **allowed**.
 - \[Simplification\]Using `at` to specify the subterm is **allowed**, as it's original routine to get the subterm is straightforward. Beside using `at`, we can also provide the full parameter list for `thm` to `rewrite`.
 - The `thm` for rewrite is **recommended** to provide its full parameter list.
 
-Apart from the construction routine on `<->`, we also have destruction routine on `<->`. `Equiv` theorem in this sense, changes `P <-> Q` back to `P -> Q /\ Q -> P`. For this proposition, we can use `Simp` to choose the direction we want to use. But a more convinient way is seamlessly use the Rocq's `destruct` tactic.
-- \[Simplification\]`destruct` on `<->` is **allowed**.
-- \[Simplification\]If the routine is *destruct* a `<->` proposition to produce a branch to `MP` or `Syll` on, this `destruct` is **required** to be further simplified into a `rewrite` on `<->`.
+Apart from the construction routine on `↔`, we also have destruction routine on `↔`. `Equiv` theorem in this sense, changes `P ↔ Q` back to `P → Q ∧ Q → P`. For this proposition, we can use `Simp` to choose the direction we want to use. But a more convinient way is seamlessly use the Rocq's `destruct` tactic.
+- \[Simplification\]`destruct` on `↔` is **allowed**.
+- \[Simplification\]If the routine is *destruct* a `↔` proposition to produce a branch to `MP` or `Syll` on, this `destruct` is **required** to be further simplified into a `rewrite` on `↔`.
 - Otherwise, every `destruct`s are **required** to be immediately followed by a `clear` to select its branch.
 
 Explicit examples, sometimes with comments, on reducing these routines with Rocq native tactics, are provided through chapter 9 & 10.
@@ -80,31 +80,31 @@ Aka. the root of all evils. A clear way how `=` proposition interacts with other
 - Same as above, using `at` is **allowed**.
 - Providing the parameter list is **recommended**.
 
-But when things become complicated, more problems will come to surface. a `forall x` is enough to bring `rewrite` down - it cannot identify the variable `x`. `setoid_rewrite` is a enhanced version of `rewrite` that can penetrate through `forall`s and `exist`s, with the only drawback that it works on `<->` relations. For this, we made the following rule:
-- \[Simplification\]`=` propositions is **allowed** to be turned into `<->` propositions using `eq_to_equiv`
-- \[Simplification\]`setoid_rewrite ->` on `<->` is **allowed**. Even for original `<->` theorems, this is a simplification.
-- \[Simplification\]`setoid_rewrite <-` on `<->` is **allowed**.
+But when things become complicated, more problems will come to surface. a `∀ x` is enough to bring `rewrite` down - it cannot identify the variable `x`. `setoid_rewrite` is a enhanced version of `rewrite` that can penetrate through `∀`s and `exist`s, with the only drawback that it works on `↔` relations. For this, we made the following rule:
+- \[Simplification\]`=` propositions is **allowed** to be turned into `↔` propositions using `eq_to_equiv`
+- \[Simplification\]`setoid_rewrite ->` on `↔` is **allowed**. Even for original `↔` theorems, this is a simplification.
+- \[Simplification\]`setoid_rewrite <-` on `↔` is **allowed**.
 - Similar to above, using `at` is **allowed**.
 - Providing the full parameter list is **recommended**
 
-WARNING: thanks to the `rewrite` tactic in Rocq, `<->` is usually more useful than `->` theorems - a `rewrite` on `<->` is way simpler than `MP` or `Syll` on `->`. We might *slightly overuse* the `<->` theorems. There exists cases original proof `MP`s on its single-direction version, but for simplicity we still apply the `<->` version with a `rewrite` or `setoid_rewrite` on a proposition.
+WARNING: thanks to the `rewrite` tactic in Rocq, `↔` is usually more useful than `→` theorems - a `rewrite` on `↔` is way simpler than `MP` or `Syll` on `→`. We might *slightly overuse* the `↔` theorems. There exists cases original proof `MP`s on its single-direction version, but for simplicity we still apply the `↔` version with a `rewrite` or `setoid_rewrite` on a proposition.
 
 ### 5.1. What routine does `setoid_rewrite` actually simplify?
-It should be very worthwhile to discuss how we deal with rewriting for quantified ("forall x") propositions, which also brings up the discussion on the viability for `setoid_rewrite` to simulate original proof. As we see, `setoid_rewrite` is only used in 2 situations: either the proposition is a `=`, or the proposition is a `<->`.
+It should be very worthwhile to discuss how we deal with rewriting for quantified ("∀ x") propositions, which also brings up the discussion on the viability for `setoid_rewrite` to simulate original proof. As we see, `setoid_rewrite` is only used in 2 situations: either the proposition is a `=`, or the proposition is a `↔`.
 
-We first discuss the case for `<->`. As an opening, here is a question: how does a `forall` proposition appear? The basic idea for Principia is quite different from modern approach which uses a `forall` constructor. *Primitive propositions* in each chapter allow that
-- If we have a proposition with the form of `Phi X`, with `X` being a *real variable*,
-- Then we can change `Phi X` into `forall x, Phi x`. Here, `x` has become an *apparent variable* as it's in a `forall`.
-If, say, we want to construct something like `(forall x, Phi x) -> (forall y, Psi y)`, then we further have some other rules to allow us to "split" the `forall` into half. `forall x, Phi x -> Psi x` can even be turned into `(exists x, Phi x) -> (exists y, Psi y)`.
+We first discuss the case for `↔`. As an opening, here is a question: how does a `∀` proposition appear? The basic idea for Principia is quite different from modern approach which uses a `∀` constructor. *Primitive propositions* in each chapter allow that
+- If we have a proposition with the form of `φ X`, with `X` being a *real variable*,
+- Then we can change `φ X` into `∀ x, φ x`. Here, `x` has become an *apparent variable* as it's in a `∀`.
+If, say, we want to construct something like `(∀ x, φ x) → (∀ y, ψ y)`, then we further have some other rules to allow us to "split" the `∀` into half. `∀ x, φ x → ψ x` can even be turned into `(∃ x, φ x) → (∃ y, ψ y)`.
 
-If we have a proposition having the form of `H : forall x, Phi x`, and we only have a rewrite rule of `Phi X <-> Psi X`, we can 
-1. Pick the rewrite rule `Phi X <-> Psi X` as our base
-2. Use primitive propositions to change real variables into apparent variables. For example it will become `(forall x, Phi x) <-> (forall x, Psi x)`.
-3. Now we can rewrite `H` as a whole into `forall x, Psi x`.
+If we have a proposition having the form of `H : ∀ x, φ x`, and we only have a rewrite rule of `φ X ↔ ψ X`, we can 
+1. Pick the rewrite rule `φ X ↔ ψ X` as our base
+2. Use primitive propositions to change real variables into apparent variables. For example it will become `(∀ x, φ x) ↔ (∀ x, ψ x)`.
+3. Now we can rewrite `H` as a whole into `∀ x, ψ x`.
 
 As we can see, even without `setoid_rewrite`, "rewriting on quantified propositions" is always viable with a fixed routine and a fixed set of primitive propositions to perform, and this is what exactly we're trying to use `setoid_rewrite` to do.
 
-For `=` case: how does `=` interact with others is mostly undefined. There doesn't exist a single *primitive proposition* in Principia explaining what does it do. We might either treat it as a `=` in Coq's type system. That means we're allowed to use whatever tactics just to perform the right substitution on a proposition. Or, as a common way, we can use `eq_to_equiv` or `apply propositional_extentionality` to change the `=` proposition into a `<->` one. But since these substitution doesn't involve any of the primitive propositions in Principia, using them to guide our rewriting is still not really a necessity.
+For `=` case: how does `=` interact with others is mostly undefined. There doesn't exist a single *primitive proposition* in Principia explaining what does it do. We might either treat it as a `=` in Coq's type system. That means we're allowed to use whatever tactics just to perform the right substitution on a proposition. Or, as a common way, we can use `eq_to_equiv` or `apply propositional_extentionality` to change the `=` proposition into a `↔` one. But since these substitution doesn't involve any of the primitive propositions in Principia, using them to guide our rewriting is still not really a necessity.
 
 ## 6. "Tools"
 TODO: introduce the `TOOLS` section for real variables and `eq_to_equiv`
@@ -112,7 +112,7 @@ TODO: introduce the `TOOLS` section for real variables and `eq_to_equiv`
 ## 7. Rules for technical hacks 
 Either for "historical reasons"(this project really doesn't have a history), or when we want to work thourgh a proof quickly, and we didn't figure out the correct way to write the proof, "technical hacks" arises for proof completions. The most common ones are listed below. Unless it gets a severe technical barrier, they are **recommended** to be taken down.
 - \[Simplification\]`replace...with` is a valid and flexible substitution for rewriting, but it's too heavy. We should delete occurences of `replace...with` as much as possible.
-- \[Simplification\]`apply propositional_extentionality` might occur inside `replace...with` blocks. Its purpose is to change the goal of `=` form into a goal of `<->` form for easier reasoning. It might work against original text and is not recommended.
+- \[Simplification\]`apply propositional_extentionality` might occur inside `replace...with` blocks. Its purpose is to change the goal of `=` form into a goal of `↔` form for easier reasoning. It might work against original text and is not recommended.
 - \[Simplification\]`intro` introduces the premise as a hypothesis. `intro Hp`, as utilized in chapter 5 & 10, has proven its harmlessness. Other from this usage directly sourced back to the text, it's not recommended to used. Their occurences are supposed to be eliminated.
 - \[Simplification\]`now tactic thm ...` says that, if the `tactic` we use can directly provide a result that is not very far from the goal, then we prove the goal immediately. Typically it's very useful for saving a line of `exact thm`. Every line of `now tactic thm` can be turned back into `tactic thm` for readers to check if it does indeed generate a proposition that is exactly the same as the goal.
 
