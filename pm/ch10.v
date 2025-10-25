@@ -516,7 +516,6 @@ Proof.
     `Hp` being introduced, as followed... *)
   pose proof (n10_22 (fun z => φ z → ψ z) (fun z => ψ z → φ z)) 
     as n10_22.
-  simpl in n10_22.
   setoid_rewrite <- Equiv4_01a in n10_22.
   destruct n10_22 as [n10_22l n10_22r]. clear n10_22r.
   assert (S1 : (∀ z, φ z ↔ ψ z) → (∀ z, φ z → ψ z)).
@@ -838,7 +837,6 @@ Proof.
     pose proof (n10_22
       (fun x => (φ x → ψ x))
       (fun x => (ψ x → φ x))) as n10_22.
-    simpl in n10_22.
     (* Here we have a special case where `Equiv` doesn't work 
       perfectly *)
     setoid_rewrite <- Equiv4_01a in n10_22.
@@ -870,7 +868,6 @@ Proof.
       (fun x => (ψ x → φ x))
       (fun x => (φ x → ψ x))) as n10_22. 
     symmetry in n10_22.
-    simpl in n10_22.
     assert (C1 : ((φ x <[- x -]> ψ x) 
         ↔ ((ψ x -[x]> φ x) ∧ (φ x -[x]> ψ x)))
       ∧
@@ -1047,7 +1044,6 @@ Proof.
   {
     (* pose proof n10_23 as n10_23. *)
     pose proof (n10_23 (fun x => P ∧ φ x) P) as n10_23.
-    simpl in n10_23.
     (* omit the MP we should use *)
     now rewrite -> n10_23 in S2.
   }
@@ -1386,7 +1382,6 @@ Proof.
   {
     pose proof (n10_411 (fun x => ¬ φ x) ψ 
       (fun x => ¬ χ x) θ) as n10_411.
-    simpl in n10_411.
     pose proof (n10_412 φ χ) as n10_412.
     now rewrite <- n10_412 in n10_411.
   }

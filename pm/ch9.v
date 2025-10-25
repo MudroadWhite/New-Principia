@@ -544,7 +544,6 @@ Proof.
     pose proof (n9_13 (fun x => P ∨ φ x → φ x ∨ P) X) as n9_13.
     MP n9_13 S1.
     pose proof (n9_21 (fun x => P ∨ φ x) (fun x => φ x ∨ P)) as n9_21.
-    simpl in n9_21.
     now MP n9_21 S1.
   }
   assert (S3 : P ∨ (∀ x, φ x) → (∀ x, φ x) ∨ P).
