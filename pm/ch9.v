@@ -203,19 +203,19 @@ Proof.
   (* ******** *)
   (** S1 **)
   assert (S1 : (φ Z → ψ Z) → φ Z → ψ Z).
-  { apply Id2_08. }
+  { exact (Id2_08 (φ Z → ψ Z)). }
   (** S2 **)
   assert (S2 : ∃ y, (φ Z → ψ Z) → φ y → ψ Z).
   { 
     pose proof (n9_1 (fun x => (φ Z → ψ Z) → φ x → ψ Z) Z) as n9_1.
-    MP n9_1 S1. exact n9_1.
+    now MP n9_1 S1.
   }
   (** S3 **)
   assert (S3 : ∃ x y, (φ x → ψ x) → φ y → ψ Z).
   { 
     (* *1.11 ignored *)
     pose proof (n9_1 (fun x => (∃ z0, (φ x → ψ x) → φ z0 → ψ Z)) Z) as n9_1.
-    MP n9_1 S2. exact n9_1.
+    now MP n9_1 S2.
   }
   (** S4 **)
   assert (S4 : ∀ z, ∃ x y, (φ x → ψ x) → φ y → ψ z).
@@ -272,16 +272,16 @@ Proof.
   set (Y := Real "Y").
   (* ******** *)
   assert (S1 : (φ Y → ψ Y) → φ Y → ψ Y).
-  { apply Id2_08. }
+  { exact (Id2_08 (φ Y → ψ Y)). }
   assert (S2 : ∃ z, (φ Y → ψ Y) → (φ Y → ψ z)).
   { 
     pose proof (n9_1 (fun z => (φ Y → ψ Y) → (φ Y → ψ z)) Y) as n9_1.
-    MP n9_1 S1. exact n9_1.
+    now MP n9_1 S1.
   }
   assert (S3 : ∃ x, ∃ z, (φ x → ψ x) → (φ Y → ψ z)).
   { 
     pose proof (n9_1 (fun x => ∃ z, (φ x → ψ x) → (φ Y → ψ z)) Y) as n9_1.
-    MP n9_1 S2. exact n9_1.
+    now MP n9_1 S2.
   }
   assert (S4 : ∀ y, ∃ x, ∃ z, (φ x → ψ x) → (φ y → ψ z)).
   {
@@ -360,8 +360,7 @@ Proof.
   assert (S2 : ∃ y, (φ X ∨ φ y) → φ X).
   { 
     pose proof (n9_1 (fun y => (φ X ∨ φ y) → φ X) X) as n9_1.
-    MP n9_1 S1.
-    exact n9_1. 
+    now MP n9_1 S1.
   }
   assert (S3 : ∀ x, ∃ y, (φ x ∨ φ y) → φ x).
   {
@@ -389,7 +388,7 @@ Proof.
   assert (S5 : (∀ x, (φ x ∨ ∀ y, φ y)) → (∀ x, φ x)).
   { 
     pose proof (n9_21 (fun x => φ x ∨ (∀ y, φ y)) φ) as n9_21.
-    MP n9_21 S4. exact n9_21. 
+    now MP n9_21 S4.
   }
   assert (S6 : (∀ x, φ x) ∨ (∀ x, φ x) → (∀ x, φ x)).
   { rewrite <- n9_03 in S5. exact S5. }
@@ -493,8 +492,7 @@ Proof.
   assert (S2 : ∃ x, Q → (φ x) ∨ Q).
   {
     pose proof (n9_1 (fun x => Q → (φ x) ∨ Q) X) as n9_1.
-    MP n9_1 S1.
-    exact n9_1.
+    now MP n9_1 S1.
   }
   assert (S3 : Q → ∃ x, (φ x) ∨ Q).
   { 
@@ -523,8 +521,7 @@ Proof.
   assert (S3 : (∀ x, φ x) → (∀ x, P ∨ φ x)).
   {
     pose proof (n9_21 φ (fun x => P ∨ φ x)) as n9_21.
-    MP n9_21 S2.
-    exact n9_21.
+    now MP n9_21 S2.
   }
   assert (S4 : (∀ x, φ x) → P ∨ (∀ x, φ x)).
   { rewrite <- (n9_04 φ P) in S3. exact S3. }
@@ -547,8 +544,7 @@ Proof.
   assert (S3 : (∃ x, φ x) → (∃ x, P ∨ φ x)).
   {
     pose proof (n9_22 (fun x => φ x) (fun x => P ∨ φ x)) as n9_22.
-    MP n9_22 S2.
-    exact n9_22.
+    now MP n9_22 S2.
   }
   assert (S6 : (∃ x, φ x) → P ∨ (∃ x, φ x)).
   {
@@ -568,11 +564,10 @@ Proof.
   assert (S2 : (∀ x, (P ∨ φ x)) → ∀ x, (φ x ∨ P)).
   { 
     pose proof (n9_13 (fun x => P ∨ φ x → φ x ∨ P) X) as n9_13.
-    MP S1 n9_13.
+    MP n9_13 S1.
     pose proof (n9_21 (fun x => P ∨ φ x) (fun x => φ x ∨ P)) as n9_21.
     simpl in n9_21.
-    MP n9_21 S1.
-    exact n9_21.
+    now MP n9_21 S1.
   }
   assert (S3 : P ∨ (∀ x, φ x) → (∀ x, φ x) ∨ P).
   { rewrite <- (n9_04 φ P), <- (n9_03 φ P) in S2. exact S2. }
@@ -584,7 +579,7 @@ Proof.
   (* TOOLS *)
   set (X := Real "x").
   (* ******** *)
-  assert (S1 : P ∨ φ X → φ X ∨ P).
+  assert (S1 : φ X ∨ P → P ∨ φ X).
   { apply Perm1_4. }
   assert (S2 : (∀ x, φ x ∨ P) → ∀ x, P ∨ φ x).
   {
@@ -675,8 +670,7 @@ Proof.
       Syll S1 n2_32 S1_1.
       clear S1 n2_32.
       pose proof (n2_31 P Q (∀ x, φ x)) as n2_31.
-      Syll S1_1 n2_31 S1_2.
-      exact S1_2.
+      now Syll S1_1 n2_31 S1_2.
     }
     (* 
     replace ((P ∨ Q) ∨ (∀ x, φ x)) with (P ∨ Q ∨ ∀ x, φ x) in S1.
@@ -825,7 +819,7 @@ Proof.
   { 
     (* *9.04 ignored - optional *)
     pose proof (n9_13 (fun y => ∃ x, P ∨ φ x → Q ∨ φ y) Y) as n9_13.
-    now Syll n9_13 S2 S3.
+    now Syll S2 n9_13 S3.
   }
   assert (S4 : (P → Q) → (∃ x, ¬ (P ∨ φ x)) ∨ (∀ y, Q ∨ φ y)).
   { 
@@ -861,7 +855,7 @@ Proof.
   assert (S3 : (P → Q) → ∀ x, ∃ y, (P ∨ φ x) → (Q ∨ φ y)).
   { 
     pose proof (n9_13 (fun x => ∃ y, P ∨ φ x → Q ∨ φ y) Y) as n9_13.
-    now Syll n9_13 S2 S3.
+    now Syll S2 n9_13 S3.
   }
   assert (S4 : (P → Q) → (∀ x, ¬ (P ∨ φ x)) ∨ (∃ y, Q ∨ φ y)).
   {
