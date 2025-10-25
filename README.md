@@ -28,9 +28,10 @@ No. Here are the reasons:
 
 ## How much can you formalize?
 Below are some technical aspects that arise from this project.
-- Distinguish between `forall x y, P x y` and `forall x, forall y, P x y` is currently **impossible**.
+- Distinguish between `forall x y, P x y` and `forall x, forall y, P x y` is currently **unavailable**.
 - Limiting parameter's "type"(orders)s for a function is currently **partially supported**, by only writing them as a header in each of the chapters.
-- Checking their types is currently **impossible**.
+- Checking their types is currently **unavailable**.
+- Desiging functions that accepts arbitrary length is currently **unavailable**.
 - Constructing "types" for every propositions in Principia is **on plan**.
 - Expressing "types(orders) for a function's parameters" is **on plan**.
 - Completely translate primitive propositions written in natural language, into formalized Rocq proof, is **on plan**.
