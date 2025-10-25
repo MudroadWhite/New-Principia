@@ -7,6 +7,36 @@ TODO:
 - rename this chapter to `architecture`
 - cover the file architecture a little bit
 
+
+## 1. `assert` for intermediate steps
+When proofs are "long enough", the first tactic that one should see is `assert` to specify intermediate steps. This tactic modularizes the proofs so that they usually have the following structure:
+
+```Coq
+Proof.
+  assert (S1 : x + y = z).
+  {
+    (* subproof for S1, where "S" here stands for step *)
+  }
+  assert (S2 : x + y = z → x + y = z).
+  {
+    (* subproof for S2 *)
+  }
+  (* and so on... *)
+  exact Sn.
+Qed.
+```
+
+There are several reasons for organizing proofs like this. The most significant one is readability. Besides, we can have several equivalant forms for a proposition, i.e. `(fun x => x) x` is not very far from just `x` or `(fun y => y) x`. Switching between them requires delicate application with tactics for all different cases. If we set the desired form as a subgoal, we only need to use tactics to prove for a equivalent form to `x`, and skip the tedious transformations. One last thing for `assert` is that it limits the scope of theorems we use. When we leave the scope, these theorems are automatically cleared away, and only the intermediate steps as `S1` `S2` are being pertained. As a result, the proof window becomes extremely clean.
+
+- If the original proof has been broken down into several steps, it's Rocq formalization is **required** to apply the `assert` template above.
+- As it pertains a nice style, `exact` at the end of the proof is **not allowed** to be deleted or simplified.
+
+By using `assert`, the propositions being asserted is introduced into the hypotheses.
+
+### `TOOLS`
+Ever before the first `assert`, there might be a small `TOOLS` section in the very beginning of thr proof. These tools are for (...)
+TODO: introduce the `TOOLS` section for real variables and `eq_to_equiv`
+
 ## Definitions and Theorems
 `Definition`s and `Theorem`s are being used, not because of their *literal meaning*, but because of their ability to nicely organize the data, just like a "class" or a "structure" in typical programming languages.
 
