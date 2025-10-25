@@ -290,7 +290,7 @@ Proof.
   assert (S3 : ((∃ x, φ x) → P) → ((¬ P) → ¬ φ X)).
   {
     pose proof (n10_1 (fun x => (¬ P) → ¬ φ x) X) as n10_1.
-    destruct S2 as [S2_l S2_r].
+    destruct S2 as [S2_l S2_r]. clear S2_r.
     now Syll S2_l n10_1 S3.
   }
   assert (S4 : ((∃ x, φ x) → P) → (φ X → P)).
@@ -557,8 +557,7 @@ Proof.
     as n10_22.
   simpl in n10_22.
   setoid_rewrite <- Equiv4_01a in n10_22.
-  destruct n10_22 as [n10_22l n10_22r].
-  clear n10_22r.
+  destruct n10_22 as [n10_22l n10_22r]. clear n10_22r.
   assert (S1 : (∀ z, φ z ↔ ψ z) → (∀ z, φ z → ψ z)).
   {
     pose proof (Simp3_26 (∀ x, φ x → ψ x) (∀ x, ψ x → φ x)) 
@@ -660,8 +659,9 @@ Proof.
   (* ******** *)
   pose proof (n10_22 (fun x => φ x → ψ x) (fun x => ψ x → φ x))
     as n10_22.
-  destruct n10_22 as [n10_22l n10_22r].
-  setoid_rewrite <- Equiv4_01a in n10_22l.
+  setoid_rewrite <- Equiv4_01a in n10_22.
+  (* We don't clear both branches because both of them are being used *)
+  destruct n10_22 as [n10_22l n10_22r]. 
   assert (Sa : (∀ x, φ x ↔ ψ x) → 
     (∃ x, φ x) → (∃ x, ψ x)).
   {
@@ -689,13 +689,16 @@ Proof.
   assert (C1 : ((∀ x, φ x ↔ ψ x) → (∃ x, φ x) → (∃ x, ψ x))
     ∧ ((∀ x, φ x ↔ ψ x) → (∃ x, ψ x) → (∃ x, φ x))).
   {
-    clear Equiv4_01a n10_22l n10_22r Comp3_43.
+    clear Equiv4_01a n10_22l Comp3_43.
     now Conj Sa Sb C1.
   }
   MP Comp3_43 C1.
-  Syll n10_22l Comp3_43 Sc.
+  assert (Sc : (∀ x, φ x → ψ x) ∧ (∀ x, ψ x → φ x)
+    → ((∃ x, φ x) → ∃ x, ψ x) ∧ ((∃ x, ψ x) → ∃ x, φ x)).
+  { clear n10_22l. now Syll n10_22r Comp3_43 Sc. }
   setoid_rewrite <- Equiv4_01a in Sc.
-  Syll n10_22l Sc Sd.
+  assert (Sd : (∀ x, φ x ↔ ψ x) → (∃ x, φ x) ↔ ∃ x, ψ x).
+  { clear n10_22r. now Syll n10_22r Sc Sd. }
   exact Sd.
 Qed.
 
@@ -770,8 +773,7 @@ Proof.
     (* n10_221 ignored *)
     (* Technically we need to use `Equiv` and `Simp`. For convinience we use 
     `destruct` immediately *)
-    destruct n10_22a as [n10_22l n10_22r].
-    exact n10_22r.
+    now destruct n10_22a as [n10_22l n10_22r].
   }
   assert (S2 : ((∀ x, φ x → ψ x) ∧ (∀ x, ψ x → χ x))
     → ∀ x, (φ x → χ x)).
@@ -1773,8 +1775,7 @@ Proof.
     → ((φ x -[x]> (ψ x ∨ χ x)) ∧ (φ x -[x]> (¬ χ x)))).
   {
     pose proof (n10_51 φ χ) as n10_51.
-    destruct n10_51 as [n10_51l n10_51r].
-    clear n10_51r.
+    destruct n10_51 as [n10_51l n10_51r]. clear n10_51r.
     pose proof (Fact3_45 (¬ (∃ x, φ x ∧ χ x)) (φ x-[x]>¬ χ x)
       (φ x-[x]>(ψ x ∨ χ x))) as Fact3_45.
     MP Fact3_45 n10_51l.
