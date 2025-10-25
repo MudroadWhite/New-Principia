@@ -10,10 +10,10 @@ As a consequence, We don't need fancy tactics to formalize the theorems. We want
 We can use a new tactic to simplify a tedious part of proof down, if
 - The tactic is general enough(why not) to apply the simplification
 - We clearly identified the theorem used in original routine
-- We clearly identified the types of parameters, for theorems in original routine. Parameters' types matters
-- Optionally, the tactic doesn't necessarily use theorems or parameters in Principia - it just gets the work done
+- We clearly identified the types of parameters, for theorems in original routine. Parameters' types matter
+- Optionally, the tactic doesn't need to use theorems or parameters in Principia - it just gets the work done
 
-## 1. How to use(deduce on) a theorem
+## 1. How to use(deduce on) an existing theorem
 `pose proof (thm x y z) as thm` should be almost the only way to *introduce* a theorem into the hypotheses, stating the existence of an already proven result. Also, starting from chapter 9, propositions are further come with a special kind of "type", basically the order of the proposition, and at base case we're only allowed to use elementary propositions as parameters, for elementary functions. That being said,
 - `pose proof` on a theorem is **allowed**.
 - `pose` on a theorem is strictly **not allowed**, because `pose proof` gets the proof window cleaner.
@@ -21,12 +21,12 @@ We can use a new tactic to simplify a tedious part of proof down, if
 - Provided parameters are **optional** to limit their "type"s to elementary proposition, as the default of chapter 9. Every chapter after chapter 9 enables a new class of proposition to be parameterized. Fundamentally however, whether they starts with a `∀` matters.
 - \[Simplification\]If a goal can be solved immediately, `apply` is **allowed** to use.
 
-## 2. How to use a `→` proposition(rewrite)
-A `→` proposition means that we can derive a conclusion from its premise. Immediately from above, here are almost the only allowed rules on `→` propositions:
+## 2. How to use a `→` theorem(rewrite)
+A `→` theorem means that we can derive a conclusion from its premise. Immediately from above, here are almost the only allowed rules on `→` propositions:
 - `MP p1 p2`, using the `MP` tactic, is **allowed**, where `p1` and `p2` are both propositions posed in the hypotheses. This is also how we treat "parameters" at the *rhs* of a theorem.
 - `Syll p1 p2 Sy` for deriving a new "composed" proposition `Sy`, by using `Syll` tactic, is **allowed**. This is a tactic similar to `MP` and its exact meaning is given in chapter 2.
 
-## 3. How to use a `↔` proposition(rewrite)
+## 3. How to use a `↔` theorem(rewrite)
 Technically speaking, if we completely follow the deduction rules in PM's logic system, we need to
 1. Apply `Equiv` theorem to destruct `P ↔ Q` into `P → Q ∧ Q → P`
 2. Use `Simp` to extract the direction that you want to use
@@ -34,7 +34,7 @@ Technically speaking, if we completely follow the deduction rules in PM's logic 
 4. Optionally get the result as `R → S` and `S → R`
 5. Apply `Conj`, `Equiv` sequencially to combine them into `R ↔ S`
 
-It's straightforward that this routine is a lot just for a single step of deduction. To simplify the procedure, we're allowed to use `rewrite` directly on theorems made up of `↔`s, providing that we can always expand these `rewrite` into a sequence of `Simp`, `MP`, `Conj` and `Equiv`.
+It's straightforward that this routine is a lot just for a single step of deduction. To simplify the procedure, we're allowed to use `rewrite` directly on theorems with `↔`s, providing that we can always expand these `rewrite`s into a sequence of `Simp`, `MP`, `Conj` and `Equiv`.
 - \[Simplification\]`rewrite -> thm` on `↔` is **allowed**.
 - \[Simplification\]`rewrite <- thm` on `↔` is **allowed**.
 - \[Simplification\]The `at` variant to specify the targeted subterm is **allowed**, as refining the subterm is a finite repetition of `MP`s and `Syll`s. Beside using `at`, we can also provide the full parameter list for `thm` to `rewrite`.
