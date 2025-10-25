@@ -2,13 +2,9 @@
 
 The conventions below starts from chapter 9.
 
-TODO: 
-- move `assert`'s introduction into this chapter
-- rename this chapter to `architecture`
-- cover the file architecture a little bit
+TODO: cover the file architecture a little bit
 
-
-## 1. `assert` for intermediate steps
+## `assert` for intermediate steps
 When proofs are "long enough", the first tactic that one should see is `assert` to specify intermediate steps. This tactic modularizes the proofs so that they usually have the following structure:
 
 ```Coq
@@ -56,16 +52,14 @@ Real variables are variables directly introduced into the propositions. They're 
 
 It sometimes happens though, even if the theorem itself doesn't involve any real variables, its proof needs to introduce some real variables. In that case, we use `set (X := Real "x")` to enable such usage during the proof. Theorem definitions are not supposed to suffix with real variables more than only the variables appeared in the definition.
 
-## Tactics for proving theorems
+## Type of tactics for proving theorems
 
-There are 4 types of tactics we use.
+As introduced above, `assert` and `set`, sets up the general architecture to write the proof.
 
-The first type is `MP` in chapter 1, `Syll` in chapter 2, *occasionally* with other `Ltac`s defined in chapter 3-5, directly inherited from the [old repository](https://github.com/LogicalAtomist/principia). They expose the occurences where we need to perform specific ways to *deduce* the propositions.
+Beneath the archiecture comes to the details on how we perform the proof. By referring to [SEP entry for Principia Mathematica](https://plato.stanford.edu/entries/principia-mathematica/), we can divide our tactics into 2 types.
 
-The second type is `pose proof`. It instantiates a theorem to be use. Sole `pose` should be *strictly forbidden*, as `pose proof` simplifies the proof window with no tradeoffs.
+`pose proof`, occasionally with `apply`, instantiates a theorem to use.
 
-To perform *substitutions* on the propositions, we have another class of tactic to use. Usually this is `rewrite`, but unfortunately sometimes it doesn't work - and only in this case should more complicated tactics be appeared, like `replace`, `change`, `setoid_rewrite`, etc..
+All other tactics are generally for rewriting to, and even a level down, deducing new propositions from existing propositions. This includes: `rewrite`, `setoid_rewrite`, also with custom defined Ltacs like `MP` `Syll` directly inherited from the [old repository](https://github.com/LogicalAtomist/principia).
 
-And last, `assert` is being useful for organizing the proofs, and providing much better readability for all the intermediate steps.
-
-`tactics.md` dives a deeper level down into how these tactics are being used.
+[tactics](./3_tactics.md) goes into the details of these tactics.
