@@ -56,9 +56,9 @@ It sometimes happens though, even if the theorem itself doesn't involve any real
 
 As introduced above, `assert` and `set`, sets up the general architecture to write the proof.
 
-Beneath the archiecture comes to the details on how we perform the proof. By referring to [SEP entry for Principia Mathematica](https://plato.stanford.edu/entries/principia-mathematica/), we can divide our tactics into 2 types.
+Beneath the architecture comes the details of how we prove a theorem. By referring to [SEP entry for Principia Mathematica](https://plato.stanford.edu/entries/principia-mathematica/), we can divide our tactics into 2 types.
 
-`pose proof`, occasionally with `apply`, instantiates a theorem to use.
+`pose proof`, occasionally with `apply`, instantiates a existing theorem to use.
 
 All other tactics are generally for rewriting to, and even a level down, deducing new propositions from existing propositions. This includes: `rewrite`, `setoid_rewrite`, also with custom defined Ltacs like `MP` `Syll` directly inherited from the [old repository](https://github.com/LogicalAtomist/principia).
 
