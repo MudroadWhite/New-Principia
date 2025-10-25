@@ -7,7 +7,7 @@ Require Import PM.pm.ch5.
 
 (* TODO: Find a way to correctly express "argument in P is of the same type of argument in Q" *)
 
-(* 
+(* TYPE RESTRICTIONS
 Type of theorems allowed: first order propositions
 Type of parameters allowed: from elementary propositions to first order propositions
 *)
@@ -344,6 +344,14 @@ Proof.
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
+  set (λ (φ0 : Prop → Prop), eq_to_equiv (¬ ∀ x, φ0 x) (∃ x, ¬ φ0 x)
+    (n9_01 φ0)) as n9_01a.
+  set (λ (φ0 : Prop → Prop) (P0 : Prop), eq_to_equiv 
+    (P0 ∨ ∀ x, φ0 x) (∀ x, P0 ∨ φ0 x) (n9_04 φ0 P0))
+    as n9_04a.
+  set (λ (φ0 : Prop → Prop) (P0 : Prop), 
+    eq_to_equiv ((∃ x, φ0 x) ∨ P0) (∃ x, φ0 x ∨ P0) (n9_05 φ0 P0))
+    as n9_05a.
   set (X := Real "x").
   (* ******** *)
   assert (S1 : φ X ∨ φ X → φ X).
@@ -361,18 +369,13 @@ Proof.
   assert (S4 : ∀ x, (φ x ∨ ∀ y, φ y) → φ x).
   {
     setoid_rewrite -> Impl1_01a in S3.
-    assert (S3_i1 : ∀ x, ¬ (φ x ∨ ∀ y, φ y) ∨ φ x).
-    {
-      (* TODO: reinvestigate this proof to simplify this *)
-      intro x0; pose proof (S3 x0) as S3_1.
-      (* NOTE: similar to the treatment with `n9_13`, we can use `f_equal`
-      to derive a quantified version for all these `=` propositions. Here for 
-      simplicity we omit the technical details *)
-      now rewrite <- (n9_05 ((fun x y => ¬ (φ x ∨ φ y)) x0) (φ x0)),
-              <- (n9_01 (fun x => φ x0 ∨ φ x)),
-              <- (n9_04 φ (φ x0)) in S3_1.
-    }
-    now setoid_rewrite <- Impl1_01a in S3_i1.
+    (* NOTE: similar to the treatment with `n9_13`, we can use `f_equal`
+    to derive a quantified version for all these `=` propositions. Here for 
+    simplicity we omit the technical details *)
+    setoid_rewrite <- n9_05a in S3.
+    setoid_rewrite <- n9_01a in S3.
+    setoid_rewrite <- n9_04a in S3.
+    now setoid_rewrite <- Impl1_01a in S3.
   }
   assert (S5 : (∀ x, (φ x ∨ ∀ y, φ y)) → (∀ x, φ x)).
   { 
@@ -417,9 +420,6 @@ Proof.
   }
   assert (S5 : ((∃ x, φ x) ∨ (∃ y, φ y)) → (∃ x, φ x)).
   {
-    (* TODO: Make a demonstration.
-    - derive the `exists` form from ordinary propositions
-    - maybe use `Syll` for the result *)
     setoid_rewrite <- n4_31 in S4.
     setoid_rewrite <- n9_05a in S4.
     now setoid_rewrite <- n9_06 in S4.
