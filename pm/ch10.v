@@ -1295,7 +1295,7 @@ Proof.
     pose proof (n10_13 (fun y => (∀ x, φ x) → (φ y ∨  ψ y))
       (fun y => (∀ x, ψ x) → (φ y ∨  ψ y)) Y) as n10_13.
     MP n10_13 S2.
-    now n10_13 S4.
+    now MP n10_13 S4.
   }
   assert (S6 : ((∀ x, φ x) ∨  (∀ x, ψ x)) 
     → (φ Y ∨  ψ Y)).
