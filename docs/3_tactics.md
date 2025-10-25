@@ -4,7 +4,7 @@ This chapter describes the tactics we generally use in further detail.
 
 Technically speaking, Principia's logic system is very simple, maybe much more simpler than most of the modern type systems, cf. [SEP entry for Principia Mathematica](https://plato.stanford.edu/entries/principia-mathematica/). All it cares about is 1. deducing a theorem either directly or from Modus Ponens and 2. substitute/*rewrite* subparts of a proposition according to some rules. 
 
-As a consequence, We don't need fancy tactics to formalize the theorems. We want the tactics to 1. follow the proof; 2. if the proof contains a tedious routine, simplify the proof without breaking the proof down. Since the following sections are roughly organized in "constructors" for each kind of propositions, within which we further add extra ways to simplify the proofs, it seems to be necessary to state beforehead, what do we concern for simplifications.
+As a consequence, We don't need fancy tactics to formalize the theorems. We want the tactics to 1. follow the proof; 2. if the proof contains a tedious routine, simplify the proof without breaking the proof down. Since the following sections are roughly organized by "constructors" for each kind of propositions, within which we further add extra ways to simplify the proofs, it seems to be necessary to state beforehead, what do we concern for simplifications.
 
 ## 0. Rules to simplify routines
 We can use a new tactic to simplify a tedious part of proof down, if
