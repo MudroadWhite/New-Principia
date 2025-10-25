@@ -2,9 +2,9 @@
 Continuation of [Principia Mathematica's formalization](https://github.com/LogicalAtomist/principia) by Landon Elkind.
 
 This project is currently focused on the following parts:
-- [x] Chapter 9 - Theorems now extend beyond propositions with "real variables". Now they involve functions and quantified propositions(with single "apparent variable"). Basic support for a predicate "IsSameType".
+- [x] Chapter 9 - Theorems now extend beyond propositions with "real variables", involving functions and quantified propositions(with single "apparent variable"). Basic support for a predicate called "IsSameType".
 - [x] Chapter 10 - Added a special notation for `->` and `<->` with single apparent variable. One theorem seems to be unprovable
-- [ ] Chapter 11 - Notations for quantified propositions are extended to multiple apparent variables
+- [ ] Chapter 11 - Notations for quantified propositions now extend to multiple apparent variables
 
 ## Why working on it
 - Principia Mathematica has a stable version
@@ -25,6 +25,16 @@ No. Here are the reasons:
 - The design of `Ltac` isn't good(to be more exact, `match` doesn't work as one might think), so that even successful `Qed`s are nevertheless false positives. Actually, I have caught several bugs in the repo from this issue.
 - The rigor of the proofs relies heavily on how refined your proofs are and how you interpret the original text.
 - I didn't examine the code in chapter 1 - 5.
+
+## How much can you formalize?
+Below are some technical aspects that arise from this project.
+- Distinguish between `forall x y, P x y` and `forall x, forall y, P x y` is currently **impossible**.
+- Limiting parameter's "type"(orders)s for a function is currently **partially supported**, by only writing them as a header in each of the chapters.
+- Checking their types is currently **impossible**.
+- Constructing "types" for every propositions in Principia is **on plan**.
+- Expressing "types(orders) for a function's parameters" is **on plan**.
+- Completely translate primitive propositions written in natural language, into formalized Rocq proof, is **on plan**.
+- More to come...
 
 ## Running the code
 Coq version: 8.20.0, installed with the `opam` environment:

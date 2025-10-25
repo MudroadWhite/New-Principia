@@ -8,4 +8,5 @@ I started this project by
 - [x] Simplifying, bug-picking chapter 1 - 5, cutting down ~ 1k LoC in total
 - And here beneath, the main works:
 - [x] Chapter 9
-- [ ] Chapter 10
+- [x] Chapter 10
+- [ ] Chapter 11

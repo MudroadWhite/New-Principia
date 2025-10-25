@@ -2,6 +2,11 @@
 
 The conventions below starts from chapter 9.
 
+TODO: 
+- move `assert`'s introduction into this chapter
+- rename this chapter to `architecture`
+- cover the file architecture a little bit
+
 ## Definitions and Theorems
 `Definition`s and `Theorem`s are being used, not because of their *literal meaning*, but because of their ability to nicely organize the data, just like a "class" or a "structure" in typical programming languages.
 
@@ -10,6 +15,8 @@ Rocq's `Definition`s are used to define primitive propositions and "definitions"
 Similarly, `Theorem`s are used to define theorems in Principia, and are intended to be proven and `Qed`ed.
 
 ## Naming convention: functions, apparent variables and real variables
+
+TODO: state clearly what are parameters at lhs; for substitution vs for inference/deduction
 
 Functions as parameters are supposed to be named as the same style of original text: either greek letters like `φ` or their upper-cased English equivalent like `Phi`.
 
@@ -31,4 +38,4 @@ To perform *substitutions* on the propositions, we have another class of tactic 
 
 And last, `assert` is being useful for organizing the proofs, and providing much better readability for all the intermediate steps.
 
-`tactics.md` and `functions.md` will dive a deeper level down into how these tactics are being used.
+`tactics.md` dives a deeper level down into how these tactics are being used.
