@@ -202,7 +202,8 @@ Proof.
   set (Z := Real "z").
   (* ******** *)
   (** S1 **)
-  pose proof (Id2_08 (φ Z → ψ Z)) as S1.
+  assert (S1 : (φ Z → ψ Z) → φ Z → ψ Z).
+  { apply Id2_08. }
   (** S2 **)
   assert (S2 : ∃ y, (φ Z → ψ Z) → φ y → ψ Z).
   { 
@@ -270,7 +271,8 @@ Proof.
       (n9_07 φ0 ψ0)) as n9_07a.
   set (Y := Real "Y").
   (* ******** *)
-  pose proof (Id2_08 (φ Y → ψ Y)) as S1.
+  assert (S1 : (φ Y → ψ Y) → φ Y → ψ Y).
+  { apply Id2_08. }
   assert (S2 : ∃ z, (φ Y → ψ Y) → (φ Y → ψ z)).
   { 
     pose proof (n9_1 (fun z => (φ Y → ψ Y) → (φ Y → ψ z)) Y) as n9_1.
@@ -353,7 +355,8 @@ Proof.
     as Impl1_01a.
   set (X := Real "x").
   (* ******** *)
-  pose proof (Taut1_2 (φ X)) as S1.
+  assert (S1 : φ X ∨ φ X → φ X).
+  { apply Taut1_2. }
   assert (S2 : ∃ y, (φ X ∨ φ y) → φ X).
   { 
     pose proof (n9_1 (fun y => (φ X ∨ φ y) → φ X) X) as n9_1.
@@ -370,6 +373,7 @@ Proof.
     setoid_rewrite -> Impl1_01a in S3.
     assert (S3_i1 : ∀ x, ¬ (φ x ∨ ∀ y, φ y) ∨ φ x).
     {
+      (* TODO: reinvestigate this proof to simplify this *)
       intro x0; pose proof (S3 x0) as S3_1.
       (* NOTE: similar to the treatment with `n9_13`, we can use `f_equal`
       to derive a quantified version for all these `=` propositions. Here for 
@@ -449,7 +453,8 @@ Proof.
       as n9_03a.
   set (X := Real "x").
   (* ******** *)
-  pose proof (Add1_3 (φ X) Q) as S1.
+  assert (S1 : Q → φ X ∨ Q).
+  { apply Add1_3. }
   assert (S2 : ∀ x, Q → (φ x) ∨ Q).
   {
     pose proof (n9_13 (fun x => Q → (φ x) ∨ Q) X) as n9_13.
@@ -483,7 +488,8 @@ Proof.
     as n9_03a.
   set (X := Real "x").
   (* ******** *)
-  pose proof (Add1_3 (φ X) Q) as S1.
+  assert (S1 : Q → φ X ∨ Q).
+  { apply Add1_3. }
   assert (S2 : ∃ x, Q → (φ x) ∨ Q).
   {
     pose proof (n9_1 (fun x => Q → (φ x) ∨ Q) X) as n9_1.
@@ -507,7 +513,8 @@ Proof.
   (* TOOLS *)
   set (X := Real "x").
   (* ******** *)
-  pose proof (Add1_3 P (φ X)) as S1.
+  assert (S1 : φ X → P ∨ φ X).
+  { apply Add1_3. }
   assert (S2 : ∀ x, φ x → P ∨ φ x).
   { 
     pose proof (n9_13 (fun x => φ x → P ∨ φ x) X).
@@ -530,7 +537,8 @@ Proof.
   (* TOOLS *)
   set (X := Real "x").
   (* ******** *)
-  pose proof (Add1_3 P (φ X)) as S1.
+  assert (S1 : φ X → P ∨ φ X).
+  { apply Add1_3. }
   assert (S2 : ∀ x, φ x → P ∨ φ x).
   { 
     pose proof (n9_13 (fun x => φ x → P ∨ φ x) X).
@@ -555,7 +563,8 @@ Proof.
   (* TOOLS *)
   set (X := Real "x").
   (* ******** *)
-  pose proof (Perm1_4 P (φ X)) as S1.
+  assert (S1 : P ∨ φ X → φ X ∨ P).
+  { apply Perm1_4. }
   assert (S2 : (∀ x, (P ∨ φ x)) → ∀ x, (φ x ∨ P)).
   { 
     pose proof (n9_13 (fun x => P ∨ φ x → φ x ∨ P) X) as n9_13.
@@ -575,7 +584,8 @@ Proof.
   (* TOOLS *)
   set (X := Real "x").
   (* ******** *)
-  pose proof (Perm1_4 (φ X) P) as S1.
+  assert (S1 : P ∨ φ X → φ X ∨ P).
+  { apply Perm1_4. }
   assert (S2 : (∀ x, φ x ∨ P) → ∀ x, P ∨ φ x).
   {
     pose proof (n9_13 (fun x => (φ x ∨ P) → (P ∨ φ x)) X) as n9_13.
@@ -593,7 +603,8 @@ Proof.
   (* TOOLS *)
   set (X := Real "x").
   (* ******** *)
-  pose proof (Perm1_4 P (φ X)) as S1.
+  assert (S1 : P ∨ φ X → φ X ∨ P).
+  { apply Perm1_4. }
   assert (S2 : (∃ x, (P ∨ φ x)) → ∃ x, (φ x ∨ P)).
   {
     pose proof (n9_13 (fun x => P ∨ φ x → φ x ∨ P) X) as n9_13.
@@ -611,7 +622,8 @@ Proof.
   (* TOOLS *)
   set (X := Real "x").
   (* ******** *)
-  pose proof (Perm1_4 (φ X) P) as S1.
+  assert (S1 : φ X ∨ P → P ∨ φ X).
+  { apply Perm1_4. }
   assert (S2 : (∃ x, φ x ∨ P) → ∃ x, P ∨ φ x).
   {
     pose proof (n9_13 (fun x => (φ x ∨ P) → (P ∨ φ x)) X) as n9_13.
@@ -628,7 +640,7 @@ Theorem n9_4 (φ : Prop → Prop) (P Q : Prop) :
   P ∨ Q ∨ (∀ x, φ x) → Q ∨ P ∨ (∀ x, φ x).
 Proof. 
   (* TOOLS *)
-  assert (Assoc_Equiv : ∀ P Q R : Prop, (P ∨ Q) ∨ R ↔ P ∨ Q ∨ R).
+  assert (Assoc_Equiv : ∀ P Q R, (P ∨ Q) ∨ R ↔ P ∨ Q ∨ R).
   {
     intros P1 Q1 R1.
     pose proof (n2_32 P1 Q1 R1) as n2_32.
@@ -807,8 +819,7 @@ Proof.
   assert (S2 : (P → Q) → ∃ x, (P ∨ φ x) → (Q ∨ φ Y)).
   {
     pose proof (n9_1 (fun x => P ∨ φ x → Q ∨ φ Y) Y) as n9_1.
-    Syll S1 n9_1 S1_1.
-    exact S1_1.
+    now Syll S1 n9_1 S2.
   }
   assert (S3 : (P → Q) → ∀ y, ∃ x, (P ∨ φ x) → (Q ∨ φ y)).
   { 
@@ -845,8 +856,7 @@ Proof.
   assert (S2 : (P → Q) → ∃ y, (P ∨ φ Y) → (Q ∨ φ y)).
   {
     pose proof (n9_1 (fun y => P ∨ φ Y → Q ∨ φ y) Y) as n9_1.
-    Syll S1 n9_1 S1_1.
-    exact S1_1.
+    now Syll S1 n9_1 S2.
   }
   assert (S3 : (P → Q) → ∀ x, ∃ y, (P ∨ φ x) → (Q ∨ φ y)).
   { 
