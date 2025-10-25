@@ -13,32 +13,7 @@ We can simplify a tedious rountine down, if
 - We clearly identified the types of parameters, for theorems in original routine. Parameters' types matters
 - The tactic doesn't necessarily use theorems or parameters in its original routine - it just gets the work done
 
-## 1. `assert` for intermediate steps
-When proofs are "long enough", the first tactic that one should see is `assert` to specify intermediate steps. This tactic modularizes the proofs so that they usually have the following structure:
-
-```Coq
-Proof.
-  assert (S1 : x + y = z).
-  {
-    (* subproof for S1, where "S" here stands for step *)
-  }
-  assert (S2 : x + y = z → x + y = z).
-  {
-    (* subproof for S2 *)
-  }
-  (* and so on... *)
-  exact Sn.
-Qed.
-```
-
-There are several reasons for organizing proofs like this. The most significant one is readability. Besides, we can have several equivalant forms for a proposition, i.e. `(fun x => x) x` is not very far from just `x` or `(fun y => y) x`. Switching between them requires delicate application with tactics for all different cases. If we set the desired form as a subgoal, we only need to use tactics to prove for a equivalent form to `x`, and skip the tedious transformations. One last thing for `assert` is that it limits the scope of theorems we use. When we leave the scope, these theorems are automatically cleared away, and only the intermediate steps as `S1` `S2` are being pertained. As a result, the proof window becomes extremely clean.
-
-- If the original proof has been broken down into several steps, it's Rocq formalization is **required** to apply the `assert` template above.
-- As it pertains a nice style, `exact` at the end of the proof is **not allowed** to be deleted or simplified.
-
-By using `assert`, the propositions being asserted is introduced into the hypotheses.
-
-## 2. How to use(deduce on) a theorem
+## 1. How to use(deduce on) a theorem
 `pose proof (thm x y z) as thm` should be almost the only way to *introduce* a theorem into the hypotheses. Starting from chapter 9, propositions are further come with a special kind of "type", basically the order of the proposition, and at base case we're only allowed to use elementary propositions as parameters, for elementary functions. That being said,
 - `pose proof` on a theorem is **allowed**.
 - `pose` on a theorem is strictly **not allowed**.
@@ -47,12 +22,12 @@ By using `assert`, the propositions being asserted is introduced into the hypoth
 - All parameters for the theorem are **optional** to limited their "type" to elementary propositions, as the default in chapter 9. Every chapter after chapter 9 enables a new class of proposition to be passed in as parameters. Fundamentally however, whether they starts with a `∀` matters. Restriction on parameters is something our current formalization failed to model on.
 - \[Simplification\]If a goal can be solved immediately, it is **allowed** to use `apply` to solve the goal immediately.
 
-## 3. How to use a `→` proposition(rewrite)
+## 2. How to use a `→` proposition(rewrite)
 A `→` proposition means that we can derive a conclusion from its premise. Immediately from above, below are almost the only allowed rules on `→` propositions:
 - `MP p1 p2`, using the `MP` tactic, is **allowed**, where `p1` and `p2` are both propositions posed in the hypotheses. This is also how we treat "parameters" at the *rhs* of a theorem.
 - `Syll p1 p2 Sy` for deriving a new "composed" proposition `Sy`, by using `Syll` tactic, is **allowed**. This is a tactic similar to `MP` and its exact meaning is given in chapter 2.
 
-## 4. How to use a `↔` proposition(rewrite)
+## 3. How to use a `↔` proposition(rewrite)
 Technically speaking, if we completely follow the deduction rules in PM's logic system, we need to
 1. Apply `Equiv` theorem to destruct `P ↔ Q` into `P → Q ∧ Q → P`
 2. Use `Simp` to extract the direction that you want to use
@@ -73,7 +48,7 @@ Apart from the construction routine on `↔`, we also have destruction routine o
 
 Explicit examples, sometimes with comments, on reducing these routines with Rocq native tactics, are provided through chapter 9 & 10.
 
-## 5. How to use a `=` proposition(rewrite)
+## 4. How to use a `=` proposition(rewrite)
 Aka. the root of all evils. A clear way how `=` proposition interacts with other types of proposition is not clearly defined. On elementary propositions, Rocq's default preference `rewrite` works perfectly.
 - `rewrite ->` on `=` is **allowed**.
 - `rewrite <-` on `=` is **allowed**.
@@ -90,7 +65,7 @@ But when things become complicated, more problems will come to surface. a `∀ x
 
 WARNING: thanks to the `rewrite` tactic in Rocq, `↔` is usually more useful than `→` theorems - a `rewrite` on `↔` is way simpler than `MP` or `Syll` on `→`. We might *slightly overuse* the `↔` theorems. There exists cases original proof `MP`s on its single-direction version, but for simplicity we still apply the `↔` version with a `rewrite` or `setoid_rewrite` on a proposition.
 
-### 5.1. What routine does `setoid_rewrite` actually simplify?
+### 4.1. What routine does `setoid_rewrite` actually simplify?
 It should be very worthwhile to discuss how we deal with rewriting for quantified ("∀ x") propositions, which also brings up the discussion on the viability for `setoid_rewrite` to simulate original proof. As we see, `setoid_rewrite` is only used in 2 situations: either the proposition is a `=`, or the proposition is a `↔`.
 
 We first discuss the case for `↔`. As an opening, here is a question: how does a `∀` proposition appear? The basic idea for Principia is quite different from modern approach which uses a `∀` constructor. *Primitive propositions* in each chapter allow that
@@ -107,17 +82,14 @@ As we can see, even without `setoid_rewrite`, "rewriting on quantified propositi
 
 For `=` case: how does `=` interact with others is mostly undefined. There doesn't exist a single *primitive proposition* in Principia explaining what does it do. We might either treat it as a `=` in Coq's type system. That means we're allowed to use whatever tactics just to perform the right substitution on a proposition. Or, as a common way, we can use `eq_to_equiv` or `apply propositional_extentionality` to change the `=` proposition into a `↔` one, but they are not a necessity. An exceptional case is when we want to lift a `P = Q` relation to `∀ x, P x = ∀ x, Q x`: we might use `f_equal` on generalization primitive propositions.
 
-## 6. "Tools"
-TODO: introduce the `TOOLS` section for real variables and `eq_to_equiv`
-
-## 7. Rules for technical hacks 
+## 5. Rules for technical hacks 
 Either for "historical reasons"(this project really doesn't have a history), or when we want to work thourgh a proof quickly, and we didn't figure out the correct way to write the proof, "technical hacks" arises for proof completions. The most common ones are listed below. Unless it gets a severe technical barrier, they are **recommended** to be taken down.
-- \[Simplification\]`replace...with` is a valid and flexible substitution for rewriting, but it's too heavy. We should delete occurences of `replace...with` as much as possible.
-- \[Simplification\]`apply propositional_extentionality` might occur inside `replace...with` blocks. Its purpose is to change the goal of `=` form into a goal of `↔` form for easier reasoning. It might work against original text and is not recommended.
-- \[Simplification\]`intro` introduces the premise as a hypothesis. `intro Hp`, as utilized in chapter 5 & 10, has proven its harmlessness. Other from this usage directly sourced back to the text, it's not recommended to used. Their occurences are supposed to be eliminated.
-- \[Simplification\]`now tactic thm ...` says that, if the `tactic` we use can directly provide a result that is not very far from the goal, then we prove the goal immediately. Typically it's very useful for saving a line of `exact thm`. Every line of `now tactic thm` can be turned back into `tactic thm` for readers to check if it does indeed generate a proposition that is exactly the same as the goal.
+- \[Simplification\]`replace...with` is a valid and flexible substitution for rewriting, but it's too heavy. This tactic is currently **not recommended**.
+- \[Simplification\]`apply propositional_extentionality` might occur inside `replace...with` blocks. Its purpose is to change the goal of `=` form into a goal of `↔` form for easier reasoning. It might work against original text and is **not recommended**.
+- \[Simplification\]`intro` introduces the premise as a hypothesis. `intro Hp`, as utilized in chapter 5 & 10, has proven its harmlessness. Other from this usage directly sourced back to the text, it's not recommended to used. Their occurences are **recommended** to be eliminated.
+- \[Simplification\]`now tactic thm ...` says that, if the `tactic` we use can directly provide a result that is not very far from the goal, then we prove the goal immediately. Typically it's very useful for saving a line of `exact thm`. Every line of `now tactic thm` can be turned back into `tactic thm` for readers to check if it does indeed generate a proposition that is exactly the same as the goal, and this tactic is **recommended** to use.
 
-## 8. Bugged Ltacs
+## 6. Bugged Ltacs
 Throughout chapter 1 - 5, there are several custom tactics defined to use the primitive ideas conveniently. However, their current design is bugged: when we're trying to use them, they might not find the exact propositions that we are referring to. If things has went very bad, here is the full routine just for applying such a tactic:
 1. `assert` a subgoal for the desired proposition
 2. `clear` every unrelated hypotheses
@@ -126,9 +98,8 @@ Throughout chapter 1 - 5, there are several custom tactics defined to use the pr
 Since we don't always need to go through the full routine, we're only requiring that
 - Tactics above are **allowed** to use, when they are the necessary preparations to perform a custom Ltac.
 
-## 9. Debugging the proof
-It happens that users might want to check the proofs in more detail. How to debug the proof is completely personal for completely personal purposes, but there are some tactics I commonly use:
+## 7. Debugging the proof
+It happens that users might want to check the proofs in more detail. How to debug the proof is completely personal for completely personal purposes, but there are some tactics I commonly use, just in case:
 - `simpl` to simplify a hypothesis
 - `Close Scope`/`Open Scope` to enable specific notations
 - `pose proof` another theorem to see how it looks like originally
-
