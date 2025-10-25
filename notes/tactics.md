@@ -68,6 +68,8 @@ It's straightforward that this routine is a lot just for a single step of deduct
 
 Apart from the construction routine on `<->`, we also have destruction routine on `<->`. `Equiv` theorem in this sense, changes `P <-> Q` back to `P -> Q /\ Q -> P`. For this proposition, we can use `Simp` to choose the direction we want to use. But a more convinient way is seamlessly use the Rocq's `destruct` tactic.
 - \[Simplification\]`destruct` on `<->` is **allowed**.
+- \[Simplification\]If the routine is *destruct* a `<->` proposition to produce a branch to `MP` or `Syll` on, this `destruct` is **required** to be further simplified into a `rewrite` on `<->`.
+- Otherwise, every `destruct`s are **required** to be immediately followed by a `clear` to select its branch.
 
 Explicit examples, sometimes with comments, on reducing these routines with Rocq native tactics, are provided through chapter 9 & 10.
 
