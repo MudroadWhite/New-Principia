@@ -73,7 +73,7 @@ Apart from the construction routine on `<->`, we also have destruction routine o
 
 Explicit examples, sometimes with comments, on reducing these routines with Rocq native tactics, are provided through chapter 9 & 10.
 
-## How to use a `=` proposition(rewrite)
+## 5. How to use a `=` proposition(rewrite)
 Aka. the root of all evils. A clear way how `=` proposition interacts with other types of proposition is not clearly defined. On elementary propositions, Rocq's default preference `rewrite` works perfectly.
 - `rewrite ->` on `=` is **allowed**.
 - `rewrite <-` on `=` is **allowed**.
@@ -89,7 +89,7 @@ But when things become complicated, more problems will come to surface. a `foral
 
 WARNING: thanks to the `rewrite` tactic in Rocq, `<->` is usually more useful than `->` theorems - a `rewrite` on `<->` is way simpler than `MP` or `Syll` on `->`. We might *slightly overuse* the `<->` theorems. There exists cases original proof `MP`s on its single-direction version, but for simplicity we still apply the `<->` version with a `rewrite` or `setoid_rewrite` on a proposition.
 
-### What routine does `setoid_rewrite` actually simplify?
+### 5.1. What routine does `setoid_rewrite` actually simplify?
 It should be very worthwhile to discuss how we deal with rewriting for quantified ("forall x") propositions, which also brings up the discussion on the viability for `setoid_rewrite` to simulate original proof. As we see, `setoid_rewrite` is only used in 2 situations: either the proposition is a `=`, or the proposition is a `<->`.
 
 We first discuss the case for `<->`. As an opening, here is a question: how does a `forall` proposition appear? The basic idea for Principia is quite different from modern approach which uses a `forall` constructor. *Primitive propositions* in each chapter allow that
@@ -106,14 +106,17 @@ As we can see, even without `setoid_rewrite`, "rewriting on quantified propositi
 
 For `=` case: how does `=` interact with others is mostly undefined. There doesn't exist a single *primitive proposition* in Principia explaining what does it do. We might either treat it as a `=` in Coq's type system. That means we're allowed to use whatever tactics just to perform the right substitution on a proposition. Or, as a common way, we can use `eq_to_equiv` or `apply propositional_extentionality` to change the `=` proposition into a `<->` one. But since these substitution doesn't involve any of the primitive propositions in Principia, using them to guide our rewriting is still not really a necessity.
 
-## Rules for technical hacks 
+## 6. "Tools"
+TODO: introduce the `TOOLS` section for real variables and `eq_to_equiv`
+
+## 7. Rules for technical hacks 
 Either for "historical reasons"(this project really doesn't have a history), or when we want to work thourgh a proof quickly, and we didn't figure out the correct way to write the proof, "technical hacks" arises for proof completions. The most common ones are listed below. Unless it gets a severe technical barrier, they are **recommended** to be taken down.
 - \[Simplification\]`replace...with` is a valid and flexible substitution for rewriting, but it's too heavy. We should delete occurences of `replace...with` as much as possible.
 - \[Simplification\]`apply propositional_extentionality` might occur inside `replace...with` blocks. Its purpose is to change the goal of `=` form into a goal of `<->` form for easier reasoning. It might work against original text and is not recommended.
 - \[Simplification\]`intro` introduces the premise as a hypothesis. `intro Hp`, as utilized in chapter 5 & 10, has proven its harmlessness. Other from this usage directly sourced back to the text, it's not recommended to used. Their occurences are supposed to be eliminated.
 - \[Simplification\]`now tactic thm ...` says that, if the `tactic` we use can directly provide a result that is not very far from the goal, then we prove the goal immediately. Typically it's very useful for saving a line of `exact thm`. Every line of `now tactic thm` can be turned back into `tactic thm` for readers to check if it does indeed generate a proposition that is exactly the same as the goal.
 
-## Bugged Ltacs
+## 8. Bugged Ltacs
 Throughout chapter 1 - 5, there are several custom tactics defined to use the primitive ideas conveniently. However, their current design is bugged: when we're trying to use them, they might not find the exact propositions that we are referring to. If things has went very bad, here is the full routine just for applying such a tactic:
 1. `assert` a subgoal for the desired proposition
 2. `clear` every unrelated hypotheses
@@ -122,9 +125,9 @@ Throughout chapter 1 - 5, there are several custom tactics defined to use the pr
 Since we don't always need to go through the full routine, we're only requiring that
 - Tactics above are **allowed** to use, when they are the necessary preparations to perform a custom Ltac.
 
-## Debugging the proof
+## 9. Debugging the proof
 It happens that users might want to check the proofs in more detail. How to debug the proof is completely personal for completely personal purposes, but there are some tactics I commonly use:
 - `simpl` to simplify a hypothesis
 - `Close Scope`/`Open Scope` to enable specific notations
-- `pose proof` another theorem to see how it looks like
+- `pose proof` another theorem to see how it looks like originally
 
