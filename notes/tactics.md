@@ -38,7 +38,7 @@ By using `assert`, the propositions being asserted is introduced into the hypoth
 - All parameters for the theorem at the *lhs* of its definition, are **required**.
 - All parameters for the theorem are **required** to limit to the *lhs* of theorem's definition.
 - All parameters for the theorem are **optional** to limited their "type" to elementary propositions, as the default in chapter 9. Every chapter after chapter 9 enables a new class of proposition to be passed in as parameters. Fundamentally however, whether they starts with a `forall` matters. Restriction on parameters is something our current formalization failed to model on.
-- If a goal can be solved immediately, it is **recommended** to just `apply` the theorem to end it.
+- If a goal can be solved immediately, it is **required** to use `exact` providing with all parameters.
 
 ## 3. How to use a `->` proposition(rewrite)
 A `->` proposition means that we can derive a conclusion from its premise. Immediately from above, below are almost the only allowed rules on `->` propositions:
