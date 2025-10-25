@@ -689,14 +689,51 @@ Theorem n11_4 (Phi Psi Chi Theta : Prop → Prop → Prop) :
   ((∀ x y, Phi x y ↔ Psi x y) ∧ (∀ x y, Chi x y ↔ Theta x y))
   → (∀ x y, (Phi x y ∧ Chi x y) ↔ (Psi x y ∧ Theta x y)).
 Proof.
+  (* TOOLS *)
+  set (X := Real "x").
+  set (Y := Real "y").
+  (* ******** *)
+  assert (S1 : ((∀ x y, Phi x y ↔ Psi x y) ∧ (∀ x y, Chi x y ↔ Theta x y))
+    -> (forall x y, (Phi x y <-> Psi x y) /\ (Chi x y <-> Theta x y))).
+  { apply n11_31. }
+  assert (S2 : ((∀ x y, Phi x y ↔ Psi x y) ∧ (∀ x y, Chi x y ↔ Theta x y))
+    -> (∀ x y, (Phi x y ∧ Chi x y) ↔ (Psi x y ∧ Theta x y))).
+  {
+    pose proof (n4_38 (Phi X Y) (Chi X Y) (Psi X Y) (Theta X Y)) as n4_38.
+    pose proof (n11_11 X Y (fun x y => 
+      (Phi x y ↔ Psi x y) ∧ (Chi x y ↔ Theta x y)
+        → Phi x y ∧ Chi x y ↔ Psi x y ∧ Theta x y)) as n11_11.
+    MP n11_11 n4_38.
+    pose proof (n11_32 (fun x y => (Phi x y ↔ Psi x y) ∧ (Chi x y ↔ Theta x y))
+      (fun x y => Phi x y ∧ Chi x y ↔ Psi x y ∧ Theta x y)) as n11_32.
+    MP n11_32 n11_11.
+    now Syll S1 n11_32 S2.
+  }
+  exact S2.
+Qed.
 
-Admitted.
-
+(* Here the `Id` doesn't seem to mean `Id2_08`. *)
 Theorem n11_401 (Phi Psi Chi : Prop → Prop → Prop) :
   (∀ x y, Phi x y ↔ Psi x y) 
   → (∀ x y, (Phi x y ∧ Chi x y) ↔ (Psi x y ∧ Chi x y)).
 Proof.
-Admitted.
+  set (X := Real "x").
+  set (Y := Real "y").
+  pose proof (n4_2 (Chi X Y)) as n4_2.
+  pose proof (n4_73 (Phi X Y <-> Psi X Y) 
+    (Chi X Y <-> Chi X Y)) as n4_73.
+  MP n4_73 n4_2.
+  pose proof (n11_11 X Y (fun x y => (Phi x y ↔ Psi x y) 
+    ↔ (Phi x y ↔ Psi x y) ∧ (Chi x y ↔ Chi x y)))as n11_11.
+  MP n11_11 n4_73.
+  pose proof (n11_33 (fun x y => Phi x y ↔ Psi x y)
+    (fun x y => (Phi x y ↔ Psi x y) ∧ (Chi x y ↔ Chi x y))) 
+    as n11_33.
+  MP n11_33 n11_11.
+  rewrite <- n11_31 in n11_33.
+  pose proof (n11_4 Phi Psi Chi Chi) as n11_4.
+  now rewrite <- n11_33 in n11_4.
+Qed.
 
 Theorem n11_41 (Phi Psi : Prop → Prop → Prop) :
   ((∃ x y, Phi x y) ∨ (∃ x y, Psi x y))
