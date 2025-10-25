@@ -39,13 +39,13 @@ There are several reasons for organizing proofs like this. The most significant 
 By using `assert`, the propositions being asserted is introduced into the hypotheses.
 
 ## 2. How to use(deduce on) a theorem
-`pose proof (thm x y z) as thm` should be almost the only way to *introduce* a theorem into the hypotheses. In Principia starting from chapter 9, propositions are further come with a special kind of "type", basically the order of the proposition, and at base case we're only allowed to use elementary propositions as parameters, for elementary functions. That being said,
+`pose proof (thm x y z) as thm` should be almost the only way to *introduce* a theorem into the hypotheses. Starting from chapter 9, propositions are further come with a special kind of "type", basically the order of the proposition, and at base case we're only allowed to use elementary propositions as parameters, for elementary functions. That being said,
 - `pose proof` on a theorem is **allowed**.
 - `pose` on a theorem is strictly **not allowed**.
 - All parameters for the theorem at the *lhs* of its definition, are **required**.
 - All parameters for the theorem are **required** to limit to the *lhs* of theorem's definition.
 - All parameters for the theorem are **optional** to limited their "type" to elementary propositions, as the default in chapter 9. Every chapter after chapter 9 enables a new class of proposition to be passed in as parameters. Fundamentally however, whether they starts with a `forall` matters. Restriction on parameters is something our current formalization failed to model on.
-- \[Simplification\]If a goal can be solved immediately, it is **required** to use `exact` providing with all parameters.
+- \[Simplification\]If a goal can be solved immediately, it is **allowed** to use `apply` to solve the goal immediately.
 
 ## 3. How to use a `->` proposition(rewrite)
 A `->` proposition means that we can derive a conclusion from its premise. Immediately from above, below are almost the only allowed rules on `->` propositions:
