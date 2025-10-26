@@ -25,13 +25,13 @@ All conventions of sections below starts from chapter 9.
 ## 4. What is `Definition` and `Theorem`?
 As *vernacs* in the Rocq proof system, `Definition`s and `Theorem`s are being used, not because of their *literal meaning*, but because of their ability to nicely organize the data, just like a "class" or a "structure" in typical programming languages.
 
-Rocq's `Definition`s are used to define *primitive propositions* and *definitions* in Principia. As the mechanic of `Definition` is interfering with the foundation of Principia, Principia's `Definition`s are immediately `Admitted` without providing any further proofs. Whether we should provide with proofs should be considered in the future.
+Rocq's `Definition`s are used to define *primitive propositions* and *definitions* in Principia. As the mechanic of `Definition` is interfering with the foundation of Principia, Principia's `Definition`s are immediately `Admitted` without providing any further proofs. Whether we should provide with proofs is a future question.
 
 Similarly, `Theorem`s are used to define *theorems* in Principia, and are intended to be proven and `Qed`ed.
 
-Every `Definition` or `Theorem`, represents a proposition in Principia. They usually have both parameters on the left hand side of the `:`, plus a proposition that "has" parameters on the right hand side. But these parameters are different: *rhs* parameters are intended to be only filled through deductions, which will be mostly discussed in the [tactics](./3_tactics.md) chapter; and *lhs* parameters are the real ones to *set a proposition up*.
+Every `Definition` or `Theorem` represents a proposition in Principia. They usually have both parameters on the left hand side of the `:`, plus a proposition that "has" parameters on the right hand side. But these parameters are different: *rhs* parameters are intended to be only filled through deductions, which will be mostly discussed in the [tactics](./3_tactics.md) chapter; and *lhs* parameters are the real ones to *set a proposition up*.
 
-Say, if I have a parameter `P`, this parameter is supposed to be *instantiated* by a proposition. Principia's propositions come along with *types*, which is sadly much more refined than the `Prop` in `P : Prop`, and this is why these propositions' types require manual checking. We might only allow `P` to be instantiated by an elementary proposition; a first-order proposition, 2nd-order prop, etc.. If this project has been more mature, we might change `P : Prop` into something like `P : Elementary_Proposition` for a clearer distinction.
+Say, if I have a parameter `P`, this parameter is supposed to be *instantiated* by a proposition. Principia's propositions come along with *types*, which is sadly much more refined than the `Prop` in `P : Prop`, and this is why these propositions' types require manual checking. We might only allow `P` to be instantiated by an elementary proposition; a first-order proposition, 2nd-order prop, etc.. If this project has become more mature, we might change `P : Prop` into something like `P : Elementary_Proposition` for a clearer distinction.
 
 We have naming conventions for propositions. A proposition usually is named with `nxx_yyy`, with `xx_yyy` the number appeared in Principia for that proposition. A few of them are additionally come with their names in the text, and in that case we will adapt the `n` prefix to the name. For example, `Id2_08`. 
 
@@ -41,11 +41,11 @@ Now we come to naming conventions for (lhs) parameters.
 - Real variables are variables that can directly instantiate the proposition. They're usually upper case literals like `X`.
 
 ## 5. What's under a single proof?
-If its correspondence in original text has separated the proof into several steps, rather than providing the related theorems for reference, we call this proposition is a "long proof". 
+If its correspondence in original text has splited the proof into several steps, rather than just providing related theorems for hints, we call one proposition is coming with a "long proof". 
 
 - Our architecture is **not required** to be enforce on short proofs.
 
-For a long proof, it usually has the following structure:
+Otherwise for a long proof, it usually has the following structure:
 ```Coq
 Proof.
   (* TOOLS *)
@@ -65,13 +65,13 @@ Qed.
 
 ```
 
-## 5.1 `TOOLS` section
+### 5.1 `TOOLS` section
 - If any tool is being used, a `TOOLS` section is **required** to be place at the beginning of a long proof.
 
 Technical features, that can be be found under `lib.v`, usually require a warmup before being available, for example, introducing an extra real variable with the proof(with `set (X := Real "x")`), or prepare a modified version of a theorem for more convenient use. `TOOLS` section is for performing such preparations.
 
-## 5.2 `assert` the steps
-- Every long proof is **required** to adapt to the proof architecture shown above.
+### 5.2 `assert` blocks
+- All long proofs are **required** to adapt to the proof architecture picted above.
 
 For long proofs, the first tactic we use always starts with an `assert`, for specifying intermediate steps corresponded to ones in the original text. 
 
