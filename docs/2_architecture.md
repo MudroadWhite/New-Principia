@@ -36,17 +36,16 @@ Say, if I have a parameter `P`, this parameter is supposed to be *instantiated* 
 We have naming conventions for propositions. A proposition usually is named with `nxx_yyy`, with `xx_yyy` the number appeared in Principia for that proposition. A few of them are additionally come with their names in the text, and in that case we will adapt the `n` prefix to the name. For example, `Id2_08`. 
 
 Now we come to naming conventions for (lhs) parameters.
-
-Functions as parameters are supposed to be named as the same style of original text: either greek letters like `φ` or their upper-cased English equivalent like `Phi`.
-
-Apparent variables are quantified variables in `forall`, `exists` and so on. As parameters, they're usually lower case literals like `x`.
-
-Real variables are variables that can directly instantiate the proposition. They're usually upper case literals like `X`.
+- Functions as parameters are supposed to be named as the same style of original text: either greek letters like `φ` or their upper-cased English equivalent like `Phi`.
+- Apparent variables are quantified variables in `forall`, `exists` and so on. As parameters, they're usually lower case literals like `x`.
+- Real variables are variables that can directly instantiate the proposition. They're usually upper case literals like `X`.
 
 ## 5. What's under a single proof?
-If its correspondence in original text has separated the proof into several steps, rather than providing the related theorems for reference, we call this proposition is a "long proof". We don't enforce any architecture on short proofs.
+If its correspondence in original text has separated the proof into several steps, rather than providing the related theorems for reference, we call this proposition is a "long proof". 
 
-For a long proof, it usually have thf following structure:
+- Our architecture is **not required** to be enforce on short proofs.
+
+For a long proof, it usually has the following structure:
 ```Coq
 Proof.
   (* TOOLS *)
@@ -67,28 +66,26 @@ Qed.
 ```
 
 ## 5.1 `TOOLS` section
-- For every long proofs, if any tool is being used, a `TOOLS` section is **required** to be place at the beginning of the proof.
+- If any tool is being used, a `TOOLS` section is **required** to be place at the beginning of a long proof.
 
-There are technical features that might require a setting up before they can be used, for example, introducing an extra real variable with the proof(with `set (X := Real "x")`), or prepare a modified version of a theorem for more convenient use. In this case, we set up these preparations in the `TOOLS` section.
-
-Technical features that might be used can usually be found in `lib.v`.
+Technical features, that can be be found under `lib.v`, usually require a warmup before being available, for example, introducing an extra real variable with the proof(with `set (X := Real "x")`), or prepare a modified version of a theorem for more convenient use. `TOOLS` section is for performing such preparations.
 
 ## 5.2 `assert` the steps
-- Every long proofs are **required** to adapt to the proof architecture specified below.
+- Every long proof is **required** to adapt to the proof architecture shown above.
 
-For long proofs, the first tactic we use always start with an `assert`. This tactic is used for specifying intermediate steps corresponded to ones in the original text. 
+For long proofs, the first tactic we use always starts with an `assert`, for specifying intermediate steps corresponded to ones in the original text. 
 
 There are several reasons for organizing proofs with `assert`. The most significant one is readability. Besides, we can have several equivalant forms for a proposition, i.e. `(fun x => x) x` is not very far from just `x` or `(fun y => y) x`. Switching between them requires delicate application with tactics for all different cases. If we set the desired form as a subgoal, we only need to use tactics to prove for a equivalent form to `x`, and skip the tedious transformations. One last thing for `assert` is that it limits the scope of theorems we use. When we leave the scope, these theorems are automatically cleared away, and only the intermediate steps as `S1` `S2` are being pertained. As a result, the proof window becomes extremely clean.
 
 - As it pertains a nice style, `exact` at the end of the proof is **not allowed** to be deleted or simplified.
 
-By using `assert`, the propositions being asserted is introduced into the hypotheses.
+`assert`ed intermediate steps are introduced into the hypotheses.
 
 ## 6. What are the tactics we use for a single proof?
 
 As introduced above, `assert` and `set`, sets up the general architecture to write the proof.
 
-Beneath the architecture comes the details of how we prove a theorem. By referring to [SEP entry for Principia Mathematica](https://plato.stanford.edu/entries/principia-mathematica/), we can divide our tactics into 2 types.
+Beneath the architecture comes the details of how we prove a theorem. By referring to [SEP entry for Principia Mathematica](https://plato.stanford.edu/entries/principia-mathematica/), we can divide our tactics into 2 types - as the slogan says, "just `pose` and `rewrite`".
 
 `pose proof`, occasionally with `apply`, instantiates a existing theorem to use.
 
