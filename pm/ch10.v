@@ -221,7 +221,8 @@ Proof.
   exact S11.
 Qed.
 
-(* Thm *10.221: omitted *)
+(* TODO: fill this
+Thm *10.221: omitted *)
 
 Theorem n10_23 (φ : Prop → Prop) (P : Prop) :
   (∀ x, φ x → P) ↔ ((∃ x, φ x) → P).

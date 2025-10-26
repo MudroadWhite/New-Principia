@@ -11,7 +11,8 @@ Require Import PM.pm.ch10.
 - Design a `comma` predicate  which works like a `id` 
 `to enforce "lazy evaluation" on quantifiers 
 - Investigate the `alt`s in ch10 and see if there are more details
-- Identify parameter types in ch10
+- Identify parameter types in ch9 & 10
+- Correctly control the notation scopes in ch11 and ch10
 *)
 
 (* TODO: 
@@ -495,8 +496,6 @@ Theorem n11_34 (Phi Psi : Prop → Prop → Prop) :
   → ((∃ x y, Phi x y) → (∃ x y, Psi x y)).
 Proof.
   set (X := Real "x").
-  pose proof n10_27 as n10_27_000.
-  pose proof n10_28 as n10_28_000.
   pose proof (n10_28 (fun y => Phi X y) (fun y => Psi X y)) 
     as n10_28a. simpl in n10_28a.
   pose proof (n10_11 X (fun x => 
@@ -535,8 +534,6 @@ Theorem n11_35 (P : Prop) (Phi : Prop → Prop → Prop) :
   (∀ x y, Phi x y → P) ↔ ((∃ x y, Phi x y) → P).
 Proof.
   set (X := Real "x").
-  pose proof n10_23 as n10_23_000.
-  pose proof n10_271 as n10_271_000.
   pose proof (n10_23 (fun y => Phi X y) P) as n10_23a.
   pose proof (n10_11 X (fun x => (∀ y, Phi x y → P)
     ↔ ((∃ y, Phi x y) → P))) as n10_11.
@@ -874,7 +871,9 @@ Theorem n11_5 (Phi : Prop → Prop → Prop) :
   ∧
   (¬(∀ x y, Phi x y) ↔ (∃ x y, ¬Phi x y)).
 Proof.
+  (* TOOLS *)
   set (X := Real "x").
+  (* ******** *)
   assert (S1 : (∃ x, ¬∀ y, Phi x y) ↔ ¬(∀ x, ∀ y, Phi x y)).
   {
     pose proof (n10_253_alt (fun x => ∀ y : Prop, Phi x y))
@@ -916,39 +915,138 @@ Qed.
 Theorem n11_51 (Phi : Prop → Prop → Prop) :
   (∃ x, ∀ y, Phi x y) ↔ (¬(∀ x, ∃ y, ¬ Phi x y)).
 Proof.
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
   assert (S1 : (∃ x, ∀ y, Phi x y) ↔ (~forall x, ~forall y, Phi x y)).
   {
-    pose proof n10_252 as n10_252.
+    pose proof (n10_252 (fun x => ∀ y, Phi x y)) as n10_252.
+    simpl in n10_252.
+    rewrite -> Transp4_11 in n10_252.
+    now rewrite <- n4_13 in n10_252.
   }
-Admitted.
+  assert (S2 : (~forall y, Phi X y) <-> exists y, ~Phi X y).
+  { apply n10_253_alt. }
+  assert (S3 : (forall x, (~forall y, Phi x y))
+    <-> forall x, exists y, ~Phi x y).
+  {
+    pose proof (n10_11 X (fun x =>
+      (¬ (∀ y, Phi x y) ↔ ∃ y, ¬ Phi x y))) as n10_11.
+    MP S2 n10_11.
+    pose proof (n10_271 (fun x => ¬ (∀ y : Prop, Phi x y))
+      (fun x => ∃ y : Prop, ¬ Phi x y)) as n10_271.
+    now MP n10_271 n10_11.
+  }
+  assert (S4 : (~forall x, (~forall y, Phi x y))
+    <-> (~forall x, exists y, ~Phi x y)).
+  { now rewrite -> Transp4_11 in S3. }
+  assert (S5 : (∃ x, ∀ y, Phi x y) ↔ (¬(∀ x, ∃ y, ¬ Phi x y))).
+  { now rewrite -> S4 in S1. }
+  exact S5.
+Qed.
 
 Theorem n11_52 (Phi Psi : Prop → Prop → Prop) :
   (∃ x y, Phi x y ∧ Psi x y) ↔
   (¬ ∀ x y, Phi x y → ¬ Psi x y).
 Proof.
-Admitted.
+  (* TOOLS *)
+  set (X := Real "x").
+  set (Y := Real "y").
+  (* ******** *)
+  assert (S1 : (~(Phi X Y /\ Psi X Y)) <-> (Phi X Y -> ~Psi X Y)).
+  {
+    pose proof (n4_51 (Phi X Y) (Psi X Y)) as n4_51.
+    now rewrite <- n4_62 in n4_51.
+  }
+  assert (S2 : (forall x y, ~(Phi x y /\ Psi x y)) <-> 
+    ((forall x y, Phi x y -> ~Psi x y))).
+  {
+    pose proof (n11_11 X Y
+      (fun x y => ¬ (Phi x y ∧ Psi x y) ↔ (Phi x y → ¬ Psi x y)))
+      as n11_11.
+    MP n11_11 S2.
+    pose proof (n11_33 (fun x y => ¬ (Phi x y ∧ Psi x y))
+      (fun x y => Phi x y → ¬ Psi x y)) as n11_33.
+      simpl in n11_33.
+    now MP n11_33 n11_11.
+  }
+  assert (S3 : (∃ x y, Phi x y ∧ Psi x y) ↔
+    (¬ ∀ x y, Phi x y → ¬ Psi x y)).
+  {
+    rewrite -> Transp4_11 in S2.
+    now rewrite <- n11_22 in S2.
+  }
+  exact S3.
+Qed.
 
 Theorem n11_521 (Phi Psi : Prop → Prop → Prop) :
   (¬ ∃ x y, Phi x y ∧ (¬ Psi x y))
-  ↔ (¬ ∀ x y, Phi x y → ¬ Psi x y).
+  ↔ (∀ x y, Phi x y → Psi x y).
 Proof.
-Admitted.
+  pose proof (n11_52 Phi (fun x y => ~Psi x y)) as n11_52.
+  rewrite -> Transp4_11 in n11_52.
+  now repeat setoid_rewrite <- n4_13 in n11_52.
+Qed.
+
+Close Scope double_app_impl.
+Close Scope double_app_equiv.
 
 Theorem n11_53 (Phi Psi : Prop → Prop) :
   (∀ x y, Phi x → Psi y) ↔ ((∃ x, Phi x) → ∀ y, Psi y).
 Proof.
-Admitted.
+  (* TOOLS *)
+  assert (X := Real "x").
+  (* ******** *)
+  assert (S1 : (forall x y, Phi x -> Psi y) <-> (forall x, Phi x -> forall y, Psi y)).
+  {
+    pose proof n10_21 as n10_21.
+    pose proof (n10_21 (fun y => Psi y) (Phi X)) as n10_21a.
+    pose proof (n10_11 X (fun x =>
+      (∀ y, Phi x → Psi y) ↔ (Phi x → ∀ y, Psi y))) as n10_11.
+    MP n10_11 n10_21a.
+    pose proof (n10_271 (fun x => (∀ y : Prop, Phi x → Psi y))
+      (fun x => (Phi x → ∀ y : Prop, Psi y))) as n10_271.
+    now MP n10_271 n10_11.
+  }
+  assert (S2 : (∀ x y, Phi x → Psi y) ↔ ((∃ x, Phi x) → ∀ y, Psi y)).
+  { now rewrite -> n10_23 in S1. }
+  exact S2.
+Qed.
 
 Theorem n11_54 (Phi Psi : Prop → Prop) :
   (∃ x y, Phi x ∧ Psi y) 
   ↔ ((∃ x, Phi x) ∧ (∃ y, Psi y)).
 Proof.
-Admitted.
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
+  assert (S1 : (∃ y, Phi X ∧ Psi y) <-> (Phi X /\ (∃ y, Psi y))).
+  { apply n10_35. }
+  assert (S2 : (∃ x y, Phi x ∧ Psi y) <->
+    (∃ x, Phi x ∧ ∃ y, Psi y)).
+  {
+    pose proof (n10_11 X 
+      (fun x =>(∃ y : Prop, Phi x ∧ Psi y) ↔ Phi x ∧ ∃ y : Prop, Psi y)) 
+      as n10_11.
+    MP n10_11 S1.
+    pose proof (n10_281 (fun x => (∃ y : Prop, Phi x ∧ Psi y))
+      (fun x => Phi x ∧ ∃ y : Prop, Psi y)) as n10_281.
+    now MP n10_281 n10_11.
+  }
+  assert (S3 : (∃ x y, Phi x ∧ Psi y) ↔ ((∃ x, Phi x) ∧ (∃ y, Psi y))).
+  {
+    setoid_rewrite n4_3 in S2 at 3.
+    rewrite -> n10_35 in S2.
+    now rewrite <- n4_3 in S2.
+  }
+  exact S3.
+Qed.
 
 Theorem n11_55 (Phi : Prop → Prop) (Psi : Prop → Prop → Prop) :
   (∃ x y, Phi x ∧ Psi x y) 
   ↔ (∃ x, Phi x ∧ (∃ y, Psi x y)).
 Proof.
+
 Admitted.
 
 Theorem n11_56 (Phi Psi : Prop → Prop) :
