@@ -1,8 +1,9 @@
 # Notes
 
-This folder is intended to record the tricks, hacks, and other notes being necessary to write down.
+This folder, `./docs/`, is intended to provide necessary documentation for the proof.
 
-TODO:
-- learn how to organize the commits
-- expect someone generously tell me what does license do
-- create a CI in the future
+## Table of Contents
+1. [Who did what](./1_who-did-what.md)
+2. [Project architecture](./2_architecture.md)
+3. [Tactics](./3_tactics.md)
+

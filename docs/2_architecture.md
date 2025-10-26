@@ -1,4 +1,4 @@
-# Project Architecture
+# Project architecture
 
 ## 1. What's under this project?
 Currently, the project is divided into following parts:
@@ -70,6 +70,8 @@ Qed.
 - For every long proofs, if any tool is being used, a `TOOLS` section is **required** to be place at the beginning of the proof.
 
 There are technical features that might require a setting up before they can be used, for example, introducing an extra real variable with the proof(with `set (X := Real "x")`), or prepare a modified version of a theorem for more convenient use. In this case, we set up these preparations in the `TOOLS` section.
+
+Technical features that might be used can usually be found in `lib.v`.
 
 ## 5.2 `assert` the steps
 - Every long proofs are **required** to adapt to the proof architecture specified below.
