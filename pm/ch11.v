@@ -1149,8 +1149,10 @@ Proof.
     exact (n11_1 X Y (fun x y => 
       (Phi x /\ Phi y) -> (Psi x /\ Psi y))).
   }
-  (* NOTE: Currently, direct substitution on a step is unsupported.
-  The only way to do this is rewrite the proposition again. *)
+  (* Currently, direct substitution on a step is unsupported.
+  Even if we can use `replace X with Y`, I don't want to do it
+  for the moment. The only way to do this is rewrite the proposition
+  again. *)
   assert (S4 : (forall x y, (Phi x /\ Phi y) -> (Psi x /\ Psi y)) 
     -> (Phi X -> Psi X)).
   {
@@ -1184,11 +1186,54 @@ Theorem n11_6 (Phi : Prop → Prop → Prop) (Psi Chi : Prop → Prop) :
   (∃ x, (∃ y, Phi x y ∧ Psi y) ∧ Chi x) 
   ↔ (∃ y, (∃ x, Phi x y ∧ Chi x) ∧ Psi y).
 Proof.
-Admitted.
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
+  assert (S1 : ((exists y, Phi X y /\ Psi y) /\ Chi X) 
+    <-> (exists y, (Phi X y /\ Psi y) /\ Chi X)).
+  {
+    pose proof (n10_35 (fun y => Phi X y /\ Psi y) (Chi X)) as n10_35.
+    rewrite -> n4_3 in n10_35.
+    now setoid_rewrite -> n4_3 in n10_35 at 2.
+  }
+  assert (S2 : (exists x, (exists y, Phi x y /\ Psi y) /\ Chi x) 
+    <-> (exists x, (exists y, (Phi x y /\ Psi y) /\ Chi x))).
+  {
+    pose proof (n10_11 X (fun x => ((exists y, Phi x y /\ Psi y) /\ Chi x) 
+      <-> (exists y, (Phi x y /\ Psi y) /\ Chi x))) as n10_11.
+    MP n10_11 S1.
+    pose proof (n10_281 (fun x => (exists y, Phi x y /\ Psi y) /\ Chi x)
+      (fun x => exists y, (Phi x y /\ Psi y) /\ Chi x)) as n10_281.
+    now MP n10_281 n10_11.
+  }
+  assert (S3 : (exists x, (exists y, Phi x y /\ Psi y) /\ Chi x)
+    <-> (exists y, (exists x, (Phi x y /\ Psi y) /\ Chi x))).
+  { now rewrite -> n11_23 in S2. }
+  assert (S4 : (exists x, (exists y, Phi x y /\ Psi y) /\ Chi x)
+    <-> (exists y, (exists x, (Phi x y /\ Chi x) /\ Psi y))).
+  {
+    (* Both of n11_341 and Perm1_4 are ignored - we use a easier way *)
+    setoid_rewrite -> n4_32 in S3.
+    setoid_rewrite -> n4_3 in S3 at 5.
+    now setoid_rewrite <- n4_32 in S3.
+  }
+  assert (S5 : (∃ x, (∃ y, Phi x y ∧ Psi y) ∧ Chi x) 
+    ↔ (∃ y, (∃ x, Phi x y ∧ Chi x) ∧ Psi y)).
+  {
+    (* There should be a typo here making S5 and S4 exactly the same in original text.
+    We use the easiest way and ignore n10_281 *)
+    pose proof n10_35 as n10_35.
+    setoid_rewrite -> n4_3 in S4 at 4.
+    setoid_rewrite -> n10_35 in S4.
+    now setoid_rewrite <- n4_3 in S4 at 4.
+  }
+  exact S5.
+Qed.
 
 Theorem n11_61 (Phi : Prop → Prop) (Psi : Prop → Prop → Prop) :
   (∃ y, (Phi x -[x]> Psi x y)) → (Phi x -[x]> ∃ y, Psi x y).
 Proof.
+  assert (S1 : (∃ y, (Phi x -[x]> Psi x y)) -> )
 Admitted.
 
 Theorem n11_62 (Phi : Prop → Prop) (Psi Chi : Prop → Prop → Prop) :
