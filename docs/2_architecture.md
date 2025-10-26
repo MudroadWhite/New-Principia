@@ -2,7 +2,16 @@
 
 The conventions below starts from chapter 9.
 
-TODO: cover the file architecture a little bit
+TODO: 
+1. File architecture - `ilb.v`; in future, divide chapters further down into sections or maybe parts
+2. Header for each files currently containing
+   - dependencies
+   - \[Experimental\]type restrictions as comments
+   - comments
+   - scopes and notations
+   - the actual proofs
+3. Design of Vernacs aka `Definition`s and `Theorem`s: each proposition comes within either of the way; naming convention; lhs and rhs of a theorem; 
+4. Architecture of a single proof: TOOLS, assert
 
 ## `assert` for intermediate steps
 When proofs are "long enough", the first tactic that one should see is `assert` to specify intermediate steps. This tactic modularizes the proofs so that they usually have the following structure:
