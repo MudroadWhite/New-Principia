@@ -988,9 +988,6 @@ Proof.
   now repeat setoid_rewrite <- n4_13 in n11_52.
 Qed.
 
-Close Scope double_app_impl.
-Close Scope double_app_equiv.
-
 Theorem n11_53 (Phi Psi : Prop → Prop) :
   (∀ x y, Phi x → Psi y) ↔ ((∃ x, Phi x) → ∀ y, Psi y).
 Proof.
@@ -1043,26 +1040,81 @@ Proof.
 Qed.
 
 Theorem n11_55 (Phi : Prop → Prop) (Psi : Prop → Prop → Prop) :
-  (∃ x y, Phi x ∧ Psi x y) 
-  ↔ (∃ x, Phi x ∧ (∃ y, Psi x y)).
+  (∃ x y, Phi x ∧ Psi x y) ↔ (∃ x, Phi x ∧ (∃ y, Psi x y)).
 Proof.
-
-Admitted.
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
+  assert (S1 : (exists y, Phi X /\ Psi X y) <-> (Phi X /\ exists y, Psi X y)).
+  { apply n10_35. }
+  assert (S2 : forall x, (exists y, Phi x /\ Psi x y) <-> (Phi x /\ exists y, Psi x y)).
+  {
+    pose proof (n10_11 X (fun x => (exists y, Phi x /\ Psi x y) 
+      <-> (Phi x /\ exists y, Psi x y))) as n10_11.
+    now MP n10_11 S1.
+  }
+  assert (S3 : (∃ x y, Phi x ∧ Psi x y) ↔ (∃ x, Phi x ∧ (∃ y, Psi x y))).
+  {
+    pose proof (n10_281 (fun x => (exists y, Phi x /\ Psi x y)) 
+      (fun x => (Phi x /\ exists y, Psi x y))) as n10_281.
+    now MP n10_281 S2.
+  }
+  exact S3.
+Qed.
 
 Theorem n11_56 (Phi Psi : Prop → Prop) :
   ((∀ x, Phi x) ∧ (∀ y, Psi y)) ↔ (∀ x y, Phi x ∧ Psi y).
 Proof.
-Admitted.
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
+  assert (S1 : ((∀ x, Phi x) ∧ (∀ y, Psi y)) <-> (∀ x, Phi x ∧ ∀ y, Psi y)).
+  { 
+    pose proof (n10_33 Phi (∀ y, Psi y)) as n10_33.
+    now symmetry in n10_33.
+  }
+  assert (S2 : (Phi X /\ (∀ y, Psi y)) <-> (forall y, Phi X /\ Psi y)).
+  {
+    pose proof (n10_33 Psi (Phi X)) as n10_33.
+    symmetry in n10_33.
+    rewrite <- n4_3 in n10_33.
+    now setoid_rewrite <- n4_3 in n10_33 at 3.
+  }
+  assert (S3 : forall x, (Phi x /\ (∀ y, Psi y)) <-> (forall y, Phi x /\ Psi y)).
+  {
+    pose proof (n10_11 X (fun x => (Phi x /\ (∀ y, Psi y)) 
+      <-> (forall y, Phi x /\ Psi y))) as n10_11.
+    now MP n10_11 S2.
+  }
+  assert (S4 : (forall x, Phi x /\ (∀ y, Psi y)) <-> (forall x, forall y, Phi x /\ Psi y)).
+  {
+    pose proof (n10_271 (fun x => Phi x /\ (∀ y, Psi y)) 
+      (fun x => forall y, Phi x /\ Psi y)) as n10_271.
+    now MP n10_271 S3.
+  }
+  assert (S5 : (forall x, Phi x /\ (∀ y, Psi y)) <-> (forall x y, Phi x /\ Psi y)).
+  {
+    (* n11_01 ignored *)
+    exact S4.
+  }
+  assert (S6 : ((∀ x, Phi x) ∧ (∀ y, Psi y)) ↔ (∀ x y, Phi x ∧ Psi y)).
+  { now rewrite -> S5 in S1. }
+  exact S6.
+Qed.
 
 Theorem n11_57 (Phi : Prop → Prop) :
   (∀ x, Phi x) ↔ (∀ x y, Phi x ∧ Phi y).
 Proof.
-Admitted.
+  pose proof (n11_56 Phi Phi) as n11_56.
+  now rewrite <- n4_24 in n11_56.
+Qed.
 
 Theorem n11_58 (Phi : Prop → Prop) :
   (∃ x, Phi x) ↔ (∃ x y, Phi x ∧ Phi y).
 Proof.
-Admitted.
+  pose proof (n11_54 Phi Phi) as n11_54.
+  now rewrite <- n4_24 in n11_54.
+Qed.
 
 (* TODO: merge this notation into arbitrary parameter version *)
 Open Scope single_app_impl.
@@ -1070,7 +1122,63 @@ Open Scope single_app_impl.
 Theorem n11_59 (Phi Psi : Prop → Prop) :
   (Phi x -[x]> Psi x) ↔ ((Phi x ∧ Phi y) -[x y]> (Psi x ∧ Psi y)).
 Proof.
-Admitted.
+  (* TOOLS *)
+  set (X := Real "x").
+  set (Y := Real "y").
+  (* ******** *)
+  assert (S1 : (Phi x -[x]> Psi x) 
+    <-> (forall x y, (Phi x -> Psi x) /\ (Phi y -> Psi y))).
+  { apply n11_57. }
+  assert (S2 : (Phi x -[x]> Psi x) 
+    -> (forall x y, (Phi x /\ Phi y) -> (Psi x /\ Psi y))).
+  {
+    pose proof (n3_47 (Phi X) (Phi Y) (Psi X) (Psi Y)) as n3_47.
+    pose proof (n11_11 X Y (fun x y =>
+      (Phi x → Psi x) ∧ (Phi y → Psi y) → Phi x ∧ Phi y → Psi x ∧ Psi y)) 
+      as n11_11.
+    MP n11_11 n3_47.
+    pose proof (n11_32 (fun x y => (Phi x → Psi x) ∧ (Phi y → Psi y))
+      (fun x y => Phi x ∧ Phi y → Psi x ∧ Psi y)) as n11_32.
+    MP n11_32 n11_11.
+    destruct S1 as [S1l S1r]. clear S1r.
+    now Syll S1 n11_32 S2.
+  }
+  assert (S3 : (forall x y, (Phi x /\ Phi y) -> (Psi x /\ Psi y)) 
+    -> ((Phi X /\ Phi Y) -> (Psi X /\ Psi Y))).
+  { 
+    exact (n11_1 X Y (fun x y => 
+      (Phi x /\ Phi y) -> (Psi x /\ Psi y))).
+  }
+  (* NOTE: Currently, direct substitution on a step is unsupported.
+  The only way to do this is rewrite the proposition again. *)
+  assert (S4 : (forall x y, (Phi x /\ Phi y) -> (Psi x /\ Psi y)) 
+    -> (Phi X -> Psi X)).
+  {
+    pose proof (n11_1 X X (fun x y => 
+      (Phi x /\ Phi y) -> (Psi x /\ Psi y))) as n11_11.
+    simpl in n11_11.
+    now repeat rewrite <- n4_24 in n11_11.
+  }
+  assert (S5 : (forall x y, (Phi x /\ Phi y) -> (Psi x /\ Psi y)) 
+    -> (Phi x -[x]> Psi x)).
+  {
+    pose proof (n10_11 X (fun x =>
+      ((Phi x ∧ Phi y)-[x y]>Psi x ∧ Psi y)
+      -> (Phi x -> Psi x))) as n10_11.
+    MP n10_11 S4.
+    pose proof (n10_21 (fun x =>Phi x → Psi x)
+      (((Phi x ∧ Phi y) -[x y]> Psi x ∧ Psi y))) as n10_21.
+    now rewrite -> n10_21 in n10_11.
+  }
+  assert (S6 : (Phi x -[x]> Psi x) ↔ 
+    ((Phi x ∧ Phi y) -[x y]> (Psi x ∧ Psi y))).
+  {
+    clear S1 S3 S4.
+    Conj S2 S5 S6.
+    now Equiv S6.
+  }
+  exact S6.
+Qed.
 
 Theorem n11_6 (Phi : Prop → Prop → Prop) (Psi Chi : Prop → Prop) :
   (∃ x, (∃ y, Phi x y ∧ Psi y) ∧ Chi x) 
