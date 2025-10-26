@@ -17,7 +17,7 @@ All conventions of sections below starts from chapter 9.
 
 ## 3. What's under a single `.v` file?
 1. `Require Import` that cites other chapters and `lib.v`, so that you can use theorems and tools from these imported files.
-2. Experimental feature `(* TYPE ANNOTATIONS *)` for manually check the allowed types of parameters in that chapter. Unfortunately, this does require manual checks and is not automated by the current (logic) model.
+2. Experimental feature (`(* TYPE ANNOTATIONS *)`) for manually check the allowed types of parameters in that chapter. Unfortunately, this does require manual checks and is not automated by the current (logic) model.
 3. Occasional comments to explain what has been done here and there
 4. `Notations` defined corresponded to the notations appeared in Principia. Each `Notation` comes with a `Scope`. To define a notation in a scope, we have to `Declare Scope`. To use the notation, we have to `Open Scope`. If we don't want the notation appear within proof, we command to `Close Scope`.
 5. And eventually, everything left are the actual proofs, coming with `Definition`s and `Theorem`s.
@@ -66,7 +66,7 @@ Qed.
 ```
 
 ### 5.1 `TOOLS` section
-- If any tool is being used, a `TOOLS` section is **required** to be place at the beginning of a long proof.
+- If any tool is being used, a `TOOLS` header is **required** to be place at the beginning of a long proof.
 
 Technical features, that can be be found under `lib.v`, usually require a warmup before being available, for example, introducing an extra real variable with the proof(with `set (X := Real "x")`), or prepare a modified version of a theorem for more convenient use. `TOOLS` section is for performing such preparations.
 
