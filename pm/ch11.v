@@ -1233,30 +1233,329 @@ Qed.
 Theorem n11_61 (Phi : Prop → Prop) (Psi : Prop → Prop → Prop) :
   (∃ y, (Phi x -[x]> Psi x y)) → (Phi x -[x]> ∃ y, Psi x y).
 Proof.
-  assert (S1 : (∃ y, (Phi x -[x]> Psi x y)) -> )
+  (* TOOLS *)
+  set (X := Real "x").
+  (* ******** *)
+  assert (S1 : (∃ y, (Phi x -[x]> Psi x y)) -> 
+    (forall x, exists y, Phi x -> Psi x y)).
+  { apply n11_26. }
+  assert (S2 : (exists y, Phi X -> Psi X y) -> (Phi X -> exists y, Psi X y)).
+  { apply n10_37. }
+  assert (S3 : (forall x, exists y, Phi x -> Psi x y) 
+    -> (forall x, Phi x -> exists y, Psi x y)).
+  {
+    pose proof (n10_11 X (fun x => (exists y, Phi x -> Psi x y) 
+      -> (Phi x -> exists y, Psi x y))) as n10_11.
+    MP n10_11 S1.
+    pose proof (n10_27 (fun x => exists y, Phi x -> Psi x y)
+      (fun x => Phi x -> exists y, Psi x y)) as n10_27.
+    now MP n10_27 n10_11.
+  }
+  assert (S4 : (∃ y, (Phi x -[x]> Psi x y)) → (Phi x -[x]> ∃ y, Psi x y)).
+  { clear S2. now Syll S1 S3 S4. }
+  exact S4.
+Qed.
+
+(* It seems that n4_87 is not translated correctly, so here we temporarily
+use a correct form.
+TODO: move this into ch4 *)
+Theorem n4_87_corrected (P Q R : Prop) :
+  (((P /\ Q) -> R) <-> (P -> (Q -> R)))
+  /\
+  ((P -> (Q -> R)) <-> (Q -> (P -> R)))
+  /\ 
+  ((Q -> (P -> R)) <-> ((Q /\ P) -> R)).
+Proof.
 Admitted.
 
 Theorem n11_62 (Phi : Prop → Prop) (Psi Chi : Prop → Prop → Prop) :
   ((Phi x ∧ Psi x y) -[x y]> Chi x y) ↔ (Phi x -[x]> (Psi x y -[y]> Chi x y)).
 Proof.
-Admitted.
+  (* TOOLS *)
+  set (X := Real "x").
+  set (Y := Real "y").
+  (* ******** *)
+  assert (S1 : ((Phi x ∧ Psi x y) -[x y]> Chi x y) 
+    ↔ (forall x y, Phi x -> (Psi x y -> Chi x y))).
+  {
+    pose proof (n4_87_corrected (Phi X) (Psi X Y) (Chi X Y)) as n4_87.
+    destruct n4_87 as [n4_87l n4_87mr]. clear n4_87mr.
+    pose proof (n11_11 X Y (fun x y => 
+      (Phi x ∧ Psi x y → Chi x y) ↔ (Phi x → Psi x y → Chi x y)))as n11_11.
+    MP n11_11 n4_87l.
+    pose proof (n11_33 (fun x y => Phi x ∧ Psi x y → Chi x y)
+      (fun x y => Phi x → Psi x y → Chi x y)) as n11_33.
+    now MP n11_33 n11_11.
+  }
+  assert (S2 : ((Phi x ∧ Psi x y) -[x y]> Chi x y) 
+    <-> (forall x, Phi x -> (forall y, Psi x y -> Chi x y))).
+  {
+    (* This proof is a little different: it only instantiates at the
+    conclusion part of `S1`, similar to use a `Hp` *)
+    pose proof (n10_21 (fun y => Psi X y -> Chi X y) (Phi X)) as n10_21.
+    pose proof (n10_11 X (fun x => 
+      (∀ y, Phi x → Psi x y → Chi x y)
+      ↔ (Phi x → ∀ y, Psi x y → Chi x y))) as n10_11.
+    MP n10_11 n10_21.
+    pose proof (n10_271 (fun x => (∀ y, Phi x → Psi x y → Chi x y))
+      (fun x => Phi x → ∀ y : Prop, Psi x y → Chi x y)) as n10_271.
+    MP n10_271 n10_11.
+    now rewrite -> n10_271 in S1.
+  }
+  exact S2.
+Qed.
 
 Theorem n11_63 (Phi Psi : Prop → Prop → Prop) :
   (¬∃ x y, Phi x y) → (Phi x y -[x y]> Psi x y).
 Proof.
-Admitted.
+  (* TOOLS *)
+  set (X := Real "x").
+  set (Y := Real "y").
+  (* ******** *)
+  assert (S1 : forall x y, (~Phi x y) -> (Phi x y -> Psi x y)).
+  {
+    pose proof (n2_21 (Phi X Y) (Psi X Y)) as n2_21.
+    pose proof (n11_11 X Y (fun x y =>
+      (¬ Phi x y) -> (Phi x y -> Psi x y))) as n11_11.
+    now MP n11_11 n2_21.
+  }
+  assert (S2 : (forall x y, (~Phi x y)) 
+    -> (forall x y, Phi x y -> Psi x y)).
+  {
+    pose proof (n11_32 (fun x y => ¬ Phi x y)
+      (fun x y => Phi x y → Psi x y)) as n11_32.
+    now MP n11_32 S1.
+  }
+  assert (S3 : (¬∃ x y, Phi x y) → (Phi x y -[x y]> Psi x y)).
+  { now rewrite <- n11_25 in S2. }
+  exact S3.
+Qed.
 
 Theorem n11_7 (Phi : Prop → Prop → Prop) :
   (∃ x y, Phi x y ∨ Phi y x) ↔ ∃ x y, Phi x y.
 Proof.
-Admitted.
+  assert (S1 : (∃ x y, Phi x y ∨ Phi y x) 
+    ↔ ((exists x y, Phi x y) \/ (exists x y, Phi y x))).
+  { 
+    pose proof (n11_41 Phi) as n11_41.
+    now symmetry in n11_41.
+  }
+  assert (S2 : (∃ x y, Phi x y ∨ Phi y x) 
+    <-> ((exists x y, Phi x y) \/ (exists y x, Phi y x))).
+  (* Idk why I have to use `setoid_rewrite` on this *)
+  { now setoid_rewrite -> n11_23 in S1 at 3. }
+  assert (S3 : (∃ x y, Phi x y ∨ Phi y x) 
+    <-> (exists x y, Phi x y)).
+  { now rewrite <- n4_25 in S2. }
+  exact S3.
+Qed.
 
 Theorem n11_71 (Phi Psi Chi Theta : Prop → Prop) :
   ((∃ z, Phi z) ∧ (∃ w, Chi w))
   → (((Phi z -[z]> Psi z) ∧ (Chi w -[w]> Theta w))
       ↔ ((Phi z ∧ Chi w) -[z w]> (Psi z ∧ Theta w))).
 Proof.
-Admitted.
+  (* TOOLS *)
+  set (Z := Real "z").
+  set (W := Real "w").
+  (* For `Comm2_04`, we want a equivalance version. This is very 
+    useful in this proof *)
+  assert (Comm_Equiv : forall P Q R : Prop, 
+    (P → (Q → R)) <-> (Q → (P → R))).
+  { split; apply Comm2_04. }
+  (* ******** *)
+  assert (S1 : 
+    ((Phi z -[z]> Psi z) /\ (Chi w -[w]> Theta w))
+    -> ((Phi Z /\ Chi W) -> Psi Z /\ Theta W)).
+  {
+    pose proof (n10_1 (fun z => Phi z -> Psi z) Z) as n10_1a.
+    pose proof (n10_1 (fun w => Chi w -> Theta w) W) as n10_1b.
+    assert (C1 :
+      (Phi x-[x]>Psi x -> (Phi Z -> Psi Z))
+      /\
+      (Chi x-[x]>Theta x -> (Chi W->Theta W))).
+    { now Conj n10_1a n10_1b C1. }
+    pose proof (n3_47
+      (Phi z-[z]>Psi z) (Chi w-[w]>Theta w)
+      (Phi Z -> Psi Z) (Chi W -> Theta W)) as n3_47a.
+    MP n3_47a C1.
+    pose proof (n3_47 (Phi Z) (Chi W) (Psi Z) (Theta W)) as n3_47b.
+    now Syll n3_47a n3_47b S1.
+  }
+  assert (S2 : ((Phi z -[z]> Psi z) /\ (Chi w -[w]> Theta w))
+    -> (forall z w, (Phi z /\ Chi w) -> Psi z /\ Theta w)).
+  {
+    (* We directly use `Syll` here for simplicity. Note that
+      this might be actually not allowed in original proof *)
+    (* n11_3 ignored *)
+    pose proof (n11_11 Z W (fun z w => (Phi z /\ Chi w) 
+      -> Psi z /\ Theta w)) as n11_11.
+    now Syll S1 n11_11 S2.
+  }
+  assert (S3 : (forall z w, (Phi z /\ Chi w) -> Psi z /\ Theta w)
+    -> ((Phi Z /\ Chi w) -[w]> (Psi Z /\ Theta w))).
+  {
+    exact (n10_1 
+      (fun z => forall w, (Phi z /\ Chi w) -> Psi z /\ Theta w) Z).
+  }
+  assert (S4 : (forall z w, (Phi z /\ Chi w) -> Psi z /\ Theta w)
+    -> ((exists w, Phi Z /\ Chi w) -> (exists w, Psi Z /\ Theta w))).
+  {
+    pose proof (n10_28 (fun w => Phi Z /\ Chi w)
+      (fun w => Psi Z /\ Theta w)) as n10_28.
+    now Syll S3 n10_28 S4.
+  }
+  assert (S5 : (forall z w, (Phi z /\ Chi w) -> Psi z /\ Theta w)
+    -> ((Phi Z /\ exists w, Chi w) -> (Psi Z /\ exists w, Theta w))).
+  {
+    rewrite -> n10_35 in S4.
+    now setoid_rewrite -> n10_35 in S4.
+  }
+  (* This has been an extremely long proof, so I don't mind use more
+  simplifications... *)
+  assert (S6 : (exists w, Chi w) 
+    -> (((Phi z /\ Chi w) -[z w]> (Psi z /\ Theta w))
+      -> (Phi Z -> Psi Z))).
+  {
+    (* First we use the `Simpl` to delete the backmost part *)
+    assert (S5_1 : (∀ z w, Phi z ∧ Chi w → Psi z ∧ Theta w)
+      → Phi Z ∧ (∃ w, Chi w) → Psi Z).
+    {
+      assert (S5_1_1 : 
+        (Phi Z ∧ (∃ w, Chi w) → Psi Z ∧ ∃ w, Theta w)
+        ->
+        (Phi Z ∧ (∃ w, Chi w) → Psi Z)
+      ).
+      {
+        intro H.
+        pose proof (Simp3_26 (Psi Z) (∃ w, Theta w)) as Simp3_26.
+        now Syll H Simp3_26 S5_1_1.
+      }
+      now Syll S5 S5_1_1 S5_1.
+    }
+    rewrite -> Comm_Equiv in S5_1.
+    pose proof (n4_87_corrected
+      (Phi Z)
+      (∃ w : Prop, Chi w)
+      ((∀ z w : Prop, Phi z ∧ Chi w → Psi z ∧ Theta w)
+        → Psi Z)) as n4_87.
+    destruct n4_87 as [n4_87l n4_87mr].
+    clear n4_87mr.
+    rewrite -> n4_87l in S5_1.
+    clear n4_87l.
+    rewrite -> Comm_Equiv in S5_1.
+    pose proof (Comm2_04 
+      (Phi Z)
+      (∀ z w : Prop, Phi z ∧ Chi w → Psi z ∧ Theta w)
+      (Psi Z)) as Comm2_04.
+    now Syll S5_1 Comm2_04 S6.
+  }
+  assert (S7 : (exists w, Chi w) 
+    -> (((Phi z /\ Chi w) -[z w]> (Psi z /\ Theta w))
+      -> (Phi z -[z]> Psi z))).
+  {
+    pose proof (n10_11 Z (fun z0 =>
+      (∃ w : Prop, Chi w) → (∀ z w : Prop, Phi z ∧ Chi w → Psi z ∧ Theta w) 
+      → Phi z0 → Psi z0)) as n10_11.
+    MP n10_11 S6.
+    rewrite -> n10_21 in n10_11.
+    now setoid_rewrite -> n10_21 in n10_11.
+  }
+  clear S1 S3 S4 S5 S6.
+  (* Similarly?! Wdym by similarly?!! *)
+  assert (S8 : (exists z, Phi z) 
+    -> (((Phi z /\ Chi w) -[z w]> (Psi z /\ Theta w))
+      -> (Chi w -[w]> Theta w))).
+  {
+    clear S7.
+    assert (S5_2 : (forall z w, (Phi z /\ Chi w) -> Psi z /\ Theta w)
+      -> (Chi W /\ (exists z, Phi z) -> (Theta W /\ exists z, Psi z))).
+    {
+      pose proof ((n10_1 
+        (fun w => forall z, (Phi z /\ Chi w) -> Psi z /\ Theta w) W))
+        as S3_1. 
+      pose proof (n10_28 (fun z => Phi z /\ Chi W)
+        (fun z => Psi z /\ Theta W)) as n10_28.
+      Syll S3_1 n10_28 S4_1.
+      (* reordering... *)
+      setoid_rewrite -> n4_3 in S4_1 at 3.
+      setoid_rewrite -> n4_3 in S4_1 at 4.
+      rewrite -> n10_35 in S4_1.
+      setoid_rewrite -> n10_35 in S4_1.
+      now rewrite -> n11_2 in S4_1.
+    }
+    assert (S5_3 : (∀ z w, Phi z ∧ Chi w → Psi z ∧ Theta w)
+      -> Chi W ∧ (∃ z : Prop, Phi z) → Theta W).
+    {
+      assert (S5_3_1 : 
+        (Chi W /\ (exists z, Phi z) -> (Theta W /\ exists z, Psi z))
+        ->
+        (Chi W ∧ (∃ z : Prop, Phi z) → Theta W)).
+      {
+        intro H.
+        pose proof (Simp3_26 (Theta W) (∃ z : Prop, Psi z)) as Simp3_26.
+        now Syll H Simp3_26 S5_3_2.
+      }
+      now Syll S5_2 S5_3_1 S5_3.
+    }
+    rewrite -> Comm_Equiv in S5_3.
+    pose proof (n4_87_corrected
+      (Chi W)
+      (∃ z : Prop, Phi z)
+      ((∀ z w : Prop, Phi z ∧ Chi w → Psi z ∧ Theta w)
+        → Theta W)) as n4_87.
+    destruct n4_87 as [n4_87l n4_87mr].
+    clear n4_87mr.
+    rewrite -> n4_87l in S5_3.
+    clear n4_87l.
+    rewrite -> Comm_Equiv in S5_3.
+    pose proof (Comm2_04 
+      (Chi W)
+      (∀ z w : Prop, Phi z ∧ Chi w → Psi z ∧ Theta w)
+      (Theta W)) as Comm2_04.
+    Syll S5_3 Comm2_04 S6_1.
+    pose proof (n10_11 W (fun w0 =>
+      (∃ z : Prop, Phi z) → (∀ z w : Prop, Phi z ∧ Chi w → Psi z ∧ Theta w) 
+        → Chi w0 → Theta w0)) as n10_11.
+    MP n10_11 S6_1.
+    rewrite -> n10_21 in n10_11.
+    now setoid_rewrite -> n10_21 in n10_11.
+  }
+  assert (S9 : ((∃ z, Phi z) ∧ (∃ w, Chi w))
+    ->  
+      ((Phi z /\ Chi w) -[z w]> (Psi z /\ Theta w))
+      ->
+      ((Phi z -[z]> Psi z) /\ (Chi w -[w]> Theta w))).
+  {
+    (* n3_47 ignored. Here we try to save the routine... *)
+    intro H.
+    destruct H as [HS8 HS7].
+    pose proof (S7 HS7) as S7_1.
+    pose proof (S8 HS8) as S8_1.
+    clear S7 S8.
+    Conj S7_1 S8_1 C1.
+    pose proof (Comp3_43 
+      (∀ z w : Prop, Phi z ∧ Chi w → Psi z ∧ Theta w)
+      (∀ z : Prop, Phi z → Psi z)
+      (∀ w : Prop, Chi w → Theta w)) as Comp3_43.
+    now MP Comp3_43 C1.
+  }
+  assert (S10 : ((∃ z, Phi z) ∧ (∃ w, Chi w))
+    → (((Phi z -[z]> Psi z) ∧ (Chi w -[w]> Theta w))
+      ↔ ((Phi z ∧ Chi w) -[z w]> (Psi z ∧ Theta w)))).
+  {
+    clear S7 S8.
+    (* Similarly, we save the rountine *)
+    intro H.
+    pose proof (S9 H) as S9_1.
+    clear S9 H.
+    Conj S2 S9_1 C1.
+    now Equiv C1.
+  }
+  exact S10.
+  (* Even with that much simplification, this proof is still ridiculously
+  long *)
+Qed.
 
 Close Scope single_app_impl.
 Close Scope double_app_impl.
