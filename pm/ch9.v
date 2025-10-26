@@ -201,30 +201,25 @@ Proof.
   as n9_06a.
   set (Z := Real "z").
   (* ******** *)
-  (** S1 **)
   assert (S1 : (φ Z → ψ Z) → φ Z → ψ Z).
   { exact (Id2_08 (φ Z → ψ Z)). }
-  (** S2 **)
   assert (S2 : ∃ y, (φ Z → ψ Z) → φ y → ψ Z).
   { 
     pose proof (n9_1 (fun x => (φ Z → ψ Z) → φ x → ψ Z) Z) as n9_1.
     now MP n9_1 S1.
   }
-  (** S3 **)
   assert (S3 : ∃ x y, (φ x → ψ x) → φ y → ψ Z).
   { 
     (* *1.11 ignored *)
     pose proof (n9_1 (fun x => (∃ z0, (φ x → ψ x) → φ z0 → ψ Z)) Z) as n9_1.
     now MP n9_1 S2.
   }
-  (** S4 **)
   assert (S4 : ∀ z, ∃ x y, (φ x → ψ x) → φ y → ψ z).
   {
     pose proof (n9_13 (fun z => 
       (∃ x y, (φ x → ψ x) → φ y → ψ z)) Z) as n9_13.
     now MP n9_13 S3.
   }
-  (** S5 **)
   assert (S5 : ∀ z, (∃ x, (φ x → ψ x) → (∃ y, φ y → ψ z))).
   {
     setoid_rewrite -> Impl1_01a in S4.
@@ -303,8 +298,8 @@ Proof.
   assert (S8 : (∀ x, φ x → ψ x) → (∃ x, φ x) → (∃ x, ψ x)).
   { 
     now rewrite <- n9_01, <- Impl1_01,
-    (* NOTE: currently we're technically not allowed for 1st order propositions to appear
-    as parameters. Technically speaking, this is not allowed and this proof might be flawed *)
+    (* Currently we're technically not allowed for 1st order propositions to appear
+    as parameters. Below might be not allowed and this proof might be flawed *)
             -> (n4_13 (∀ y, ¬ φ y)),
             <- n9_02, <- Impl1_01,
             <- (n4_13 (∃ x, φ x)) in S7.
@@ -313,7 +308,8 @@ Proof.
 Qed.
 
 Theorem n9_23 (φ : Prop → Prop) : (∀ x, φ x) → (∀ x, φ x).
-(* Original proof uses Id, 9.13, 9.21 *)
+(* Original proof uses Id, 9.13, 9.21 to **turn away from the problem of mismatched 
+  parameter types**. *)
 Proof. 
   set (X := Real "x").
   pose proof (Id2_08) (φ X) as Id2_08.
@@ -324,7 +320,8 @@ Proof.
 Qed.
 
 Theorem n9_24 (φ : Prop → Prop) : (∃ x, φ x) → (∃ x, φ x).
-(* Original proof uses Id, 9.13, 9.22. Since it's similar as above, we omit the proof *)
+(* Original proof uses Id, 9.13, 9.22. Since it's similar as above, we omit the proof,
+  but note that this is technically not allowed. *)
 Proof. exact (Id2_08 (∃ x, φ x)). Qed.
 
 Theorem n9_25 (P : Prop) (φ : Prop → Prop) : 
@@ -336,8 +333,8 @@ Qed.
 (* ******** *)
 
 (* After the setup, we're going to derive the analogues for *1.2 - *1.6. These analogues
-  supports variables to be replaced by `∀ x, φ x` and `∃ x, φ x` only.
-  After deriving them, can we use theorems in *2 - *5. *)
+  support variables to be replaced by `∀ x, φ x` and `∃ x, φ x` only.
+  Should they be derived, we can use theorems in *2 - *5. *)
 Theorem n9_3 (φ : Prop → Prop) : 
   (∀ x, φ x) ∨ (∀ x, φ x) → (∀ x, φ x).
 Proof.
@@ -433,9 +430,8 @@ Proof.
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
   set (λ (φ0 : Prop → Prop) (P0 : Prop), 
-    eq_to_equiv ((∀ x, φ0 x) ∨ P0) (∀ x, φ0 x ∨ P0) 
-          (n9_03 φ0 P0))
-      as n9_03a.
+    eq_to_equiv ((∀ x, φ0 x) ∨ P0) (∀ x, φ0 x ∨ P0) (n9_03 φ0 P0))
+    as n9_03a.
   set (X := Real "x").
   (* ******** *)
   assert (S1 : Q → φ X ∨ Q).
@@ -463,26 +459,24 @@ Proof.
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
   set (λ (φ0 : Prop → Prop) (P0 : Prop), 
-    eq_to_equiv ((∀ x, φ0 x) ∨ P0) 
-                (∀ x, φ0 x ∨ P0) 
-    (n9_03 φ0 P0))
+    eq_to_equiv ((∀ x, φ0 x) ∨ P0) (∀ x, φ0 x ∨ P0) (n9_03 φ0 P0))
     as n9_03a.
   set (X := Real "x").
   (* ******** *)
   assert (S1 : Q → φ X ∨ Q).
   { apply Add1_3. }
-  assert (S2 : ∃ x, Q → (φ x) ∨ Q).
+  assert (S2 : ∃ x, Q → φ x ∨ Q).
   {
-    pose proof (n9_1 (fun x => Q → (φ x) ∨ Q) X) as n9_1.
+    pose proof (n9_1 (fun x => Q → φ x ∨ Q) X) as n9_1.
     now MP n9_1 S1.
   }
-  assert (S3 : Q → ∃ x, (φ x) ∨ Q).
+  assert (S3 : Q → ∃ x, φ x ∨ Q).
   { 
     setoid_rewrite -> Impl1_01a in S2.
-    rewrite <- (n9_06 (fun x => (φ x) ∨ Q) (¬ Q)) in S2.
+    rewrite <- (n9_06 (fun x => φ x ∨ Q) (¬ Q)) in S2.
     now rewrite <- Impl1_01 in S2.
   }
-  assert (S4 : Q → (∃ x, (φ x)) ∨ Q).
+  assert (S4 : Q → (∃ x, φ x) ∨ Q).
   { now rewrite <- n9_05 in S3. }
   exact S4.
 Qed.
