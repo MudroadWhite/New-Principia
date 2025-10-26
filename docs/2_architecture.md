@@ -87,8 +87,7 @@ As introduced above, `assert` and `set`, sets up the general architecture to wri
 
 Beneath the architecture comes the details of how we prove a theorem. By referring to [SEP entry for Principia Mathematica](https://plato.stanford.edu/entries/principia-mathematica/), we can divide our tactics into 2 types - as the slogan says, "just `pose` and `rewrite`".
 
-`pose proof`, occasionally with `apply`, instantiates a existing theorem to use.
-
-All other tactics are generally for rewriting to, and even a level down, deducing new propositions from existing propositions. This includes: `rewrite`, `setoid_rewrite`, also with custom defined Ltacs like `MP` `Syll` directly inherited from the [old repository](https://github.com/LogicalAtomist/principia).
+- `pose proof`, occasionally with `apply`, instantiates a existing theorem to use.
+- All other tactics are generally for rewriting to, and even a level down, deducing new propositions from existing propositions. This includes: `rewrite`, `setoid_rewrite`, also with custom defined Ltacs like `MP` `Syll` directly inherited from the [old repository](https://github.com/LogicalAtomist/principia).
 
 [tactics](./3_tactics.md) goes into the details of these tactics.
