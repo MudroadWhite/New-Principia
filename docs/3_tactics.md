@@ -93,6 +93,7 @@ Throughout chapter 1 - 5, there are several custom tactics defined to use the pr
 2. `clear` every unrelated hypotheses
 3. `move` the propositions `before` or `after`, into the right order. For example, if we want to `MP S2 S1`, then we have to `move S1 after S2`.
 4. perform the tactic and immediately conclude the subproof.
+
 Since we don't always need to go through the full routine, we're only requiring that
 - Tactics above are **allowed** to use, when they are the necessary preparations to perform a custom Ltac.
 
