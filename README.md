@@ -10,15 +10,14 @@ This project is currently focused on the following parts:
 ## Why working on it
 - Principia Mathematica has a stable version
 - Coq doesn't need a lot of version updates
-- Formalizing PM feels like climbing a mountain
 - Formalized PM is a good education material for verifiers
+- Formalizing PM feels like climbing a mountain
 
 ## Features
 This project aims towards demonstration and addresses compatability. Readers are supposed to be able to read the code line by line modulo technical hacks. Future contributers should find it easy to continue for better works while pertaining the style. 
-- Forward style reasoning, keeping the most flavor of original Principia's proof
-- Clear proof architecture and clean, maybe beautiful proof window
-- "Just `pose` and `rewrite`": No 3rd party library. Minimal, native and simple tactics.
-- [Documented](./docs/README.md)
+- "Just `pose` and `rewrite`": Forward style reasoning, as in original Principia's proof. No 3rd party library. Minimal, native and simple tactics.
+- Clear proof architecture and clean, maybe beautiful proof window.
+- [Documented](./docs/README.md).
 
 ## Can you make sure that the code/proof is 100% correct?
 No. Here are the reasons:
