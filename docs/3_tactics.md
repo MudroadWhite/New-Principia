@@ -34,7 +34,9 @@ Technically speaking, if we completely follow the deduction rules in PM's logic 
 4. Optionally get the result as `R → S` and `S → R`
 5. Apply `Conj`, `Equiv` sequencially to combine them into `R ↔ S`
 
-It's straightforward that this routine is a lot just for a single step of deduction. To simplify the procedure, we're allowed to use `rewrite` directly on theorems with `↔`s, providing that we can always expand these `rewrite`s into a sequence of `Simp`, `MP`, `Conj` and `Equiv`.
+There's also a much more convinient routine provided in chapter 4, for `↔` rules to apply on `↔` propositions. 
+
+Generally still, it's straightforward that all these routines are quite a lot just for a single rewrite with `↔`. To simplify the procedure, Rocq's `rewrite` tactic shrinks everything into one line, so we are allowed to use it providing that we can always expand these `rewrite`s into a sequence of `Simp`, `MP`, `Conj` and `Equiv`, or more.
 - \[Simplification\]`rewrite -> thm` on `↔` is **allowed**.
 - \[Simplification\]`rewrite <- thm` on `↔` is **allowed**.
 - \[Simplification\]The `at` variant to specify the targeted subterm is **allowed**, as refining the subterm is a finite repetition of `MP`s and `Syll`s. Beside using `at`, we can also provide the full parameter list for `thm` to `rewrite`.
