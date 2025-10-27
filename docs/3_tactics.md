@@ -1,6 +1,6 @@
 # Tactics
 
-This chapter discusses the tactics we generally use for proof in further details.
+This chapter discusses the tactics we generally use for proof in deeper details.
 
 Technically speaking, Principia's logic system is very simple, maybe much more simpler than most of the modern type systems, cf. [SEP entry for Principia Mathematica](https://plato.stanford.edu/entries/principia-mathematica/). All it cares about is 1. deducing a theorem either directly or from Modus Ponens and 2. substitute/*rewrite* subparts of a proposition according to some rules. 
 
