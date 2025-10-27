@@ -17,14 +17,14 @@ We can use a new tactic to simplify a tedious part of proof down, if
 `pose proof (thm x y z) as thm` should be almost the only way to *introduce* a theorem into the hypotheses, stating the existence of an already proven result. Also, starting from chapter 9, propositions are further come with a special kind of "type", basically the order of the proposition, and at base case we're only allowed to use elementary propositions as parameters, for elementary functions. That being said,
 - `pose proof` on a theorem is **allowed**.
 - `pose` on a theorem is strictly **not allowed**, because `pose proof` gets the proof window cleaner.
-- Provided parameters are **required** to all and only the ones at the *lhs* of the theorem.
-- Provided parameters are **optional** to limit their "type"s to elementary proposition, as the default of chapter 9. Every chapter after chapter 9 enables a new class of proposition to be parameterized. Fundamentally however, whether they starts with a `∀` matters.
-- \[Simplification\]If a goal can be solved immediately, `apply` is **allowed** to use.
+- Posed theorem is **required** be instantiated with all parameters at its *lhs*.
+- Parameters are **required** to check, currently manually, if they have the correct type. The default for chapter 9 is elementary proposition, and every chapter after chapter 9 enables a new class of proposition to be parameterized.
+- \[Simplification\]Both `apply` and `exact` are **allowed** to use, if a goal can be solved immediately.
 
 ## 2. How to use a `→` theorem(rewrite)
 A `→` theorem means that we can derive a conclusion from its premise. Immediately from above, here are almost the only allowed rules on `→` propositions:
-- `MP p1 p2`, using the `MP` tactic, is **allowed**, where `p1` and `p2` are both propositions posed in the hypotheses. This is also how we treat "parameters" at the *rhs* of a theorem.
-- `Syll p1 p2 Sy` for deriving a new "composed" proposition `Sy`, by using `Syll` tactic, is **allowed**. This is a tactic similar to `MP` and its exact meaning is given in chapter 2.
+- `MP p1 p2` is **allowed**, which uses the `MP` tactic on `p1` and `p2` being both propositions posed in the hypotheses. This is also how we treat "parameters" at the *rhs* of a theorem.
+- `Syll p1 p2 Sy` is **allowed** for deriving a new "composed" proposition `Sy`, by using the `Syll` tactic. This tactic is similar to `MP` and its exact meaning is given in chapter 2.
 
 ## 3. How to use a `↔` theorem(rewrite)
 Technically speaking, if we completely follow the deduction rules in PM's logic system, we need to
@@ -39,13 +39,13 @@ There's also a much more convinient routine provided in chapter 4, for `↔` rul
 Generally still, it's straightforward that all these routines are quite a lot just for a single rewrite with `↔`. To simplify the procedure, Rocq's `rewrite` tactic shrinks everything into one line, so we are allowed to use it providing that we can always expand these `rewrite`s into a sequence of `Simp`, `MP`, `Conj` and `Equiv`, or more.
 - \[Simplification\]`rewrite -> thm` on `↔` is **allowed**.
 - \[Simplification\]`rewrite <- thm` on `↔` is **allowed**.
-- \[Simplification\]The `at` variant to specify the targeted subterm is **allowed**, as refining the subterm is a finite repetition of `MP`s and `Syll`s. Beside using `at`, we can also provide the full parameter list for `thm` to `rewrite`.
+- \[Simplification\]The `at` variant is **allowed**, to specify the targeted subterm. Refining the subterm is a finite repetition of `MP`s and `Syll`s. Beside using `at`, we can also provide the full parameter list for `thm` to `rewrite`.
 - The `thm` for rewrite is **recommended** to provide its full (lhs) parameter list.
 
 Now that we finished discussing the construction routine on `↔`, we come to destruction routine on `↔`. `Equiv` theorem changes `P ↔ Q` back to `P → Q ∧ Q → P`. `Simp` picks the branch we want to use later, or we use both branch at different places. A more convenient way is seamlessly use Rocq's `destruct` tactic.
 - \[Simplification\]`destruct` on `↔` is **allowed**.
-- \[Simplification\]If the `destruct`ed `↔` proposition branch is used for further `MP` or `Syll` on, this `destruct` is **required** to be further simplified into a `rewrite` on `↔`.
-- Unless both branches are being used, an immediate `clear` after the `destruct` is **required**.
+- \[Simplification\]`destruct` is **required** to be further simplified into a `rewrite` on `↔`, if the `destruct`ed `↔` proposition branch is used for further `MP` or `Syll` on.
+-  An immediate `clear` is **required** after the `destruct` to delete unused branch, unless both branches will be used in the remaining of the proof.
 
 Explicit examples and comments on these simplifications are occasionally provided through chapter 9 & 10.
 
