@@ -18,7 +18,7 @@ This project aims towards demonstration and addresses compatability. Readers are
 - Forward style reasoning, keeping the most flavor of original Principia's proof
 - Clear proof architecture and clean, maybe beautiful proof window
 - "Just `pose` and `rewrite`": No 3rd party library. Minimal, native and simple tactics.
-- Documented
+- [Documented](./docs/README.md)
 
 ## Can you make sure that the code/proof is 100% correct?
 No. Here are the reasons:
