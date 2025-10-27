@@ -31,19 +31,32 @@ Similarly, `Theorem`s are used to define *theorems* in Principia, and are intend
 
 Every `Definition` or `Theorem` represents a proposition in Principia. They usually have both parameters on the left hand side of the `:`, plus a proposition that "has" parameters on the right hand side. But these parameters are different: *rhs* parameters are intended to be only filled through deductions, which will be mostly discussed in the [tactics](./3_tactics.md) chapter; and *lhs* parameters are the real ones to *set a proposition up*.
 
-Say, if I have a parameter `P : Prop` for a theorem, this parameter is supposed to be *instantiated* by a proposition. Principia's propositions come along with *types*, which is sadly much more refined than the `Prop` in `P : Prop`, and this is why these propositions' types require manual checking. We might only allow `P` to be instantiated by an elementary proposition; a first-order proposition, 2nd-order prop, etc.. If this project has become more mature, we might change `P : Prop` into something like `P : Elementary_Proposition` for a clearer distinction.
+### 4.1 How does Principia instantiate a proposition?
+Principia's methodology to instantiate a proposition has a slight difference to moderntype theory treatment. My understanding is,
+1. Every proven/defined proposition is immediately available. If there is a variable `P` in the proposition, it doesn't need any extra modifications and no action is performed
+2. If we want to derive something from this primitive proposition, we further change the `P` into something else.
+3. Same treatment applies to every proevn theories.
 
+For this reason, I think it's safe to apply our alternative:
+1. Every proposition is **required** to be instantiated before being asserted.
+2. Even if we don't need any "explicit" instantiations, we still consider it as an action of instanstiating `P` with `P`.
+
+The procedure of instantiation, leads to the parameters in the left hand side of a `Definition` or a `Theorem`.
+
+For a lhs parameter `P : Prop` of a theorem, the next question comes to us is what are allowed to instantiate P. Principia's propositions come along with *types*, which is sadly much more refined than the `Prop` in `P : Prop`, and this is why these propositions' types require manual checking. We might only allow `P` to be instantiated by an elementary proposition; a first-order proposition, 2nd-order prop, etc.. If this project has become more mature, we might change `P : Prop` into something like `P : Elementary_Proposition` for a clearer distinction.
+
+### 4.2 Naming conventions
 We have naming conventions for propositions. A proposition usually is named with `nxx_yyy`, with `xx_yyy` the number appeared in Principia for that proposition. A few of them are additionally come with their names in the text, and in that case we will adapt the `n` prefix to the name. For example, `Id2_08`. 
 
 Now we come to naming conventions for (lhs) parameters.
 - Functions as parameters are supposed to be named as the same style of original text: either greek letters like `φ` or their upper-cased English equivalent like `Phi`.
 - Apparent variables are quantified variables in `forall`, `exists` and so on. As parameters, they're usually lower case literals like `x`.
-- Real variables are variables that can directly instantiate the proposition. They're usually upper case literals like `X`.
+- Real variables are variables that can directly instantiated. They're usually upper case literals like `X`.
 
 ## 5. What's under a single proof?
 If its correspondence in original text has splited the proof into several steps, rather than just providing related theorems for hints, we call one proposition is coming with a "long proof". 
 
-- Our architecture is **not required** to be enforce on short proofs.
+- Our architecture is **not required** to be enforced on short proofs.
 
 Otherwise for a long proof, it usually has the following structure:
 ```Coq
