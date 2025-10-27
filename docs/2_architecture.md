@@ -31,7 +31,7 @@ Similarly, `Theorem`s are used to define *theorems* in Principia, and are intend
 
 Every `Definition` or `Theorem` represents a proposition in Principia. They usually have both parameters on the left hand side of the `:`, plus a proposition that "has" parameters on the right hand side. But these parameters are different: *rhs* parameters are intended to be only filled through deductions, which will be mostly discussed in the [tactics](./3_tactics.md) chapter; and *lhs* parameters are the real ones to *set a proposition up*.
 
-### 4.1 How does Principia instantiate a proposition?
+### 4.1. How does Principia instantiate a proposition?
 Principia's methodology to instantiate a proposition has a slight difference to moderntype theory treatment. My understanding is,
 1. Every proven/defined proposition is immediately available. If there is a variable `P` in the proposition, it doesn't need any extra modifications and no action is performed
 2. If we want to derive something from this primitive proposition, we further change the `P` into something else.
@@ -45,7 +45,7 @@ The procedure of instantiation, leads to the parameters in the left hand side of
 
 For a lhs parameter `P : Prop` of a theorem, the next question comes to us is what are allowed to instantiate P. Principia's propositions come along with *types*, which is sadly much more refined than the `Prop` in `P : Prop`, and this is why these propositions' types require manual checking. We might only allow `P` to be instantiated by an elementary proposition; a first-order proposition, 2nd-order prop, etc.. If this project has become more mature, we might change `P : Prop` into something like `P : Elementary_Proposition` for a clearer distinction.
 
-### 4.2 Naming conventions
+### 4.2. Naming conventions
 We have naming conventions for propositions. A proposition usually is named with `nxx_yyy`, with `xx_yyy` the number appeared in Principia for that proposition. A few of them are additionally come with their names in the text, and in that case we will adapt the `n` prefix to the name. For example, `Id2_08`. 
 
 Now we come to naming conventions for (lhs) parameters.
@@ -78,12 +78,12 @@ Qed.
 
 ```
 
-### 5.1 `TOOLS` section
+### 5.1. `TOOLS` section
 - If any tool is being used, a `TOOLS` header is **required** to be place at the beginning of a long proof.
 
 Technical features, that can be be found under `lib.v`, usually require a warmup before being available, for example, introducing an extra real variable with the proof(with `set (X := Real "x")`), or prepare a modified version of a theorem for more convenient use. `TOOLS` section is for performing such preparations.
 
-### 5.2 `assert` blocks
+### 5.2. `assert` blocks
 - All long proofs are **required** to adapt to the proof architecture picted above.
 
 For long proofs, the first tactic we use always starts with an `assert`, for specifying intermediate steps corresponded to ones in the original text. 
