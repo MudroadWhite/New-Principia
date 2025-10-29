@@ -13,6 +13,12 @@ Type of parameters allowed: from elementary propositions to first order proposit
 *)
 
 (* 
+TODO: check and rewrite the introduction below
+Goal of ch9: demonstrate that ch1-5 can be extended to first order propositions
+- `exists` is a primitive idea, not a supposed idea
+- most theorems in this chapter are only to demonstrate its 1st order form, and will not be used
+  (since they depend on the `exists` primitive idea which seems unsatisfying)
+
 Every propositions, variables in chapter 9 are supposed to be elementary propositions,
 which doesn't contain any quantifiers. That being said, in a rigorous sense, 
 `P := ∀ x, F x` shouldn't be allowed, but `P := X ∨ Y` is allowed. Currently we 
@@ -199,7 +205,7 @@ Proof.
       (P0 ∨ ∃ x, φ0 x) (∃ x, P0 ∨ φ0 x) 
       (n9_06 φ0 P0))
   as n9_06a.
-  set (Z := Real "z").
+  set (Z := Individual "z").
   (* ******** *)
   assert (S1 : (φ Z → ψ Z) → φ Z → ψ Z).
   { exact (Id2_08 (φ Z → ψ Z)). }
@@ -259,7 +265,7 @@ Proof.
       ((∀ x, φ0 x) ∨ (∃ y, ψ0 y))
       (∀ x, ∃ y, φ0 x ∨ ψ0 y)
       (n9_07 φ0 ψ0)) as n9_07a.
-  set (Y := Real "Y").
+  set (Y := Individual "Y").
   (* ******** *)
   assert (S1 : (φ Y → ψ Y) → φ Y → ψ Y).
   { exact (Id2_08 (φ Y → ψ Y)). }
@@ -311,7 +317,7 @@ Theorem n9_23 (φ : Prop → Prop) : (∀ x, φ x) → (∀ x, φ x).
 (* Original proof uses Id, 9.13, 9.21 to **turn away from the problem of mismatched 
   parameter types**. *)
 Proof. 
-  set (X := Real "x").
+  set (X := Individual "x").
   pose proof (Id2_08) (φ X) as Id2_08.
   pose proof (n9_13 (fun x => φ x -> φ x) X) as n9_13.
   MP n9_13 Id2_08.
@@ -349,7 +355,7 @@ Proof.
   set (λ (φ0 : Prop → Prop) (P0 : Prop), 
     eq_to_equiv ((∃ x, φ0 x) ∨ P0) (∃ x, φ0 x ∨ P0) (n9_05 φ0 P0))
     as n9_05a.
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : φ X ∨ φ X → φ X).
   { apply Taut1_2. }
@@ -392,7 +398,7 @@ Proof.
   set (λ (φ0 : Prop → Prop) (P0 : Prop), 
     eq_to_equiv ((∃ x, φ0 x) ∨ P0) (∃ x, φ0 x ∨ P0) (n9_05 φ0 P0))
     as n9_05a.
-  set (X := Real "X").
+  set (X := Individual "X").
   (* ******** *)
   assert (S1 : ∀ y, φ X ∨ φ y → ∃ z, φ z).
   {
@@ -432,7 +438,7 @@ Proof.
   set (λ (φ0 : Prop → Prop) (P0 : Prop), 
     eq_to_equiv ((∀ x, φ0 x) ∨ P0) (∀ x, φ0 x ∨ P0) (n9_03 φ0 P0))
     as n9_03a.
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : Q → φ X ∨ Q).
   { apply Add1_3. }
@@ -461,7 +467,7 @@ Proof.
   set (λ (φ0 : Prop → Prop) (P0 : Prop), 
     eq_to_equiv ((∀ x, φ0 x) ∨ P0) (∀ x, φ0 x ∨ P0) (n9_03 φ0 P0))
     as n9_03a.
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : Q → φ X ∨ Q).
   { apply Add1_3. }
@@ -484,7 +490,7 @@ Qed.
 Theorem n9_34 (φ : Prop → Prop) (P : Prop) : (∀ x, φ x) → P ∨ (∀ x, φ x).
 Proof. 
   (* TOOLS *)
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : φ X → P ∨ φ X).
   { apply Add1_3. }
@@ -507,7 +513,7 @@ Theorem n9_35 (φ : Prop → Prop) (P : Prop) :
   (∃ x, φ x) → P ∨ (∃ x, φ x).
 Proof.
   (* TOOLS *)
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : φ X → P ∨ φ X).
   { apply Add1_3. }
@@ -529,7 +535,7 @@ Qed.
 Theorem n9_36 (φ : Prop → Prop) (P : Prop) : P ∨ (∀ x, φ x) → (∀ x, φ x) ∨ P.
 Proof. 
   (* TOOLS *)
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : P ∨ φ X → φ X ∨ P).
   { apply Perm1_4. }
@@ -548,7 +554,7 @@ Qed.
 Theorem n9_361 (φ : Prop → Prop) (P : Prop) : (∀ x, φ x) ∨ P → P ∨ (∀ x, φ x).
 Proof. 
   (* TOOLS *)
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : φ X ∨ P → P ∨ φ X).
   { apply Perm1_4. }
@@ -567,7 +573,7 @@ Qed.
 Theorem n9_37 (φ : Prop → Prop) (P : Prop) : P ∨ (∃ x, φ x) → (∃ x, φ x) ∨ P.
 Proof.
   (* TOOLS *)
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : P ∨ φ X → φ X ∨ P).
   { apply Perm1_4. }
@@ -586,7 +592,7 @@ Qed.
 Theorem n9_371 (φ : Prop → Prop) (P : Prop) : (∃ x, φ x) ∨ P → P ∨ (∃ x, φ x).
 Proof. 
   (* TOOLS *)
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : φ X ∨ P → P ∨ φ X).
   { apply Perm1_4. }
@@ -614,7 +620,7 @@ Proof.
     Conj n2_32 n2_31 C1.
     now Equiv C1.
   }
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : (∀ x, P ∨ (Q ∨ φ x)) → (∀ x, Q ∨ (P ∨ φ x))).
   {
@@ -659,7 +665,7 @@ Theorem n9_401 (φ : Prop → Prop) (P Q : Prop) :
   P ∨ Q ∨ (∃ x, φ x) → Q ∨ P ∨ (∃ x, φ x).
 Proof. 
   (* TOOLS *)
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : (∃ x, P ∨ (Q ∨ φ x)) → (∃ x, Q ∨ (P ∨ φ x))).
   {
@@ -678,7 +684,7 @@ Theorem n9_41 (φ : Prop → Prop) (P R : Prop) :
   P ∨ (∀ x, φ x) ∨ R → (∀ x, φ x) ∨ P ∨ R.
 Proof. 
   (* TOOLS *)
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : (∀ x, P ∨ (φ x ∨ R)) → ∀ x, φ x ∨ (P ∨ R)).
   {
@@ -700,7 +706,7 @@ Theorem n9_411 (φ : Prop → Prop) (P R : Prop) :
   P ∨ (∃ x, φ x) ∨ R → (∃ x, φ x) ∨ P ∨ R.
 Proof. 
   (* TOOLS *)
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : (∃ x, P ∨ (φ x ∨ R)) → ∃ x, φ x ∨ (P ∨ R)).
   {
@@ -722,7 +728,7 @@ Theorem n9_42 (φ : Prop → Prop) (Q R : Prop) :
   (∀ x, φ x) ∨ Q ∨ R → Q ∨ (∀ x, φ x) ∨ R.
 Proof. 
   (* TOOLS *)
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : (∀ x, φ x ∨ (Q ∨ R)) → ∀ x, Q ∨ (φ x ∨ R)).
   {
@@ -744,7 +750,7 @@ Theorem n9_421 (φ : Prop → Prop) (Q R : Prop) :
   (∃ x, φ x) ∨ Q ∨ R → Q ∨ (∃ x, φ x) ∨ R.
 Proof. 
   (* TOOLS *)
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : (∃ x, φ x ∨ (Q ∨ R)) → ∃ x, Q ∨ (φ x ∨ R)).
   {
@@ -768,7 +774,7 @@ Proof.
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
-  set (Y := Real "y").
+  set (Y := Individual "y").
   (* ******** *)
   assert (S1 : (P → Q) → ((P ∨ φ Y) → (Q ∨ φ Y))).
   { 
@@ -806,7 +812,7 @@ Proof.
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
-  set (Y := Real "y").
+  set (Y := Individual "y").
   (* ******** *)
   assert (S1 : (P → Q) → ((P ∨ φ Y) → (Q ∨ φ Y))).
   { 
@@ -846,7 +852,7 @@ Proof.
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : (P → φ X) → ((P ∨ R) → (φ X ∨ R))).
   { 
@@ -882,7 +888,7 @@ Proof.
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : (P → φ X) → ((P ∨ R) → (φ X ∨ R))).
   { 
@@ -919,7 +925,7 @@ Proof.
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : (φ X → Q) → ((φ X ∨ R) → (Q ∨ R))).
   { 
@@ -950,7 +956,7 @@ Proof.
   (* TOOLS *)
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : (φ X → Q) → ((φ X ∨ R) → (Q ∨ R))).
   { 
