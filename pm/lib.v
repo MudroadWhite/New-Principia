@@ -21,12 +21,19 @@ Example var_0 := Individual "x".
 
 (* cf.p.23: `=` propositions are allowed to be turned into `<->` propositions. An 
 alternative tactic to this is `apply propositional_extensionality`. *)
+(* TODO: check if the `=` means exactly the definitional equality `Df =` *)
 Theorem eq_to_equiv : forall (P Q : Prop),
   (P = Q) -> (P <-> Q).
 Proof.
   intros P Q H.
   split; try rewrite -> H; trivial.
 Qed.
+
+(* cf.p.51: `!` notation *)
+(* Unsatisfying: what we want to express is that Phi takes argument with the same typf of `X` *)
+Definition predicate_bang (Phi : Prop -> Prop) (X : Prop) := (fun x => Phi X).
+(* We are allowed to directly fix the X without fixing the function, which is a main feature for this operator *)
+Definition predicate_app (X : Prop) (Phi : Prop -> Prop) := predicate_bang Phi X.
 
 (* Experimental:
 We might want to design an explicit `Asserted` and make notation as `[| |]`
@@ -48,11 +55,15 @@ Cons:
 *)
 Axiom Asserted : Prop -> Prop.
 
-(* Draft, experimental: `^` support for a function/proposition, which works like a abstraction
+(* Draft, experimental: 
+
+design `^` for a proposition, which abstracts it into a prop function
 Idea: 
 Functions in Principia seems not to be a 1st class member. They are being abstracted from existing 
 propositions with a operation `^` on these proposition's variables, even before these proposition
 variables are being instantiated.
+
+TODO: cite the page for `^`'s definition
 
 if we have a proposition `X /\ Y`, we can write something like
 `^ X` on `X /\ Y` to abstract the proposition into a function, and also making 
@@ -63,15 +74,40 @@ nowadays
 In particular, `X` being hatted is still a variable being not instantiated, and determining
 `X` is different from, and not the reversed procedure of hatting `X`.
 
-Draft: 
-  hat (P : Prop -> Prop) (X : Prop) :
-    hat (P X) (X) = P
-    where P has become the represesntation of a function
+hat (P : Prop -> Prop) (X : Prop) :
+  hat (P X) (X) = P
+  where P has become the represesntation of a function
+*)
+
+(* Draft, experimental:
+Design a `comma` predicate  which works like a `id` 
+`to enforce "lazy evaluation" on quantifiers 
+*)
+
+(* ******** *)
+(* AGGREGATED TODOS *)
+(* ******** *)
+(* TODO:
+Add scope for each of the chapter, on definitions of `~` and `\/`, since they are supposed to be only work on "one type of propositions"
+
+
  *)
 
-(* NOTE: 
+(* ******** *)
+(* NOTES *)
+(* ******** *)
+(* 
+https://plato.stanford.edu/entries/pm-notation/
+https://en.wikipedia.org/wiki/Glossary_of_Principia_Mathematica
+https://randall-holmes.github.io/Drafts/notesonpm.pdf
+https://www.religion-online.org/article/the-axiomatic-matrix-of-whiteheads-process-and-reality/
+https://nap.nationalacademies.org/read/10866/chapter/66
+
+~p.14:
+- propositional function: the functions that we usually concern, like `Phi` `Psi` etc..
+
 ~p.17:
-- descriptive funstion is a special kind of propositional function, including examples like `x is blue`
+- descriptive funstion: a special kind of propositional function, including examples like `x is blue`
 - `~` is not a primitive idea. It is supposed to have a different definition on different types of proposition. 
 For example, we might define `~` a typeclass, and `forall` propositions has an instance of implementation for 
 this operator
@@ -81,7 +117,7 @@ apparent variable "appears to be" the only variables, while "real variables" inc
 
 ~p.20: 
 - (Ax, Px -> Q x) -> (Ax, Px) -> (Ax, Qx) requires that P Q takes arguments "of the same type". -> p.49
-- formal implication are the `->` wrapped up in `forall`s. It bypassed the problem that `P -> Q = ~P \/ Q`, and restrict that we have to 
+- formal implication: the `->` wrapped up in `forall`s. It bypassed the problem that `P -> Q = ~P \/ Q`, and restrict that we have to 
 know `forall x, P x -> Q x` and `P X` to get `Q X`.
 
 ~p.22:
@@ -103,14 +139,54 @@ It turns out that the return type is untyped. To enforce the return type with a 
 of a function taking the same type
 
 ~p.50:
-- A propositional function could contain apparent variables
-- We can eliminate apparent variables and source them back to real variables
-- A function made up of no apparent variable is called a matrix, to generate a "matrix" of elementary propositions
+- A propositional function could possibly contain apparent variables. We can eliminate apparent variables 
+  and source them back to real variables
+- matrix: A function made up of no apparent variable, to generate a "matrix" of elementary propositions
 
 ~p.51:
+- predicate: first order functions. Only takes individuals as parameters
+- Phi ! x^: any Phi that is a first order function/predicate and takes an variable of `x`'s type
+- Phi ! x: `Phi ! x^` instantiated by `x`
+- `Phi ! x^` could be the type of a real variable which is not an individual
 - "Individual" is the best thing to instantiate a function's parameters
 - (TODO)They are designed to be not propositions. Why?
 - (TODO)Why we have to design the hierarchy for "functions" and "propositions " separately?
-- Phi ! x has been explained. This notation has 2 variants in total, each case just to ensure its return type is fixed
-- Name of the `!` notation is `predicate`
+
+~p.52:
+- `!` notation also seems to be used only when the function is being considered as a variable(at rhs)? And for all other cases, they are 
+  supposed to be fixed(at rhs)?
+- `!`'s summary: this is not a notation just for first order functions, but it's more like a notation for function being identified as 
+  a variable at rhs
+
+~p.56:
+- the axiom of reducibility: "any" properties should have a equivalent of itself in a collection of properties
+
+~p.57:
+- exaplained a proof of identity `=` informally, only to be complete with the support of axiom of reducibility
+
+~p.94:
+- (notes on *1.01)the rules for definitional equality is out of the theory
+
+~p.127:
+- Chapter II has explained that ~ and \/ should have different meaning on different propositions. Guess: we cannot define a
+negation on "all" propositions attributing to Russell's paradox
+
+~p.128:
+- Goal of ch9: focus on definition of `~` and `\/` defined in *1 - *5 limited to eprops. Extend their definitions to 1st orde props
+- The support of `forall` and `exists` seems to be only for demonstration purpose - if we take them as primitive ideas, we can 
+  conclude "upgraded" versions of propositions "just as in" ch1-5.
+- the important parts seems to be *1.2 - *1.6; A new way is used for analogue of 1.7 - 1.72
+- Real variables doesn't have types(??), and can be instantiated with any proposition of any orders???
+- Summary:
+  - elementary propositions are initially admitted, along with their types
+  - definition of `~` and `\/` depends on proposition types
+  - definition of function depends on type of `~` and `\/`
+  - order of a proposition depends on its parameter's types
+
+~p.138:
+- Ch9 enables us to take `forall` propositions as parameters
+- therefore we can have a better goal(?)
+- Goal of ch10: focus on deducing 1-var functions from 
+- "for example", `exists` is no longer a primitive idea which is different from ch9  
+- several ch9 theorems are only taken because of their ability to reason for quantified propositions
 *)
