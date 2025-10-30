@@ -26,35 +26,24 @@ didn't pose any assertions on parameters being elementary propositions, and the 
 can be high flawed on this restriction.
 
 There are 2 sets of goals for chapter 9. First one:
-- Pps in *1 - *5 are limited to elementary propositions.
-- We obtain an extra set of rules from definitions in *1 - *5 to extend them.
-- Show that the extended rule set can work on 1st ordered propositions combined 
-  with negations and disjunctions.
+(TODO: demonstrate that ch1-5 can be extended to first order propositions)
 
-Second one:
+Second one:(TODO: rewrite this part)
 - Define a "type" that every propositions belong to
 - For each "type", implement a set of rules for disjunctions and negations.
 - Prove that we can have disjunctions and negations for every type, so that disjunctions 
   and negations can work as a primitive idea regardless of type of the proposition. This
   procedure doesn't involve mathematical induction.
 
-The reason for the 2nd set of goal:
+The reason for the 2nd set of goal:(TODO: rewrite this part)
 - Without definition of `¬` and `∨` we cannot form a function.
 - Without definition for a function we cannot form `∀ x, F x`.
 - Requiring `¬` and `∨` be defined for that order of proposition limits the scope. See
   example in p.129.
 
-The end of the chapter proved that the definition of a function P can be extended to 
-sentences involving `∀`s, and moreover, multiple param functions with `∀`s within, or 
-several `∀`s being concated with some binary logic operators.
-
-The beginning of chapter 10 said that the implications in chapter 9 are called 
-"material implication"s, and the results will be extended to "formal implication"s.
-
-Notes on this chapter:
-There are still several places where I might have oversimplified the proofs
-with Coq tactics. I'm still figuring out if these tactics are following the original 
-proof's routine.
+The end of the chapter conclude that for any function P X we have enough preparations to 
+generalize to `forall x, P x`, and moreover, a proposition with several `∀`s, or several 
+`∀`s being concated with some binary logic operators.
 *)
 
 (* Definitions involving `¬` on 1st order props. Our current simulation

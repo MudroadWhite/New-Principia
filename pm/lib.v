@@ -57,7 +57,6 @@ Cons:
 Axiom Asserted : Prop -> Prop.
 
 (* Draft, experimental: 
-
 design `^` for a proposition, which abstracts it into a prop function
 Idea: 
 Functions in Principia seems not to be a 1st class member. They are being abstracted from existing 
