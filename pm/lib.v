@@ -91,19 +91,14 @@ hat (P : Prop -> Prop) (X : Prop) :
   where P has become the represesntation of a function
 *)
 
-(* Draft, experimental:
-Design a `comma` predicate  which works like a `id` 
-`to enforce "lazy evaluation" on quantifiers 
-*)
-
 (* ******** *)
 (* AGGREGATED TODOS *)
 (* ******** *)
 (* TODO:
 Add scope for each of the chapter, on definitions of `~` and `\/`, since they are supposed to be only work on "one type of propositions"
-
-
- *)
+Should we also add scope for `MP` and `Syll`?
+Design a `comma` predicate  which works like a `id` `to enforce "lazy evaluation" on quantifiers 
+*)
 
 (* ******** *)
 (* NOTES *)
