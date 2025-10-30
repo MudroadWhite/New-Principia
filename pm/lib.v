@@ -12,13 +12,6 @@ Export ClassicalFacts.
 Export PropExtensionality.
 Export String.
 
-(* cf.p.51: To instantiate variables appeared in a propositional function, we use 
-the concept of "individual", designed as as wrapper just to tag an real variable. 
-This allows easy identification on them and they are free to be created everywhere *)
-Definition Individual (s : string) : Prop. Admitted.
-Example var_0 := Individual "x".
-(* TODO: add an notation? *)
-
 (* cf.p.23: `=` propositions are allowed to be turned into `<->` propositions. An 
 alternative tactic to this is `apply propositional_extensionality`. *)
 (* TODO: check if the `=` means exactly the definitional equality `Df =` *)
@@ -29,11 +22,19 @@ Proof.
   split; try rewrite -> H; trivial.
 Qed.
 
+(* cf.p.51: To instantiate variables appeared in a propositional function, we use 
+the concept of "individual", designed as as wrapper just to tag an real variable. 
+This allows easy identification on them and they are free to be created everywhere *)
+Definition Individual (s : string) : Prop. Admitted.
+Example var_0 := Individual "x".
+
 (* cf.p.51: `!` notation *)
 (* Unsatisfying: what we want to express is that Phi takes argument with the same typf of `X` *)
-Definition predicate_bang (Phi : Prop -> Prop) (X : Prop) := (fun x => Phi X).
+Definition Predicate (Phi : Prop -> Prop) (X : Prop) := (fun x => Phi X).
 (* We are allowed to directly fix the X without fixing the function, which is a main feature for this operator *)
-Definition predicate_app (X : Prop) (Phi : Prop -> Prop) := predicate_bang Phi X.
+Definition Predicvate_app (X : Prop) (Phi : Prop -> Prop) := predicate_bang Phi X.
+
+(* TODO: maybe we should synthesize these 2 types into one inductive type with the name of "constituent" *)
 
 (* Experimental:
 We might want to design an explicit `Asserted` and make notation as `[| |]`
@@ -189,4 +190,11 @@ negation on "all" propositions attributing to Russell's paradox
 - Goal of ch10: focus on deducing 1-var functions from 
 - "for example", `exists` is no longer a primitive idea which is different from ch9  
 - several ch9 theorems are only taken because of their ability to reason for quantified propositions
+
+~p.162:
+- (TODO) propositions is defined in p.43. They are supposed to be incomplete symbols, but individuals are complete 
+  so they are not propositions
+- matrix is predicative function as a definition
+- starting from chapter 12, all variables are either matrixes or individuals
+- propositions being used as variables(??) will no longer be used
 *)
