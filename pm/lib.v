@@ -30,7 +30,9 @@ Example var_0 := Individual "x".
 
 (* cf.p.51: `!` notation *)
 (* Unsatisfying: what we want to express is that Phi takes argument with the same typf of `X` *)
-(* TODO: design it better in the future *)
+(* TODO: design it better in the future
+A better way might be design this as an Either type and extract either the fixed parameter or 
+the fixed function *)
 (* Here, n is supposed to be the order of the predicate *)
 Definition Predicate (f : Prop -> Prop) (X : Prop) (n : nat) : Prop -> Prop := 
   (* Is it the right way to design the function? *)
