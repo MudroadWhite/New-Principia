@@ -1,22 +1,32 @@
-(* TODO: Do research on ch12
+Require Import PM.pm.lib.
+Require Import PM.pm.ch1.
+Require Import PM.pm.ch2.
+Require Import PM.pm.ch3.
+Require Import PM.pm.ch4.
+Require Import PM.pm.ch5.
+Require Import PM.pm.ch9.
+Require Import PM.pm.ch10.
+Require Import PM.pm.ch11.
 
-- what is a matrix?
-- Investigate how is [*x.y.z] being used exactly
+Open Scope single_app_equiv.
+Open Scope double_app_equiv.
 
-
-notes:
-`P (x : Ty1)`` has 3 possible result:
-1. true if x has type `Ty1`
-2. false if x doesn't have type `Ty1`
-3. undefined if x is not of type in P
-
-Individuals are exactly `Real` variables 
-
-https://plato.stanford.edu/entries/pm-notation/
-https://en.wikipedia.org/wiki/Glossary_of_Principia_Mathematica
-https://randall-holmes.github.io/Drafts/notesonpm.pdf
-https://www.religion-online.org/article/the-axiomatic-matrix-of-whiteheads-process-and-reality/
-https://nap.nationalacademies.org/read/10866/chapter/66
-
-pdf, p.28
+(* 
+Starting from chapter 12, every variables being quantified at the rhs has to be
+either an "Individual" or a "Predicate". For example, "forall P, P /\ Q" might 
+never appear, and instead, it will be either "forall Individual P, P /\ Q" or 
+"forall Predicate Phi, Phi (Individual P)" where Phi P = P /\ Q
 *)
+
+Definition n12_1 (X : Prop) (f Phi : Prop -> Prop) : 
+  let f := Predicate f X 1 in
+  exists f, (Phi X) <[- x -]> f x.
+Admitted.
+
+Definition n12_11 (X Y : Prop) (f Phi : Prop -> Prop -> Prop) :
+  let f := Predicate_2 f X Y 1 in
+  exists f, (Phi X Y) <[- x y -]> f x y.
+Admitted.
+
+Close Scope single_app_equiv.
+Close Scope double_app_equiv.

@@ -8,8 +8,6 @@ Require Import PM.pm.ch9.
 Require Import PM.pm.ch10.
 
 (* TODO: 
-- Design a `comma` predicate  which works like a `id` 
-`to enforce "lazy evaluation" on quantifiers 
 - Investigate the `alt`s in ch10 and see if there are more details
 - Identify parameter types in ch9 & 10
 - Correctly control the notation scopes in ch11 and ch10
@@ -103,7 +101,7 @@ Theorem n11_12 (P : Prop) (φ : Prop → Prop → Prop) :
   (∀ x y, P ∨ φ x y) → (P ∨ ∀ x y, φ x y).
 Proof.
   (* TOOLS *)
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : (∀ y, P ∨ φ X y) → (P ∨ ∀ y, φ X y)).
   { apply n10_12. }
@@ -152,10 +150,10 @@ Theorem n11_2 (φ : Prop → Prop → Prop) :
 Proof.
   (* TOOLS *)
   (* X and Y are unnecessary, but for redability *)
-  set (X := Real "x").
-  set (Y := Real "y").
-  set (W := Real "w").
-  set (Z := Real "z").
+  set (X := Individual "x").
+  set (Y := Individual "y").
+  set (W := Individual "w").
+  set (Z := Individual "z").
   set (λ P0 Q0 : Prop, eq_to_equiv (P0 → Q0) (¬ P0 ∨ Q0) (Impl1_01 P0 Q0))
     as Impl1_01a.
   (* ******** *)
@@ -200,7 +198,7 @@ Theorem n11_21 (φ : Prop → Prop → Prop → Prop) :
   (∀ x y z, φ x y z) ↔ (∀ y z x, φ x y z).
 Proof.
   (* TOOLS *)
-  set (Y := Real "y").
+  set (Y := Individual "y").
   (* ******** *)
   (* We can see that Rocq really doesn't make a distinction here... *)
   assert (S1 : (∀ x y z, φ x y z) ↔ 
@@ -294,7 +292,7 @@ Theorem n11_24 (φ : Prop → Prop → Prop → Prop) :
   (∃ x y z, φ x y z) ↔ (∃ y z x, φ x y z).
 Proof.
   (* TOOLS *)
-  set (Y := Real "y").
+  set (Y := Individual "y").
   (* ******** *)
   assert (S1 : (∃ x y z, φ x y z) ↔ (∃ x, ∃ y, ∃ z, φ x y z)).
   {
@@ -334,8 +332,8 @@ Theorem n11_26 (φ : Prop → Prop → Prop) :
   (∃ x, ∀ y, φ x y) → (∀ y, ∃ x, φ x y).
 Proof.
   (* TOOLS *)
-  set (X := Real "x").
-  set (Y := Real "y").
+  set (X := Individual "x").
+  set (Y := Individual "y").
   (* ******** *)
   assert (S1 : (∃ x, ∀ y, φ x y) → (∃ x, φ x Y)).
   {
@@ -371,7 +369,7 @@ Theorem n11_27 (φ : Prop → Prop → Prop → Prop) :
   ((∃ x, ∃ y z, φ x y z) ↔ (∃ x y z, φ x y z)).
 Proof.
   (* TOOLS *)
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : (∃ x y, ∃ z, φ x y z) 
     ↔ (∃ x, ∃ y, ∃ z, φ x y z)).
@@ -454,7 +452,7 @@ Theorem n11_32 (φ ψ : Prop → Prop → Prop) :
   (∀ x y, φ x y → ψ x y) 
   → ((∀ x y, φ x y) → ∀ x y, ψ x y).
 Proof.
-  set (X := Real "x").
+  set (X := Individual "x").
   pose proof (n10_27 (fun y => φ X y) (fun y => ψ X y)) 
     as n10_27a.
   pose proof (n10_27 (fun x => (∀ y, φ x y → ψ x y))
@@ -474,7 +472,7 @@ Theorem n11_33 (φ ψ : Prop → Prop → Prop) :
   (∀ x y, φ x y ↔ ψ x y) 
   → ((∀ x y, φ x y) ↔ (∀ x y, ψ x y)).
 Proof.
-  set (X := Real "x").
+  set (X := Individual "x").
   pose proof (n10_271 (fun y => φ X y) (fun y => ψ X y)) 
     as n10_271a. simpl in n10_271a.
   pose proof (n10_271 (fun x => ∀ y, φ x y)
@@ -495,7 +493,7 @@ Theorem n11_34 (φ ψ : Prop → Prop → Prop) :
   (∀ x y, φ x y → ψ x y) 
   → ((∃ x y, φ x y) → (∃ x y, ψ x y)).
 Proof.
-  set (X := Real "x").
+  set (X := Individual "x").
   pose proof (n10_28 (fun y => φ X y) (fun y => ψ X y)) 
     as n10_28a. simpl in n10_28a.
   pose proof (n10_11 X (fun x => 
@@ -514,7 +512,7 @@ Theorem n11_341 (φ ψ : Prop → Prop → Prop) :
   (∀ x y, φ x y ↔ ψ x y) 
   → ((∃ x y, φ x y) ↔ (∃ x y, ψ x y)).
 Proof.
-  set (X := Real "x").
+  set (X := Individual "x").
   pose proof (n10_281 (fun y => φ X y) (fun y => ψ X y))
     as n10_281a.
   pose proof (n10_11 X (fun x =>
@@ -533,7 +531,7 @@ Qed.
 Theorem n11_35 (P : Prop) (φ : Prop → Prop → Prop) :
   (∀ x y, φ x y → P) ↔ ((∃ x y, φ x y) → P).
 Proof.
-  set (X := Real "x").
+  set (X := Individual "x").
   pose proof (n10_23 (fun y => φ X y) P) as n10_23a.
   pose proof (n10_11 X (fun x => (∀ y, φ x y → P)
     ↔ ((∃ y, φ x y) → P))) as n10_11.
@@ -571,8 +569,8 @@ Proof.
   assert (S2 : ∀ x y, (φ x y → ψ x y) ∧ (ψ x y → χ x y)
     → (φ x y → χ x y)).
   {
-    set (X := Real "x").
-    set (Y := Real "y").
+    set (X := Individual "x").
+    set (Y := Individual "y").
     pose proof (Syll3_33 (φ X Y) (ψ X Y) (χ X Y)) as Syll3_33.
     pose proof (n11_11 X Y 
       (fun x y =>
@@ -601,8 +599,8 @@ Theorem n11_371 (φ ψ χ : Prop → Prop → Prop) :
   ((∀ x y, φ x y ↔ ψ x y) ∧ (∀ x y, ψ x y ↔ χ x y))
   → (∀ x y, φ x y ↔ χ x y).
 Proof.
-  set (X := Real "x").
-  set (Y := Real "y").
+  set (X := Individual "x").
+  set (Y := Individual "y").
   pose proof (n4_22 (φ X Y) (ψ X Y) (χ X Y)) as n4_22.
   pose proof (n11_11 X Y (fun x y =>
     (φ x y ↔ ψ x y) ∧ (ψ x y ↔ χ x y) → φ x y ↔ χ x y
@@ -620,8 +618,8 @@ Theorem n11_38 (φ ψ χ : Prop → Prop → Prop) :
   (∀ x y, φ x y → ψ x y) →
   (∀ x y, (φ x y ∧ χ x y) → (ψ x y ∧ χ x y)).
 Proof.
-  set (X := Real "x").
-  set (Y := Real "y").
+  set (X := Individual "x").
+  set (Y := Individual "y").
   pose proof (Fact3_45 (φ X Y) (ψ X Y) (χ X Y)) as Fact3_45.
   pose proof (n11_11 X Y (fun x y =>
     (φ x y → ψ x y) → φ x y ∧ χ x y → ψ x y ∧ χ x y))
@@ -636,8 +634,8 @@ Theorem n11_39 (φ ψ χ θ : Prop → Prop → Prop) :
   ((∀ x y, φ x y → ψ x y) ∧ (∀ x y, χ x y → θ x y))
   → ((∀ x y, φ x y ∧ χ x y) → (∀ x y, ψ x y ∧ θ x y)).
 Proof.
-  set (X := Real "x").
-  set (Y := Real "y").
+  set (X := Individual "x").
+  set (Y := Individual "y").
   pose proof (n3_47 (φ X Y) (χ X Y) (ψ X Y) (θ X Y)) 
     as n3_47.
   pose proof (n11_11 X Y (fun x y => 
@@ -659,8 +657,8 @@ Theorem n11_391 (φ ψ χ : Prop → Prop → Prop) :
   ↔ (∀ x y, φ x y → (ψ x y ∧ χ x y)).
 Proof.
   (* TOOLS *)
-  set (X := Real "x").
-  set (Y := Real "y").
+  set (X := Individual "x").
+  set (Y := Individual "y").
   (* ******** *)
   assert (S1 : ((φ X Y → ψ X Y) ∧ (φ X Y → χ X Y))
     ↔ (φ X Y → (ψ X Y ∧ χ X Y))).
@@ -688,8 +686,8 @@ Theorem n11_4 (φ ψ χ θ : Prop → Prop → Prop) :
   → (∀ x y, (φ x y ∧ χ x y) ↔ (ψ x y ∧ θ x y)).
 Proof.
   (* TOOLS *)
-  set (X := Real "x").
-  set (Y := Real "y").
+  set (X := Individual "x").
+  set (Y := Individual "y").
   (* ******** *)
   assert (S1 : ((∀ x y, φ x y ↔ ψ x y) ∧ (∀ x y, χ x y ↔ θ x y))
     → (∀ x y, (φ x y ↔ ψ x y) ∧ (χ x y ↔ θ x y))).
@@ -715,8 +713,8 @@ Theorem n11_401 (φ ψ χ : Prop → Prop → Prop) :
   (∀ x y, φ x y ↔ ψ x y) 
   → (∀ x y, (φ x y ∧ χ x y) ↔ (ψ x y ∧ χ x y)).
 Proof.
-  set (X := Real "x").
-  set (Y := Real "y").
+  set (X := Individual "x").
+  set (Y := Individual "y").
   pose proof (n4_2 (χ X Y)) as n4_2.
   pose proof (n4_73 (φ X Y ↔ ψ X Y) 
     (χ X Y ↔ χ X Y)) as n4_73.
@@ -737,7 +735,7 @@ Theorem n11_41 (φ ψ : Prop → Prop → Prop) :
   ((∃ x y, φ x y) ∨ (∃ x y, ψ x y))
   ↔ (∃ x y, φ x y ∨ ψ x y).
 Proof.
-  set (X := Real "x").
+  set (X := Individual "x").
   pose proof (n10_42 (fun y => φ X y) 
     (fun y => ψ X y)) as n10_42a.
   pose proof (n10_11 X (fun x => 
@@ -755,7 +753,7 @@ Theorem n11_42 (φ ψ : Prop → Prop → Prop) :
   (∃ x y, φ x y ∧ ψ x y) 
   → ((∃ x y, φ x y) ∧ (∃ x y, ψ x y)).
 Proof.
-  set (X := Real "x").
+  set (X := Individual "x").
   pose proof (n10_5 (fun y => φ X y) 
     (fun y => ψ X y)) as n10_5a.
   pose proof (n10_11 X (fun x =>
@@ -791,7 +789,7 @@ Qed.
 Theorem n11_43 (P : Prop) (φ : Prop → Prop → Prop) :
   (∃ x y, φ x y → P) ↔ ((∀ x y, φ x y) → P).
 Proof.
-  set (X := Real "x").
+  set (X := Individual "x").
   pose proof (n10_34 (fun y => φ X y) P) as n10_34a.
   pose proof (n10_11 X (fun x => (∃ y, φ x y → P)
     ↔ ((∀ y, φ x y) → P))) as n10_11.
@@ -806,7 +804,7 @@ Qed.
 Theorem n11_44 (P : Prop) (φ : Prop → Prop → Prop) :
   (∀ x y, φ x y ∨ P) ↔ ((∀ x y, φ x y) ∨ P).
 Proof.
-  set (X := Real "x").
+  set (X := Individual "x").
   pose proof (n10_2 (fun y => φ X y) P) as n10_2a.
   simpl in n10_2a.
   pose proof (n10_11 X (fun x => (∀ y, P ∨ φ x y) 
@@ -823,7 +821,7 @@ Qed.
 Theorem n11_45 (P : Prop) (φ : Prop → Prop → Prop) :
   (∃ x y, P ∧ φ x y) ↔ (P ∧ ∃ x y, φ x y).
 Proof.
-  set (X := Real "x").
+  set (X := Individual "x").
   pose proof (n10_35 (fun y => φ X y) P) as n10_35a.
   pose proof (n10_11 X (fun x =>
     (∃ y, P ∧ φ x y) ↔ P ∧ ∃ y, φ x y)) as n10_11.
@@ -837,7 +835,7 @@ Qed.
 Theorem n11_46 (P : Prop) (φ : Prop → Prop → Prop) :
   (∃ x y, P → φ x y) ↔ (P → ∃ x y, φ x y).
 Proof.
-  set (X := Real "x").
+  set (X := Individual "x").
   pose proof (n10_37 (fun y => φ X y) P) as n10_37a.
   pose proof (n10_11 X (fun x => (∃ y, P → φ x y) 
     ↔ (P → ∃ y, φ x y))) as n10_11.
@@ -851,7 +849,7 @@ Qed.
 Theorem n11_47 (P : Prop) (φ : Prop → Prop → Prop) :
   (∀ x y, P ∧ φ x y) ↔ (P ∧ ∀ x y, φ x y).
 Proof.
-  set (X := Real "x").
+  set (X := Individual "x").
   pose proof (n10_33 (fun y => φ X y) P) as n10_33a. 
   simpl in n10_33a.
   pose proof (n10_11 X (fun x =>
@@ -872,7 +870,7 @@ Theorem n11_5 (φ : Prop → Prop → Prop) :
   (¬(∀ x y, φ x y) ↔ (∃ x y, ¬φ x y)).
 Proof.
   (* TOOLS *)
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : (∃ x, ¬∀ y, φ x y) ↔ ¬(∀ x, ∀ y, φ x y)).
   {
@@ -916,7 +914,7 @@ Theorem n11_51 (φ : Prop → Prop → Prop) :
   (∃ x, ∀ y, φ x y) ↔ (¬(∀ x, ∃ y, ¬ φ x y)).
 Proof.
   (* TOOLS *)
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : (∃ x, ∀ y, φ x y) ↔ (¬∀ x, ¬∀ y, φ x y)).
   {
@@ -950,8 +948,8 @@ Theorem n11_52 (φ ψ : Prop → Prop → Prop) :
   (¬ ∀ x y, φ x y → ¬ ψ x y).
 Proof.
   (* TOOLS *)
-  set (X := Real "x").
-  set (Y := Real "y").
+  set (X := Individual "x").
+  set (Y := Individual "y").
   (* ******** *)
   assert (S1 : (¬(φ X Y ∧ ψ X Y)) ↔ (φ X Y → ¬ψ X Y)).
   {
@@ -992,7 +990,7 @@ Theorem n11_53 (φ ψ : Prop → Prop) :
   (∀ x y, φ x → ψ y) ↔ ((∃ x, φ x) → ∀ y, ψ y).
 Proof.
   (* TOOLS *)
-  assert (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : (∀ x y, φ x → ψ y) ↔ (∀ x, φ x → ∀ y, ψ y)).
   {
@@ -1015,7 +1013,7 @@ Theorem n11_54 (φ ψ : Prop → Prop) :
   ↔ ((∃ x, φ x) ∧ (∃ y, ψ y)).
 Proof.
   (* TOOLS *)
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : (∃ y, φ X ∧ ψ y) ↔ (φ X ∧ (∃ y, ψ y))).
   { apply n10_35. }
@@ -1043,7 +1041,7 @@ Theorem n11_55 (φ : Prop → Prop) (ψ : Prop → Prop → Prop) :
   (∃ x y, φ x ∧ ψ x y) ↔ (∃ x, φ x ∧ (∃ y, ψ x y)).
 Proof.
   (* TOOLS *)
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : (∃ y, φ X ∧ ψ X y) ↔ (φ X ∧ ∃ y, ψ X y)).
   { apply n10_35. }
@@ -1066,7 +1064,7 @@ Theorem n11_56 (φ ψ : Prop → Prop) :
   ((∀ x, φ x) ∧ (∀ y, ψ y)) ↔ (∀ x y, φ x ∧ ψ y).
 Proof.
   (* TOOLS *)
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : ((∀ x, φ x) ∧ (∀ y, ψ y)) ↔ (∀ x, φ x ∧ ∀ y, ψ y)).
   { 
@@ -1123,8 +1121,8 @@ Theorem n11_59 (φ ψ : Prop → Prop) :
   (φ x -[x]> ψ x) ↔ ((φ x ∧ φ y) -[x y]> (ψ x ∧ ψ y)).
 Proof.
   (* TOOLS *)
-  set (X := Real "x").
-  set (Y := Real "y").
+  set (X := Individual "x").
+  set (Y := Individual "y").
   (* ******** *)
   assert (S1 : (φ x -[x]> ψ x) 
     ↔ (∀ x y, (φ x → ψ x) ∧ (φ y → ψ y))).
@@ -1187,7 +1185,7 @@ Theorem n11_6 (φ : Prop → Prop → Prop) (ψ χ : Prop → Prop) :
   ↔ (∃ y, (∃ x, φ x y ∧ χ x) ∧ ψ y).
 Proof.
   (* TOOLS *)
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : ((∃ y, φ X y ∧ ψ y) ∧ χ X) 
     ↔ (∃ y, (φ X y ∧ ψ y) ∧ χ X)).
@@ -1234,7 +1232,7 @@ Theorem n11_61 (φ : Prop → Prop) (ψ : Prop → Prop → Prop) :
   (∃ y, (φ x -[x]> ψ x y)) → (φ x -[x]> ∃ y, ψ x y).
 Proof.
   (* TOOLS *)
-  set (X := Real "x").
+  set (X := Individual "x").
   (* ******** *)
   assert (S1 : (∃ y, (φ x -[x]> ψ x y)) → 
     (∀ x, ∃ y, φ x → ψ x y)).
@@ -1272,8 +1270,8 @@ Theorem n11_62 (φ : Prop → Prop) (ψ χ : Prop → Prop → Prop) :
   ((φ x ∧ ψ x y) -[x y]> χ x y) ↔ (φ x -[x]> (ψ x y -[y]> χ x y)).
 Proof.
   (* TOOLS *)
-  set (X := Real "x").
-  set (Y := Real "y").
+  set (X := Individual "x").
+  set (Y := Individual "y").
   (* ******** *)
   assert (S1 : ((φ x ∧ ψ x y) -[x y]> χ x y) 
     ↔ (∀ x y, φ x → (ψ x y → χ x y))).
@@ -1309,8 +1307,8 @@ Theorem n11_63 (φ ψ : Prop → Prop → Prop) :
   (¬∃ x y, φ x y) → (φ x y -[x y]> ψ x y).
 Proof.
   (* TOOLS *)
-  set (X := Real "x").
-  set (Y := Real "y").
+  set (X := Individual "x").
+  set (Y := Individual "y").
   (* ******** *)
   assert (S1 : ∀ x y, (¬φ x y) → (φ x y → ψ x y)).
   {
@@ -1356,8 +1354,8 @@ Theorem n11_71 (φ ψ χ θ : Prop → Prop) :
       ↔ ((φ z ∧ χ w) -[z w]> (ψ z ∧ θ w))).
 Proof.
   (* TOOLS *)
-  set (Z := Real "z").
-  set (W := Real "w").
+  set (Z := Individual "z").
+  set (W := Individual "w").
   (* For `Comm2_04`, we want a equivalance version. This is very 
     useful in this proof *)
   assert (Comm_Equiv : ∀ P Q R : Prop, 

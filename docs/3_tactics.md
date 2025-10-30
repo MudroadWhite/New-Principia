@@ -50,13 +50,13 @@ Now that we finished discussing the construction routine on `↔`, we come to de
 Explicit examples and comments on these simplifications are occasionally provided through chapter 9 & 10.
 
 ## 4. How to use a `=` proposition(rewrite)
-Aka. the root of all evils. A clear way how `=` proposition interacts with other types of proposition is not clearly defined(until chapter 13). For elementary propositions, Rocq's default preference `rewrite` works perfectly.
+On page 94, notes on primitive proposition \*1.01, it has been clearly stated that definitional equality(which is different from identity defined in chapter 13) is out of the theory. Without specification, it seems like we can do whatever we want. For elementary propositions, Rocq's default preference `rewrite` works perfectly.
 - `rewrite ->` on `=` is **allowed**.
 - `rewrite <-` on `=` is **allowed**.
 - Same as above, `at` variant is **allowed**.
 - Providing the parameter list is **recommended**.
 
-But when things become complicated, more problems will come to surface. A `∀ x` is enough to block the `rewrite` - it cannot identify the variable `x`. `setoid_rewrite` is an enhanced version of `rewrite` that can penetrate through `∀`s and `∃`s, with the drawback that it only works on `↔` relations. Hence the following rule:
+When things become complicated, more problems will come to surface. A `∀ x` is enough to block the `rewrite` - it cannot identify the variable `x`. `setoid_rewrite` is an enhanced version of `rewrite` that can penetrate through `∀`s and `∃`s, with the drawback that it only works on `↔` relations. Hence the following rule:
 - \[Simplification\]`eq_to_equiv` is **allowed** turn a `=` proposition into its `↔` equivalent. If we need to derive the quantified version of a `=` proposition, this becomes a necessity.
 - \[Simplification\]`setoid_rewrite ->` on `↔` is **allowed**. Even if the `↔` doesn't come from `=`, this is a simplification.
 - \[Simplification\]`setoid_rewrite <-` on `↔` is **allowed**.
@@ -80,7 +80,7 @@ Having a proposition with the form of `H : ∀ x, φ x`, plus a rewrite rule of 
 
 As we can see, even without `setoid_rewrite`, "rewriting on quantified propositions" is always viable with a fixed routine and a fixed set of primitive propositions to perform, and this is what exactly we're trying to use `setoid_rewrite` to do.
 
-For `=` case: As stated above, how does `=` interact with others is mostly undefined(till chapter 13). Currently we only care if we can "get the work done", and all follows are optionals. As a `=` in Rocq's type system, we can use whatever tactics just to perform the right substitution on a proposition. Or, we can use `eq_to_equiv` or `apply propositional_extentionality` to change the `=` proposition into a `↔` one. An exceptional case is when we want to lift a `P = Q` relation to `∀ x, P x = ∀ x, Q x`: if we want to get a generalized version of `=` for direct `rewrite`, we might use `f_equal` to perform the lift.
+For `=` case: As stated above, how does `=` interact with others is undefined. Belows are some optional ways to get the works done. We can use `eq_to_equiv` or `apply propositional_extentionality` to change the `=` proposition into a `↔` one. An exceptional case is when we want to lift a `P = Q` relation to `∀ x, P x = ∀ x, Q x`: if we want to get a generalized version of `=` for direct `rewrite`, we might use `f_equal` to perform the lift.*
 
 ## 5. Rules for technical hacks 
 Either for "historical reasons"(this project really doesn't have a history), or when we want to work through a proof quickly, and we didn't figure out the correct way to write the proof, "technical hacks" arises for proof completions. The most common ones are listed below, but they might never appear in the proofs. This is because: unless there is a severe technical barrier, they are **recommended** to be taken down.

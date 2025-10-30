@@ -3,9 +3,10 @@ Continuation of [Principia Mathematica's formalization](https://github.com/Logic
 
 This project is currently focused on the following parts:
 - [x] Chapter 9 - Theorems now extend beyond propositions with "real variables", involving functions and quantified propositions(with single "apparent variable"). Basic support for a predicate called "IsSameType".
-- [x] Chapter 10 - Added a special notation for `->` and `<->` with single apparent variable. One theorem seems to be unprovable
-- [x] Chapter 11 - Notations for quantified propositions now extend to multiple apparent variables
-- [ ] \[WIP\]Chapter 12
+- [x] Chapter 10 - Added a special notation for `->` and `<->` with single apparent variable. One theorem seems to be unprovable.
+- [x] Chapter 11 - Notations for quantified propositions now extend to multiple apparent variables.
+- [x] Chapter 12 - Axiom of reducibility, and its conceptual supports, the `Predicate` predicate.
+- [ ] \[WIP\] Chapter 13 - Propositions on Identity, which is different from definitional equality.
 
 ## Why working on it
 - Principia Mathematica has a stable version
