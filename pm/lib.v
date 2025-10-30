@@ -30,9 +30,19 @@ Example var_0 := Individual "x".
 
 (* cf.p.51: `!` notation *)
 (* Unsatisfying: what we want to express is that Phi takes argument with the same typf of `X` *)
-Definition Predicate (Phi : Prop -> Prop) (X : Prop) := (fun x => Phi X).
+(* TODO: design it better in the future *)
+(* Here, n is supposed to be the order of the predicate *)
+Definition Predicate (f : Prop -> Prop) (X : Prop) (n : nat) : Prop -> Prop := 
+  (* Is it the right way to design the function? *)
+  (fun x => f X).
 (* We are allowed to directly fix the X without fixing the function, which is a main feature for this operator *)
-Definition Predicvate_app (X : Prop) (Phi : Prop -> Prop) := predicate_bang Phi X.
+Definition Predicvate_app (X : Prop) (f : Prop -> Prop) (n : nat) := Predicate f X n.
+
+(* An alternative version to supports functions of 2 arguments *)
+Definition Predicate_2 (f : Prop -> Prop -> Prop) (X Y : Prop) (n : nat) : Prop -> Prop -> Prop := 
+  (fun x y => f X Y).
+Definition Predicvate_app_2 (X Y : Prop) (f : Prop -> Prop -> Prop) (n : nat) := 
+  Predicate_2 f X Y n.
 
 (* TODO: maybe we should synthesize these 2 types into one inductive type with the name of "constituent" *)
 

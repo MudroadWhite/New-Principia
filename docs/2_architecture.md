@@ -22,6 +22,8 @@ All conventions of sections below starts from chapter 9.
 4. `Notations` defined corresponded to the notations appeared in Principia. Each `Notation` comes with a `Scope`. To define a notation in a scope, we have to `Declare Scope`. To use the notation, we have to `Open Scope`. If we don't want the notation appear within proof, we command to `Close Scope`.
 5. And eventually, everything left are the actual proofs, coming with `Definition`s and `Theorem`s.
 
+- For every `Scope`s opened within a single file, it is **required** to close every scopes at the end of the file.
+
 ## 4. What is `Definition` and `Theorem`?
 As *vernacs* in the Rocq proof system, `Definition`s and `Theorem`s are being used, not because of their *literal meaning*, but because of their ability to nicely organize the data, just like a "class" or a "structure" in typical programming languages.
 
